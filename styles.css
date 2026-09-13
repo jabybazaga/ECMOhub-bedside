@@ -157,9 +157,9 @@ p.rp b, p.rp strong{color:var(--ink);font-weight:600}
 .steps .st-h.crit{color:var(--crit)}
 .steps .st-sig{font-size:12px;color:var(--ink-3);margin:0 0 10px;line-height:1.45}
 .steps ol{list-style:none;margin:0;padding:0;counter-reset:st}
-.steps li{counter-increment:st;display:flex;gap:9px;align-items:flex-start;margin-bottom:8px;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.steps li{counter-increment:st;position:relative;padding-left:29px;min-height:20px;margin-bottom:10px;font-size:13px;line-height:1.5;color:var(--ink-2)}
 .steps li:last-child{margin-bottom:0}
-.steps li::before{content:counter(st);flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.steps li::before{content:counter(st);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--mono);font-size:11px;font-weight:600;line-height:20px;text-align:center}
 .steps.crit li::before{background:var(--crit)}
 .steps li b{color:var(--ink)}
 
