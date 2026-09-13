@@ -1,0 +1,884 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1F6FB2">
+<title>ECMO a pie de cama</title>
+<meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ECMO pie de cama">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ SPLASH ============ -->
+  <section id="splash" class="screen on">
+    <div></div>
+    <div class="mark">
+      <img src="logo.jpg" alt="Equipo ECMO de Extremadura — Servicio Extremeño de Salud" width="172" height="172">
+      <div class="word">
+        <b>ECMO a pie de cama</b>
+        <span>CHUB · VV · VA</span>
+      </div>
+    </div>
+    <div class="foot">
+      <div class="dots"><i class="on"></i><i></i><i></i></div>
+      <small>Equipo ECMO de Extremadura · SES</small>
+    </div>
+  </section>
+
+  <!-- ============ INICIO ============ -->
+  <section id="screen-inicio" class="screen">
+    <div class="appbar">
+      <div class="brand"><b>ECMO a pie de cama</b><span>CHUB</span></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+        <input type="text" placeholder="Buscar: recirculación, Arlequín…" readonly>
+      </div>
+    </div>
+    <div class="content">
+      <div class="grp">A diario</div>
+      <div class="row">
+        <button class="item" data-go="ronda">
+          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></div>
+          <div class="tx"><div class="t">Ronda diaria</div><div class="d">Valores de hoy y avisos automáticos</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="grp">Referencia</div>
+      <div class="row">
+        <button class="item" data-go="vv">
+          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16M18 4v16M6 12h12"/></svg></div>
+          <div class="tx"><div class="t">VV — respiratorio</div></div>
+          <span class="tag vv">VV</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="va">
+          <div class="ic" style="background:var(--va-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--va)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M8 6l-4 6 4 6M16 6l4 6-4 6"/></svg></div>
+          <div class="tx"><div class="t">VA — circulatorio</div></div>
+          <span class="tag va">VA</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="anticoag">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 16v6M4.9 4.9l4.2 4.2M14.9 14.9l4.2 4.2M2 12h6M16 12h6M4.9 19.1l4.2-4.2M14.9 9.1l4.2-4.2"/></svg></div>
+          <div class="tx"><div class="t">Anticoagulación</div></div>
+          <span class="tag both">VV+VA</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="complicaciones">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+          <div class="tx"><div class="t">Complicaciones</div></div>
+          <span class="tag both">VV+VA</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="grp">Herramientas</div>
+      <div class="row">
+        <button class="item" data-go="escalas">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></div>
+          <div class="tx"><div class="t">Escalas</div><div class="d">Murray · APSS · SCAI · INTERMACS</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="calc">
+          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0M8 19h2M12.5 19h2M17 19h0"/></svg></div>
+          <div class="tx"><div class="t">Calculadoras</div><div class="d">Indicación · recirculación · heparina · RESP · SAVE</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="checklists">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="tx"><div class="t">Checklists</div><div class="d">Material y traslado</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="grp">Datos</div>
+      <div class="row">
+        <button class="item" data-go="datos">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
+          <div class="tx"><div class="t">Supervivencia</div><div class="d">Registro ELSO</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="item" data-go="fuentes">
+          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+          <div class="tx"><div class="t">Fuentes</div><div class="d">CHUB · ELSO · Vall d'Hebron · Clínic</div></div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="disclaimer"><b>No sustituye al protocolo.</b> Consulta rápida a pie de cama; ante cualquier duda, el documento original.</div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab on" data-go="inicio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+        <span>Inicio</span>
+      </button>
+      <button class="tab" data-go="ronda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg>
+        <span>Ronda</span>
+      </button>
+      <button class="tab" data-go="calc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg>
+        <span>Calc</span>
+      </button>
+      <button class="tab" data-go="checklists">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Check</span>
+      </button>
+    </nav>
+  </section>
+
+  <!-- ============ RONDA DIARIA ============ -->
+  <section id="screen-ronda" class="screen">
+    <div class="appbar">
+      <div class="toprow">
+        <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="title">Ronda diaria</div>
+      </div>
+      <div class="seg" id="ronda-seg">
+        <button class="on" data-mode="vv">ECMO VV</button>
+        <button data-mode="va">ECMO VA</button>
+      </div>
+    </div>
+    <div class="content">
+      <p style="font-size:11.5px;color:var(--ink-3);margin:0 0 12px">Los valores de partida son un ejemplo, no datos de ningún paciente. <button class="btn" type="button" id="r-clear" style="font-family:inherit;font-size:11.5px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;color:var(--ink-2)">Vaciar</button></p>
+
+      <div class="fieldset" data-group="pac">
+        <button class="fs-head" aria-expanded="false">
+          <div class="dot" style="background:var(--c-pac)"></div>
+          <div class="lbl">Paciente</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>Peso</label><div class="stepper"><button data-step="peso" data-delta="-1">–</button><div class="val"><span data-val="peso">75</span><span class="unit">kg</span></div><button data-step="peso" data-delta="1">+</button></div></div>
+          <div class="field"><label>Diuresis</label><div class="stepper"><button data-step="diuresis" data-delta="-0.1">–</button><div class="val"><span data-val="diuresis">0.8</span><span class="unit">mL/kg/h</span></div><button data-step="diuresis" data-delta="0.1">+</button></div></div>
+          <div class="field"><label>Temperatura</label><div class="stepper"><button data-step="temp" data-delta="-0.1">–</button><div class="val"><span data-val="temp">36.8</span><span class="unit">°C</span></div><button data-step="temp" data-delta="0.1">+</button></div></div>
+        </div>
+      </div>
+
+      <div class="fieldset open" data-group="cir">
+        <button class="fs-head" aria-expanded="true">
+          <div class="dot" style="background:var(--c-cir)"></div>
+          <div class="lbl">Circuito</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>Flujo de bomba</label><div class="stepper"><button data-step="flujo" data-delta="-0.1">–</button><div class="val"><span data-val="flujo">4.2</span><span class="unit">L/min</span></div><button data-step="flujo" data-delta="0.1">+</button></div></div>
+          <div class="field"><label>Sweep (gas)</label><div class="stepper"><button data-step="sweep" data-delta="-0.5">–</button><div class="val"><span data-val="sweep">4</span><span class="unit">L/min</span></div><button data-step="sweep" data-delta="0.5">+</button></div></div>
+          <div class="field"><label>rpm</label><div class="stepper"><button data-step="rpm" data-delta="-50">–</button><div class="val"><span data-val="rpm">3100</span><span class="unit">rpm</span></div><button data-step="rpm" data-delta="50">+</button></div></div>
+          <div class="field"><label>P1 · succión</label><div class="stepper"><button data-step="p1" data-delta="-5">–</button><div class="val"><span data-val="p1">-70</span><span class="unit">mmHg</span></div><button data-step="p1" data-delta="5">+</button></div></div>
+          <div class="field"><label>P2 · retorno</label><div class="stepper"><button data-step="p2" data-delta="-5">–</button><div class="val"><span data-val="p2">180</span><span class="unit">mmHg</span></div><button data-step="p2" data-delta="5">+</button></div></div>
+          <div class="field"><label>P3 · transmembrana</label><div class="stepper"><button data-step="p3" data-delta="-1">–</button><div class="val"><span data-val="p3">28</span><span class="unit">mmHg</span></div><button data-step="p3" data-delta="1">+</button></div></div>
+          <div class="field"><label>PO₂ postmembrana</label><div class="stepper"><button data-step="po2post" data-delta="-10">–</button><div class="val"><span data-val="po2post">380</span><span class="unit">mmHg</span></div><button data-step="po2post" data-delta="10">+</button></div></div>
+          <div class="field"><label>Días de soporte</label><div class="stepper"><button data-step="dias" data-delta="-1">–</button><div class="val"><span data-val="dias">4</span><span class="unit">d</span></div><button data-step="dias" data-delta="1">+</button></div></div>
+        </div>
+      </div>
+
+      <div class="fieldset" data-group="hem">
+        <button class="fs-head" aria-expanded="false">
+          <div class="dot" style="background:var(--c-hem)"></div>
+          <div class="lbl">Hemodinámica</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>Frecuencia cardiaca</label><div class="stepper"><button data-step="fc" data-delta="-1">–</button><div class="val"><span data-val="fc">92</span><span class="unit">lpm</span></div><button data-step="fc" data-delta="1">+</button></div></div>
+          <div class="field"><label>TA sistólica</label><div class="stepper"><button data-step="tas" data-delta="-1">–</button><div class="val"><span data-val="tas">108</span><span class="unit">mmHg</span></div><button data-step="tas" data-delta="1">+</button></div></div>
+          <div class="field"><label>TA diastólica</label><div class="stepper"><button data-step="tad" data-delta="-1">–</button><div class="val"><span data-val="tad">62</span><span class="unit">mmHg</span></div><button data-step="tad" data-delta="1">+</button></div></div>
+          <div class="field"><label>Gasto cardiaco</label><div class="stepper"><button data-step="gc" data-delta="-0.1">–</button><div class="val"><span data-val="gc">6.2</span><span class="unit">L/min</span></div><button data-step="gc" data-delta="0.1">+</button></div></div>
+          <div class="field" data-only="va"><label>Índice cardiaco</label><div class="stepper"><button data-step="ic" data-delta="-0.1">–</button><div class="val"><span data-val="ic">2.4</span><span class="unit">L/min/m²</span></div><button data-step="ic" data-delta="0.1">+</button></div></div>
+          <div class="field"><label>Lactato</label><div class="stepper"><button data-step="lactato" data-delta="-0.1">–</button><div class="val"><span data-val="lactato">1.8</span><span class="unit">mmol/L</span></div><button data-step="lactato" data-delta="0.1">+</button></div></div>
+        </div>
+      </div>
+
+      <div class="fieldset" data-group="gas">
+        <button class="fs-head" aria-expanded="false">
+          <div class="dot" style="background:var(--c-gas)"></div>
+          <div class="lbl">Gasometría</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>SaO₂</label><div class="stepper"><button data-step="sao2" data-delta="-1">–</button><div class="val"><span data-val="sao2">90</span><span class="unit">%</span></div><button data-step="sao2" data-delta="1">+</button></div></div>
+          <div class="field"><label>S premembrana</label><div class="stepper"><button data-step="svo2" data-delta="-1">–</button><div class="val"><span data-val="svo2">68</span><span class="unit">%</span></div><button data-step="svo2" data-delta="1">+</button></div></div>
+          <div class="field"><label>PaO₂</label><div class="stepper"><button data-step="pao2" data-delta="-1">–</button><div class="val"><span data-val="pao2">72</span><span class="unit">mmHg</span></div><button data-step="pao2" data-delta="1">+</button></div></div>
+          <div class="field"><label>PaCO₂</label><div class="stepper"><button data-step="paco2" data-delta="-1">–</button><div class="val"><span data-val="paco2">41</span><span class="unit">mmHg</span></div><button data-step="paco2" data-delta="1">+</button></div></div>
+          <div class="field"><label>pH</label><div class="stepper"><button data-step="ph" data-delta="-0.01">–</button><div class="val"><span data-val="ph">7.39</span><span class="unit"></span></div><button data-step="ph" data-delta="0.01">+</button></div></div>
+          <div class="field"><label>SvO₂ verdadera <span style="font-weight:400;color:var(--ink-3)">(opcional)</span></label><div class="stepper"><button data-step="svmix" data-delta="-1">–</button><div class="val"><span data-val="svmix">—</span><span class="unit">%</span></div><button data-step="svmix" data-delta="1">+</button></div></div>
+          <p class="note" style="margin:6px 0 0">Si dejas la SvO₂ verdadera en blanco, el VO₂ se calcula con la premembrana — en VV la recirculación la falsea al alza y el consumo sale infraestimado.</p>
+        </div>
+      </div>
+
+      <div class="fieldset" data-group="lab">
+        <button class="fs-head" aria-expanded="false">
+          <div class="dot" style="background:var(--c-lab)"></div>
+          <div class="lbl">Analítica</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>Hb</label><div class="stepper"><button data-step="hb" data-delta="-0.1">–</button><div class="val"><span data-val="hb">9.1</span><span class="unit">g/dL</span></div><button data-step="hb" data-delta="0.1">+</button></div></div>
+          <div class="field"><label>Plaquetas</label><div class="stepper"><button data-step="plaq" data-delta="-5">–</button><div class="val"><span data-val="plaq">88</span><span class="unit">×10⁹/L</span></div><button data-step="plaq" data-delta="5">+</button></div></div>
+          <div class="field"><label>Fibrinógeno</label><div class="stepper"><button data-step="fibri" data-delta="-0.1">–</button><div class="val"><span data-val="fibri">1.8</span><span class="unit">g/L</span></div><button data-step="fibri" data-delta="0.1">+</button></div></div>
+          <div class="field"><label>ACT</label><div class="stepper"><button data-step="act" data-delta="-5">–</button><div class="val"><span data-val="act">172</span><span class="unit">s</span></div><button data-step="act" data-delta="5">+</button></div></div>
+          <div class="field"><label>TTPa</label><div class="stepper"><button data-step="ttpa" data-delta="-2">–</button><div class="val"><span data-val="ttpa">58</span><span class="unit">s</span></div><button data-step="ttpa" data-delta="2">+</button></div></div>
+          <div class="field"><label>LDH</label><div class="stepper"><button data-step="ldh" data-delta="-10">–</button><div class="val"><span data-val="ldh">420</span><span class="unit">UI/L</span></div><button data-step="ldh" data-delta="10">+</button></div></div>
+          <div class="field"><label>Perfusión heparina</label><div class="stepper"><button data-step="ritmo" data-delta="-0.5">–</button><div class="val"><span data-val="ritmo">11</span><span class="unit">mL/h</span></div><button data-step="ritmo" data-delta="0.5">+</button></div></div>
+          <div class="field"><label>Sangrado activo</label>
+            <select id="r-sangrado" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="no">No</option><option value="leve">Leve</option><option value="grave">Grave</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="fieldset" data-group="ven" data-only="vv">
+        <button class="fs-head" aria-expanded="false">
+          <div class="dot" style="background:var(--c-ven)"></div>
+          <div class="lbl">Ventilador (reposo)</div>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="fs-body">
+          <div class="field"><label>P. meseta</label><div class="stepper"><button data-step="pplat" data-delta="-1">–</button><div class="val"><span data-val="pplat">24</span><span class="unit">cmH₂O</span></div><button data-step="pplat" data-delta="1">+</button></div></div>
+          <div class="field"><label>PEEP</label><div class="stepper"><button data-step="peep" data-delta="-1">–</button><div class="val"><span data-val="peep">12</span><span class="unit">cmH₂O</span></div><button data-step="peep" data-delta="1">+</button></div></div>
+          <div class="field"><label>FiO₂ del ventilador</label><div class="stepper"><button data-step="vfio2" data-delta="-5">–</button><div class="val"><span data-val="vfio2">40</span><span class="unit">%</span></div><button data-step="vfio2" data-delta="5">+</button></div></div>
+        </div>
+      </div>
+
+      <h3 class="sub">Valores derivados</h3>
+      <div class="deflist tight" id="r-derived"></div>
+
+      <h3 class="sub">Qué revisar hoy</h3>
+      <div class="tally" id="r-tally"></div>
+      <div class="findings" id="r-findings"></div>
+      <p class="note" style="margin-top:10px">Apoyo de lectura, no una indicación. Cada aviso lleva la fuente del umbral que lo dispara; donde el CHUB y las guías discrepan, el aviso sigue al protocolo y lo indica.</p>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab on" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ CALCULADORAS ============ -->
+  <section id="screen-calc" class="screen">
+    <div class="appbar">
+      <div class="toprow">
+        <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="title">Calculadoras</div>
+      </div>
+      <div class="chips" id="calc-chips">
+        <button class="on" data-tab="criterios">Indicación</button>
+        <button data-tab="recirc">Recirculación</button>
+        <button data-tab="hep">Heparina</button>
+        <button data-tab="resp">RESP</button>
+        <button data-tab="save">SAVE</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <div class="pane on" id="pane-criterios">
+        <p class="ref-lede">Un solo formulario para Murray, APSS, P/F e índice de oxigenación, y qué criterio concreto cumple cada estudio (ELSO Red Book tabla 37-1, CESAR, ECMOnet, EOLIA).</p>
+        <div class="fieldset open" data-group="k1">
+          <button class="fs-head" aria-expanded="true"><div class="dot" style="background:var(--c-gas)"></div><div class="lbl">Gasometría y ventilador</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="fs-body">
+            <div class="field"><label>PaO₂</label><div class="stepper"><button data-step="k-pao2" data-delta="-1">–</button><div class="val"><span data-val="k-pao2">62</span><span class="unit">mmHg</span></div><button data-step="k-pao2" data-delta="1">+</button></div></div>
+            <div class="field"><label>FiO₂</label><div class="stepper"><button data-step="k-fio2" data-delta="-5">–</button><div class="val"><span data-val="k-fio2">100</span><span class="unit">%</span></div><button data-step="k-fio2" data-delta="5">+</button></div></div>
+            <div class="field"><label>pH</label><div class="stepper"><button data-step="k-ph" data-delta="-0.01">–</button><div class="val"><span data-val="k-ph">7.22</span><span class="unit"></span></div><button data-step="k-ph" data-delta="0.01">+</button></div></div>
+            <div class="field"><label>PaCO₂</label><div class="stepper"><button data-step="k-paco2" data-delta="-1">–</button><div class="val"><span data-val="k-paco2">68</span><span class="unit">mmHg</span></div><button data-step="k-paco2" data-delta="1">+</button></div></div>
+            <div class="field"><label>FR</label><div class="stepper"><button data-step="k-fr" data-delta="-1">–</button><div class="val"><span data-val="k-fr">35</span><span class="unit">rpm</span></div><button data-step="k-fr" data-delta="1">+</button></div></div>
+          </div>
+        </div>
+        <div class="fieldset" data-group="k2">
+          <button class="fs-head" aria-expanded="false"><div class="dot" style="background:var(--c-ven)"></div><div class="lbl">Mecánica pulmonar</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="fs-body">
+            <div class="field"><label>PEEP</label><div class="stepper"><button data-step="k-peep" data-delta="-1">–</button><div class="val"><span data-val="k-peep">14</span><span class="unit">cmH₂O</span></div><button data-step="k-peep" data-delta="1">+</button></div></div>
+            <div class="field"><label>P. meseta</label><div class="stepper"><button data-step="k-pplat" data-delta="-1">–</button><div class="val"><span data-val="k-pplat">31</span><span class="unit">cmH₂O</span></div><button data-step="k-pplat" data-delta="1">+</button></div></div>
+            <div class="field"><label>P. media vía aérea</label><div class="stepper"><button data-step="k-pmedia" data-delta="-1">–</button><div class="val"><span data-val="k-pmedia">22</span><span class="unit">cmH₂O</span></div><button data-step="k-pmedia" data-delta="1">+</button></div></div>
+            <div class="field"><label>Compliance</label><div class="stepper"><button data-step="k-comp" data-delta="-1">–</button><div class="val"><span data-val="k-comp">26</span><span class="unit">mL/cmH₂O</span></div><button data-step="k-comp" data-delta="1">+</button></div></div>
+            <div class="field"><label>Cuadrantes en la Rx</label>
+              <select id="k-rx" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="fieldset" data-group="k3">
+          <button class="fs-head" aria-expanded="false"><div class="dot" style="background:var(--c-pac)"></div><div class="lbl">Paciente y contexto</div><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="fs-body">
+            <div class="field"><label>Edad</label><div class="stepper"><button data-step="k-edad" data-delta="-1">–</button><div class="val"><span data-val="k-edad">52</span><span class="unit">años</span></div><button data-step="k-edad" data-delta="1">+</button></div></div>
+            <div class="field"><label>Días de ventilación mecánica</label><div class="stepper"><button data-step="k-vm" data-delta="-1">–</button><div class="val"><span data-val="k-vm">3</span><span class="unit">d</span></div><button data-step="k-vm" data-delta="1">+</button></div></div>
+            <div class="field"><label>Tiempo en esta situación</label>
+              <select id="k-dur" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+                <option value="lt3">Menos de 3 horas</option><option value="3a6" selected>Entre 3 y 6 horas</option><option value="gt6">Más de 6 horas</option>
+              </select>
+            </div>
+            <div class="field"><label>Dónde está el paciente</label>
+              <select id="k-sitio" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+                <option value="centro" selected>Ya en centro ECMO</option><option value="espera">Esperando traslado</option>
+              </select>
+            </div>
+            <label class="chk"><input type="checkbox" id="k-inest"><span>Inestabilidad hemodinámica</span></label>
+            <label class="chk"><input type="checkbox" id="k-rescate" checked><span>Tratamiento optimizado (protectora, prono, BNM)</span></label>
+          </div>
+        </div>
+        <h3 class="sub">Valores derivados</h3>
+        <div class="deflist tight" id="k-derived"></div>
+        <h3 class="sub">Qué criterio cumple</h3>
+        <div id="crit-host"></div>
+        <p class="note amber">Cumplir un criterio no es una indicación por sí sola: los estudios exigen fallo potencialmente reversible y tratamiento óptimo. Trazo discontinuo = falta algún dato.</p>
+      </div>
+
+      <div class="pane" id="pane-recirc">
+        <div class="card">
+          <h3>Recirculación<span class="pill chub">CHUB</span></h3>
+          <p class="hint">Fórmula del protocolo, solo para VV. Saturaciones en porcentaje.</p>
+          <div class="slider">
+            <div class="lbl"><span>S<sub>pre</sub>O₂ · drenaje</span><b><span id="spre-v">80</span>%</b></div>
+            <input type="range" id="spre" min="40" max="100" step="1" value="80">
+          </div>
+          <div class="slider">
+            <div class="lbl"><span>S<sub>post</sub>O₂ · retorno</span><b><span id="spost-v">100</span>%</b></div>
+            <input type="range" id="spost" min="40" max="100" step="1" value="100">
+          </div>
+          <div class="slider">
+            <div class="lbl"><span>SvO₂ verdadera</span><b><span id="sv-v">65</span>%</b></div>
+            <input type="range" id="sv" min="30" max="90" step="1" value="65">
+          </div>
+          <div class="out">
+            <div class="lbl2">Recirculación</div>
+            <div class="big" id="recirc-val">—</div>
+            <div class="sub" id="recirc-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-hep">
+        <div class="card">
+          <h3>Heparina según protocolo<span class="pill chub">CHUB</span></h3>
+          <p class="hint">Bolo 1 mg/kg. Perfusión de 2 mg/kg en 250 mL de SSF.</p>
+          <div class="slider">
+            <div class="lbl"><span>Peso</span><b><span id="peso-v">75</span> kg</b></div>
+            <input type="range" id="hpeso" min="40" max="130" step="1" value="75">
+          </div>
+          <div class="slider">
+            <div class="lbl"><span>Ritmo actual</span><b><span id="ritmo-v">11</span> mL/h</b></div>
+            <input type="range" id="hritmo" min="0" max="30" step="0.5" value="11">
+          </div>
+          <div class="out">
+            <div class="lbl2">Bolo de canulación</div>
+            <div class="big" id="hep-bolo">—</div>
+            <div class="sub" id="hep-bolo-sub"></div>
+          </div>
+          <div class="outrow">
+            <div class="outbox"><div class="lbl2">Preparación</div><div class="big" id="hep-conc">—</div></div>
+            <div class="outbox"><div class="lbl2">Dosis actual</div><div class="big" id="hep-dosis">—</div></div>
+          </div>
+          <div class="out" style="margin-top:10px"><div class="lbl2">Bivalirudina · 0,2 mg/kg/h</div><div class="big" id="biva">—</div><div class="sub">Sin bolo. Titular por ACT/TTPa en los mismos rangos.</div></div>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-resp">
+        <div class="card">
+          <h3>RESP score<span class="pill elso">EXTERNO</span></h3>
+          <p class="hint">No está en el protocolo ni en el Red Book (Schmidt, AJRCCM 2014). Rango −22 a +15.</p>
+          <div class="field"><label>Edad</label>
+            <select id="resp-edad" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="0">18–49 años</option><option value="-2">50–59 años</option><option value="-3">≥ 60 años</option>
+            </select>
+          </div>
+          <div class="field"><label>Ventilación mecánica antes de ECMO</label>
+            <select id="resp-vm" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="3">&lt; 48 h</option><option value="1">48 h – 7 días</option><option value="0">&gt; 7 días</option>
+            </select>
+          </div>
+          <div class="field"><label>Diagnóstico respiratorio agudo</label>
+            <select id="resp-dx" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="3">Neumonía vírica</option><option value="3">Neumonía bacteriana</option><option value="11">Asma</option>
+              <option value="3">Traumatismo o quemadura</option><option value="5">Neumonitis por aspiración</option>
+              <option value="1">Otro diagnóstico respiratorio agudo</option><option value="0">No respiratorio o crónico</option>
+            </select>
+          </div>
+          <div style="margin-top:6px">
+            <label class="chk"><input type="checkbox" data-resp="-2"><span>Inmunocomprometido (−2)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-7"><span>Disfunción del SNC (−7)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-3"><span>Infección no pulmonar asociada (−3)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="1"><span>Bloqueo neuromuscular pre-ECMO (+1)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-1"><span>Óxido nítrico inhalado (−1)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-2"><span>Perfusión de bicarbonato (−2)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-2"><span>Parada cardiaca pre-ECMO (−2)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-1"><span>PaCO₂ ≥ 75 mmHg (−1)</span></label>
+            <label class="chk"><input type="checkbox" data-resp="-1"><span>P. inspiratoria pico ≥ 42 cmH₂O (−1)</span></label>
+          </div>
+          <div class="outrow" style="margin-top:12px">
+            <div class="outbox"><div class="lbl2">Puntuación</div><div class="big" id="resp-pts">—</div></div>
+            <div class="outbox"><div class="lbl2">Clase</div><div class="big" id="resp-cls">—</div></div>
+            <div class="outbox"><div class="lbl2">Superviv.</div><div class="big" id="resp-surv">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" id="pane-save">
+        <div class="card">
+          <h3>SAVE score<span class="pill elso">EXTERNO</span></h3>
+          <p class="hint">Citado por el protocolo sin tabla (Schmidt, Eur Heart J 2015). Incluye la constante −6.</p>
+          <h4 style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Diagnóstico cardiaco (pueden sumarse varios)</h4>
+          <label class="chk"><input type="checkbox" data-save="3"><span>Miocarditis (+3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="2"><span>TV/FV refractaria (+2)</span></label>
+          <label class="chk"><input type="checkbox" data-save="3"><span>Post-trasplante cardiaco o pulmonar (+3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-3"><span>Cardiopatía congénita (−3)</span></label>
+          <div class="field" style="margin-top:10px"><label>Edad</label>
+            <select id="save-edad" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="7">18–38 años</option><option value="4">39–52 años</option><option value="3">53–62 años</option><option value="0">≥ 63 años</option>
+            </select>
+          </div>
+          <div class="field"><label>Peso</label>
+            <select id="save-peso" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="1">≤ 65 kg</option><option value="2">66–89 kg</option><option value="0">≥ 90 kg</option>
+            </select>
+          </div>
+          <div class="field"><label>Intubación antes de ECMO</label>
+            <select id="save-int" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <option value="0">≤ 10 h</option><option value="-2">11–29 h</option><option value="-4">≥ 30 h</option>
+            </select>
+          </div>
+          <h4 style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Fallo orgánico y otros</h4>
+          <label class="chk"><input type="checkbox" data-save="-3"><span>Fallo hepático agudo (−3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-3"><span>Disfunción del SNC (−3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-3"><span>Fracaso renal agudo (−3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-6"><span>Insuficiencia renal crónica (−6)</span></label>
+          <label class="chk"><input type="checkbox" data-save="3"><span>P. inspiratoria pico ≤ 20 cmH₂O (+3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-2"><span>Parada cardiaca pre-ECMO (−2)</span></label>
+          <label class="chk"><input type="checkbox" data-save="3"><span>P. diastólica ≥ 40 mmHg (+3)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-2"><span>Presión de pulso ≤ 20 mmHg (−2)</span></label>
+          <label class="chk"><input type="checkbox" data-save="-3"><span>HCO₃ ≤ 15 mmol/L (−3)</span></label>
+          <div class="outrow" style="margin-top:12px">
+            <div class="outbox"><div class="lbl2">Puntuación</div><div class="big" id="save-pts">—</div></div>
+            <div class="outbox"><div class="lbl2">Clase</div><div class="big" id="save-cls">—</div></div>
+            <div class="outbox"><div class="lbl2">Superviv.</div><div class="big" id="save-surv">—</div></div>
+          </div>
+          <p class="sub" id="save-msg" style="margin-top:8px"></p>
+        </div>
+      </div>
+
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab on" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ VV ============ -->
+  <section id="screen-vv" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">VV — respiratorio</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Insuficiencia respiratoria refractaria con función cardiaca conservada. El circuito sustituye al pulmón, no al corazón.</p>
+
+      <h3 class="rh">Indicaciones</h3>
+      <p class="rp">El CHUB organiza la indicación por <b>riesgo estimado de mortalidad</b>, con tres escalas en paralelo con la PaFiO₂:</p>
+      <div class="deflist">
+        <div class="dl-row hl"><span class="dl-k">CHUB · hipoxemia refractaria — mortalidad &gt; 80%</span><span class="dl-v">PaFiO₂ &lt; 80 con FiO₂ &gt; 90% · Murray 3–4 · APSS 8 · AOI 80</span></div>
+        <div class="dl-row"><span class="dl-k">CHUB · a considerar — mortalidad &gt; 50%</span><span class="dl-v">PaFiO₂ &lt; 150 con FiO₂ &gt; 90% · Murray 2–3 · APSS 3 · AOI 60</span></div>
+        <div class="dl-row"><span class="dl-k">CHUB · hipercapnia refractaria</span><span class="dl-v">pH &lt; 7,20 y/o PCO₂ &gt; 80 mmHg, sin respuesta pese a VM con Pplat &gt; 30</span></div>
+        <div class="dl-row hl"><span class="dl-k">EOLIA <span class="pill elso">EXTERNO</span> — recomendado por ESICM</span><span class="dl-v">P/F &lt; 50 con FiO₂ &gt; 0,8 &gt; 3h · P/F &lt; 80 con FiO₂ &gt; 0,8 &gt; 6h · pH &lt; 7,25 &gt; 6h con FR≤35 y Pplat &lt; 32</span></div>
+        <div class="dl-row"><span class="dl-k">CESAR <span class="pill elso">EXTERNO</span></span><span class="dl-v">Fallo reversible · Murray ≥ 3,0 · pH &lt; 7,20 pese a óptimo (considerar Murray ≥ 2,5)</span></div>
+        <div class="dl-row"><span class="dl-k">ECMONET <span class="pill elso">EXTERNO</span></span><span class="dl-v">IO &gt; 30 · P/F &lt; 70 con PEEP≥15 · pH &lt; 7,25 &gt; 2h · inestabilidad hemodinámica</span></div>
+      </div>
+      <p class="rp" style="font-size:12px;color:var(--ink-3)">Premisa común: manejo optimizado, ventilación protectora y al menos un ciclo de prono. AOI 60 → 50% mortalidad; AOI 80 → 80%. Otras indicaciones: fuga aérea, intubación en lista de trasplante pulmonar, parada respiratoria inminente.</p>
+
+      <h3 class="rh">Contraindicaciones — todas relativas<span class="pill chub">CHUB</span></h3>
+      <p class="rp">No hay contraindicaciones absolutas (posición ELSO). Relativas: hemorragia de SNC reciente o no controlada, enfermedad terminal, lesión severa del SNC no recuperable, <b>inmunodepresión (neutrófilos &lt; 400/mm³)</b>, edad (sin corte, a más edad más mortalidad) y <b>VM &gt; 7 días con parámetros agresivos</b> (FiO₂ &gt; 90% con Pplat &gt; 30).</p>
+
+      <h3 class="rh">Configuración<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Las dos de uso habitual: <b>fémoro-yugular</b> y <b>fémoro-femoral</b>. Mayor calibre posible, siempre menor que el vaso, con ecoguía.</p>
+      <div class="deflist">
+        <div class="dl-row hl"><span class="dl-k">Fémoro-yugular</span><span class="dl-v">Drenaje femoral, retorno yugular derecho. Bajo grado de recirculación basal y flujo estable. Cánula de drenaje multiperforada en entrada de AD; retorno hacia la tricúspide.</span></div>
+        <div class="dl-row hl"><span class="dl-k">Fémoro-femoral</span><span class="dl-v">Drenaje femoral izquierdo, retorno femoral derecho. Inserción más segura y ventajas en transporte; puede oscilar con el volumen abdominal. Permite deambulación.</span></div>
+        <div class="dl-row"><span class="dl-k">Yúgulo-femoral</span><span class="dl-v">Drenaje yugular derecho, retorno femoral. Flujo muy estable pero recirculación elevada y riesgo de decanulación al movilizar.</span></div>
+        <div class="dl-row"><span class="dl-k">Doble luz</span><span class="dl-v">Una cánula en yugular derecha. Un solo punto de entrada, pero riesgo de recirculación si rota y diámetro elevado.</span></div>
+        <div class="dl-row"><span class="dl-k">Atrio-pulmonar</span><span class="dl-v">Drenaje en AD, retorno a arteria pulmonar. Recirculación casi nula y soporte al VD, pero técnica compleja.</span></div>
+        <div class="deflist-cap">Calibres: drenaje 23–25 Fr y retorno 17–21 Fr en periférica; 28–36 y 18–22 Fr en central.</div>
+      </div>
+      <div class="note"><b>Punta de drenaje.</b> Con dos cánulas, a la altura de las <b>venas renales</b>; acercarla a la AD aumenta la recirculación. Separación &lt; 10 cm entre puntas = riesgo alto. <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">Ventilación ultraprotectora de reposo</h3>
+      <p class="rp">Objetivo: meseta <b>&lt; 25</b> (aceptable hasta 30) · <b>PEEP ≥ 10</b> (10–24) · FR <b>4–15</b> · FiO₂ mínima (30–50%) · Vt <b>≤ 6 mL/kg</b> peso ideal · <b>driving pressure &lt; 15</b>.</p>
+      <div class="note"><b>La regla del 10.</b> Arranque estándar: <b>PEEP 10 · FR 10 · presión control 10 sobre PEEP</b> — pico de 20 cmH₂O. Desde ahí se titula, sin subir el ventilador para corregir una hipoxemia tolerada.</div>
+      <div class="note amber">El CHUB no fija driving pressure objetivo; Vall d'Hebron sí, <b>&lt; 15</b>. Y si no se alcanzan los parámetros de reposo, el problema es que <b>el soporte extracorpóreo es insuficiente</b> — se optimiza el ECMO, no el ventilador. <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">Hipoxemia refractaria</h3>
+      <p class="rp">Diagnóstico diferencial en orden: <b>1)</b> descenso del flujo efectivo (flujo − recirculación) · <b>2)</b> descenso de SvO₂ por consumo o anemia (Hb &gt; 8, transfundir hasta ~10 si cae flujo o hay hemólisis) · <b>3)</b> gasto cardiaco nativo alto (sedar, controlar taquicardia, retirar inotrópicos) · <b>4)</b> fallo del oxigenador · <b>5)</b> pérdida de función pulmonar residual (neumotórax, atelectasia, derrame — reclutar, prono).</p>
+      <div class="note">El algoritmo del Clínic en dos preguntas: PaO₂ postmembrana <b>baja</b> → disfunción de membrana, recambio. <b>Normal</b> con SvO₂ premembrana alta → recirculación. Normal con SvO₂ normal → flujo inadecuado (subir rpm, revisar Hb/sedación/temperatura). <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">Recirculación</h3>
+      <p class="rp">Se sospecha con <b>SpO₂ que baja y SvO₂ premembrana que sube a la vez</b> — el patrón importa más que el número; ninguna fuente fija un umbral. Fórmula y calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
+      <div class="note">Vall d'Hebron: 1) optimizar flujo de bomba · 2) reevaluar posición de catéteres con Rx/eco · 3) aumentar gasto cardiaco si procede. Repetir Rx siempre que se sospeche.</div>
+
+      <h3 class="rh">Destete</h3>
+      <p class="rp">Con el <b>gas</b>, nunca bajando el flujo de sangre. Requisitos: estabilidad hemodinámica, ventilación espontánea favorable, <b>FiO₂ &lt; 50%</b> sin acidosis, y prueba de FiO₂ 100% 15 min con PO₂ &gt; 200.</p>
+      <div class="steps">
+        <div class="st-h">Dos pruebas encadenadas</div>
+        <ol>
+          <li><b>Test de oxigenación:</b> FiO₂ respirador al 60%, bajar la del ECMO de 100 a 60, 30 y 21%, cada 5 min.</li>
+          <li><b>Test de descarboxilación:</b> reducir el barrido 30% cada 5–10 min hasta 0; si lo tolera, mantener a cero 12–24 h antes de decanular.</li>
+        </ol>
+      </div>
+      <div class="note red"><b>Abortar si:</b> desaturación &lt; 88% &gt; 5 min · FR &gt; 35 · trabajo respiratorio (P0.1 &gt; 10) · PCO₂ +20% · inestabilidad hemodinámica.</div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ VA ============ -->
+  <section id="screen-va" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">VA — circulatorio</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Shock cardiogénico refractario INTERMACS I–II: puente a recuperación, decisión, asistencia de larga duración o trasplante.</p>
+
+      <h3 class="rh">Shock refractario<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Hipotensión/hipoperfusión con <b>IC &lt; 2,2 L/min/m²</b> pese a volemia óptima e inotrópicos/vasopresores a dosis altas (dopamina/dobutamina &gt; 10, milrinona &gt; 0,5, noradrenalina &gt; 0,5, adrenalina &gt; 0,1 µg/kg/min). Hipoperfusión: oliguria &lt; 0,5 mL/kg/h, frialdad, alteración mental o lactato &gt; 2.</p>
+
+      <h3 class="rh">SCAI SHOCK</h3>
+      <p class="rp">El CHUB indica VA en <b>SCAI D–E</b> e INTERMACS 1–2:</p>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">A · en riesgo</span><span class="dl-v">Bien perfundido, lactato normal, PAS &gt; 100</span></div>
+        <div class="dl-row"><span class="dl-k">B · inestabilidad</span><span class="dl-v">PAS &lt; 90 / PAM &lt; 60 / caída &gt; 30, FC &gt; 100 — lactato normal</span></div>
+        <div class="dl-row"><span class="dl-k">C · shock clásico</span><span class="dl-v">Lactato &gt; 2, IC &lt; 2,2, PCP &gt; 15, diuresis &lt; 30 mL/h, frío y sudoroso</span></div>
+        <div class="dl-row hl"><span class="dl-k">D · deteriorándose</span><span class="dl-v">Lactato persist. &gt; 2 y deterioro con vasopresores/dispositivo ya puestos</span></div>
+        <div class="dl-row hl"><span class="dl-k">E · in extremis</span><span class="dl-v">Casi sin pulso, inconsciente, lactato &gt; 8, pH &lt; 7,2, RCP</span></div>
+        <div class="deflist-cap">Filas resaltadas = indicación de VA. Modificador «A»: parada con sospecha de daño anóxico. <span class="pill elso">EXTERNO</span> SCAI 2022.</div>
+      </div>
+
+      <h3 class="rh">Patologías que lo indican<span class="pill chub">CHUB</span></h3>
+      <p class="rp">IAM, tormenta arrítmica refractaria, miocarditis aguda/fulminante, Takotsubo, miocardiopatía periparto, descompensación INTERMACS I–II, postcardiotomía, disfunción primaria del injerto, ECPR, TEP, HTP. Otras: PCI de alto riesgo, miocardiopatía séptica, cardiotóxicos, anafilaxia grave, hipotermia accidental, soporte de VD durante implante de asistencia izquierda.</p>
+
+      <h3 class="rh">Contraindicaciones<span class="pill chub">CHUB</span></h3>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">Absolutas</span><span class="dl-v">Enfermedad terminal (neoplasia, SNC irreversible, cirrosis Child B–C, ERC5/diálisis, EPOC terminal) · parada en asistolia o no presenciada · disección aórtica tipo A no reparada · deseo del paciente</span></div>
+        <div class="dl-row"><span class="dl-k">Relativas</span><span class="dl-v">Insuficiencia aórtica severa, acceso vascular limitado, sangrados/coagulopatías, edad. Vall d'Hebron añade IMC &gt; 45, edad &gt; 60 y shock séptico sin disfunción de VI; exige SAVE al activar.</span></div>
+      </div>
+
+      <h3 class="rh">Canulación<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Fémoro-femoral la más frecuente: drenaje en AD, retorno femoral común (23–25 / 17–21 Fr). Sin acceso o si hace falta flujo anterógrado: retorno a <b>axilar izquierda</b>. Central (28–36 / 18–22 Fr) en vasculopatía grave, ECMO periférica insuficiente o síndrome de Arlequín.</p>
+      <div class="note red"><b>Perfusión distal del miembro desde el inicio.</b> Cánula en femoral superficial (o tibial posterior/dorsal). Vigilar con <b>palpación del pulso pedio</b>, sin medias de compresión. Si hiperperfusión: reposicionar o <i>banding</i>.</div>
+
+      <h3 class="rh">Distensión del VI</h3>
+      <p class="rp">Sospecha: <b>presión de pulso &lt; 15 mmHg</b> y pérdida de onda dícrota. La <b>descarga mecánica es necesaria en la mayoría de los casos</b> (Impella; balón si hay trombo). Antes: dobutamina &lt; 10, reducir poscarga.</p>
+      <div class="note">Con <b>PAM &gt; 90</b>, el aumento de resistencias empeora el flujo de la bomba y favorece la distensión — tratar con nitroprusiato/urapidilo, no bajando el flujo. <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">Síndrome de Arlequín</h3>
+      <p class="rp">La sangre mal oxigenada del VD perfunde la mitad superior mientras el ECMO perfunde la inferior. Detección: <b>gasometría en radial derecha</b> + NIRS de mitad superior — la pulsioximetría de la pierna puede engañar.</p>
+      <div class="steps">
+        <div class="st-h">Escalado del tratamiento</div>
+        <p class="st-sig">Cada escalón solo si el anterior no basta.</p>
+        <ol>
+          <li>Aumentar el flujo de ECMO al máximo que permita la clínica.</li>
+          <li>Reducir el gasto cardiaco nativo: sedación, control de taquicardia, retirar inotrópicos.</li>
+          <li>Convertir el flujo en anterógrado: retorno axilar izquierdo o reconversión central.</li>
+          <li>Alternativa: V-VA mixta, cánula venosa de retorno adicional de menor calibre.</li>
+        </ol>
+        <p class="st-sig" style="margin:8px 0 0;color:var(--good)">Si ya hay función cardiaca óptima en destete: reconvertir a VV.</p>
+      </div>
+
+      <h3 class="rh">ECPR</h3>
+      <p class="rp">Parada <b>presenciada</b> sin ROSC tras <b>10–15 min de RCP avanzada</b>, canulación idealmente en los primeros 30 min.</p>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">Indicaciones</span><span class="dl-v">Edad ≤ 65 · parada intrahospitalaria presenciada · FV/TV inicial · sin ROSC tras 15 min · TEP con parada</span></div>
+        <div class="dl-row"><span class="dl-k">Exclusiones</span><span class="dl-v">Orden de no RCP / no presenciada · asistolia inicial (salvo TEP) · no-flujo &gt; 10 min · enfermedad terminal · vasculopatía severa · deterioro cognitivo · EPOC avanzada/diálisis/cirrosis</span></div>
+      </div>
+      <div class="note amber">El protocolo se contradice: el «paciente ideal» (PRAGUE-OHCA) admite parada extrahospitalaria y edad &lt; 70, pero las indicaciones exigen intrahospitalaria y ≤ 65. No dice cuál manda.</div>
+
+      <h3 class="rh">Destete<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Esperar <b>≥ 72 h</b>, causa tratada y signos de recuperación. Requisitos: aminas &lt; 0,5 (dobutamina &lt; 5), presión de pulso &gt; 30, IC &gt; 2,2, PCP &lt; 15.</p>
+      <div class="steps">
+        <ol>
+          <li>Reducir flujo <b>0,5 L/min cada 10–15 min hasta 1,5 L/min</b>, valorando eco y hemodinámica en cada escalón.</li>
+          <li>Si estable, dejar a <b>flujo mínimo (2 L/min) 6–8 h</b> y decanular, con ACT 180–200 durante ese periodo.</li>
+        </ol>
+      </div>
+      <div class="note red"><b>Fracaso:</b> caída de PAM &gt; 10–20 o PAM &lt; 65 · aumento de presiones de llenado · arritmias · caída del gasto. Repetir la prueba a las 24 h.</div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ ANTICOAGULACIÓN ============ -->
+  <section id="screen-anticoag" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Anticoagulación</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Pauta propia del CHUB. Rangos objetivo más bajos que los clásicos: ACT diana 160–180, no 180–220.</p>
+
+      <h3 class="rh">Pauta de heparina sódica<span class="pill chub">CHUB</span></h3>
+      <div class="deflist tight">
+        <div class="dl-row"><span class="dl-k">Bolo en canulación</span><span class="dl-v">1 mg/kg (≈100 UI/kg)</span></div>
+        <div class="dl-row"><span class="dl-k">Perfusión</span><span class="dl-v">2 mg/kg en 250 mL SSF, inicio 11 mL/h</span></div>
+        <div class="dl-row hl"><span class="dl-k">ACT diana</span><span class="dl-v">160–180 s (flujo &gt; 1,5 L/min)</span></div>
+        <div class="dl-row hl"><span class="dl-k">TTPa diana</span><span class="dl-v">46–70 s</span></div>
+      </div>
+      <p class="rp">Bolo extra de <b>50 UI/kg</b> si la canulación tarda &gt; 15 min. Controles: ACT/TTPa cada 15–30 min tras el bolo, luego ACT las primeras 6–12 h, y <b>TTPa cada 8 h</b> pasadas las primeras 12.</p>
+
+      <h3 class="rh">Ajuste de la perfusión<span class="pill chub">CHUB</span></h3>
+      <div class="deflist tight">
+        <div class="dl-row"><span class="dl-k">ACT &lt; 90 · TTPa &lt; 35</span><span class="dl-v">+20% → +5 mL/h</span></div>
+        <div class="dl-row"><span class="dl-k">ACT 91–159 · TTPa 36–45</span><span class="dl-v">+10% → +2,5 mL/h</span></div>
+        <div class="dl-row hl"><span class="dl-k">ACT 160–180 · TTPa 46–70</span><span class="dl-v">Mantener</span></div>
+        <div class="dl-row"><span class="dl-k">ACT 181–320 · TTPa 71–90</span><span class="dl-v">−10% → −2,5 mL/h</span></div>
+        <div class="dl-row"><span class="dl-k">ACT &gt; 320 · TTPa &gt; 90</span><span class="dl-v">−20% → −5 mL/h</span></div>
+        <div class="deflist-cap">Tabla 9 del protocolo, válida con flujo &gt; 1,5 L/min.</div>
+      </div>
+
+      <h3 class="rh">Situaciones especiales<span class="pill chub">CHUB</span></h3>
+      <p class="rp"><b>Hemorragia leve:</b> mantener perfusión, TTPa objetivo 40. <b>Grave:</b> suspender y reevaluar a las 12 h. <b>Flujo &lt; 1,5 L/min:</b> ACT 200 / TTPa 80. Destete VA a flujo mínimo: ACT 180–200.</p>
+      <p class="rp"><b>HIT</b> (caída de plaquetas 50%): escala 4Ts, anti-PF4, parar perfusión (incidencia 0,3–0,6%). <b>Resistencia a heparina:</b> reponer antitrombina &gt; 60–70%. <b>Von Willebrand adquirido:</b> retirar perfusión, reducir rpm, desmopresina si procede.</p>
+
+      <h3 class="rh">Bivalirudina<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Inhibidor directo de trombina, vida media 25 min, sin antídoto. Pauta: <b>sin bolo, perfusión continua 0,2 mg/kg/h</b>, ajustada a función renal, titulada por ACT/TTPa cada 2–4 h.</p>
+      <div class="note amber">Esta dosis se sale de lo publicado: 0,2 está por encima de las revisiones (0,025–0,15) y de ELSO 2014 (0,03–0,1). Puede ser deliberada, pero contrástala. <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">Umbrales de hemoderivados</h3>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">Plaquetas sin sangrado</span><span class="dl-v">CHUB &gt; 50–100 · ELSO &gt; 80 · VH &gt; 75 (×10⁹/L)</span></div>
+        <div class="dl-row"><span class="dl-k">Plaquetas con sangrado</span><span class="dl-v">CHUB &gt; 100 · ELSO &gt; 100 · VH 150–200</span></div>
+        <div class="dl-row hl"><span class="dl-k">Fibrinógeno</span><span class="dl-v">CHUB &gt; 1,5 (con sangrado) / &gt; 1 (sin) · ELSO 2,5–3 · VH &gt; 1,5 g/L</span></div>
+        <div class="dl-row"><span class="dl-k">Hemoglobina / Hto</span><span class="dl-v">CHUB Hb 7–9 g/dL · ELSO Hto &gt; 40% · VH Hto 35–40%</span></div>
+        <div class="dl-row"><span class="dl-k">INR</span><span class="dl-v">CHUB &lt; 1,5 con sangrado · VH &lt; 1,5</span></div>
+        <div class="deflist-cap">El fibrinógeno es la mayor discrepancia: ELSO pide el doble que el CHUB. Los avisos de la ronda siguen al CHUB.</div>
+      </div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ COMPLICACIONES ============ -->
+  <section id="screen-complicaciones" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Complicaciones</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Primero las emergencias con su secuencia de actuación. Después, lo que se vigila cada día. <span class="pill elso">EXTERNO</span> Algoritmos Clínic.</p>
+
+      <div class="steps crit">
+        <div class="st-h crit">Caída de flujo · cimbreo (P1 &lt; −90 mmHg)</div>
+        <p class="st-sig">Si es precarga, bajar rpm — nunca subirlas.</p>
+        <ol>
+          <li>¿Cánula o línea acodada o trombosada? Si sí: <b>problema mecánico</b> — reposicionar.</li>
+          <li>Si no: <b>precarga inadecuada / hipovolemia.</b> Disminuir rpm para evitar succión excesiva.</li>
+          <li>Identificar la causa de la hipovolemia.</li>
+          <li>Reponer volumen y normalizar rpm.</li>
+        </ol>
+      </div>
+
+      <div class="steps crit">
+        <div class="st-h crit">Alarma de aire</div>
+        <p class="st-sig">Lo primero es mirar el circuito: la mayoría son falsas alarmas del sensor.</p>
+        <ol>
+          <li>¿Se visualiza aire? <b>No</b> → falsa alarma: revisar sensores y resetear.</li>
+          <li><b>Sí</b>, ¿poca cantidad y en el lado venoso? Sí → burbuja venosa: identificar origen, retirar el tapón amarillo de la membrana, resetear.</li>
+          <li>Si es gran cantidad → <b>embolismo moderado-severo</b>: ¡pedir ayuda! · clampar la línea arterial y detener el ECMO · optimizar respirador y vasoactivos, aspirar el aire.</li>
+        </ol>
+      </div>
+
+      <div class="steps crit">
+        <div class="st-h crit">Fallo de bomba</div>
+        <p class="st-sig">Pérdida súbita de flujo · consola apagada · alarma crítica.</p>
+        <ol>
+          <li>Optimizar al paciente (respirador, vasoactivos, RCP si procede).</li>
+          <li>¡Pedir ayuda!</li>
+          <li>Clampar líneas arterial y venosa.</li>
+          <li>Rotor manual de emergencia: ≈1500 rpm, desclampar, mantener rpm previas.</li>
+          <li>Resolver: reiniciar, conectar a red o cambiar el ECMO.</li>
+          <li>Volver al rotor eléctrico: clampar, cabezal, ≈1500 rpm, desclampar, normalizar.</li>
+        </ol>
+      </div>
+
+      <div class="steps crit">
+        <div class="st-h crit">Decanulación accidental</div>
+        <p class="st-sig">Comprimir es el paso que salva.</p>
+        <ol>
+          <li>Optimizar al paciente.</li>
+          <li>¡Pedir ayuda!</li>
+          <li>Clampar líneas arterial y venosa.</li>
+          <li>Detener el ECMO.</li>
+          <li><b>Comprimir la zona de canulación.</b></li>
+          <li>Reponer volumen con sueroterapia o hemoderivados.</li>
+          <li>Valorar recanulación de rescate.</li>
+        </ol>
+      </div>
+      <div class="note red"><b>Taponamiento por falsa luz (yugular).</b> Si la cánula está introducida, <b>clamparla y no retirarla</b> hasta la corrección quirúrgica. <span class="pill chub">CHUB</span></div>
+
+      <h3 class="rh">Detección precoz de fallo del circuito<span class="pill chub">CHUB</span></h3>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">Trombosis de membrana</span><span class="dl-v">P3 &gt; 50 (ascenso 30–50%) · dímero D &gt; 25–30 mg/L · coágulos visibles</span></div>
+        <div class="dl-row"><span class="dl-k">Coagulación</span><span class="dl-v">Plaquetas en descenso continuo · fibrinógeno &lt; 200 mg/dL</span></div>
+        <div class="dl-row"><span class="dl-k">Intercambio de gas</span><span class="dl-v">PO₂ postmembrana &lt; 200 (normal &gt; 400)</span></div>
+        <div class="dl-row"><span class="dl-k">Coágulos en el cabezal</span><span class="dl-v">LDH &gt; 1000 · Hb libre &gt; 300 mg/L · vibración/ruido anormal</span></div>
+      </div>
+      <p class="rp">Cambiar membrana si: coágulos/fibrina groseros, hipoxia severa con FiO₂ 1, trombocitopenia severa, hemólisis masiva, rotura o fallo de bomba. <b>PaFi del oxigenador &lt; 150 obliga al cambio.</b> Trombosis de membrana: 10–13%.</p>
+      <p class="rp"><b>Membrana húmeda</b> (condensación, normal): subir flujo de barrido y calentar gas a 37°C. Vall d'Hebron: <b>flush 10 L/min 30 s</b>. Espuma amarillenta (plasma) obliga a cambiar el sistema.</p>
+
+      <h3 class="rh">Hemólisis</h3>
+      <p class="rp">Por succión excesiva, <b>rpm &gt; 3500</b>, gradiente de membrana alto o pérdida de integridad del oxigenador. Vigilar LDH, <b>Hb libre &gt; 50 mg/dL</b> y color de la orina; pedir bilirrubina y haptoglobina.</p>
+
+      <h3 class="rh">Complicaciones del paciente<span class="pill chub">CHUB</span></h3>
+      <p class="rp"><b>Neurológicas:</b> hemorragia cerebral 3–8% en VA; corregir la pCO₂ a <b>10–20 mmHg/hora</b>, no más rápido. Isquemia/daño cerebral hasta 50%.</p>
+      <p class="rp"><b>Infección:</b> sepsis hasta 30%; umbral de sospecha bajo. Profilaxis: <b>vancomicina 10 mg/kg + cefazolina 1 g</b> (linezolid si IRC, aztreonam si alergia a betalactámicos).</p>
+      <p class="rp"><b>Hematológicas:</b> trombocitopenia muy frecuente, por consumo; si es aislada puede indicar trombosis de la membrana.</p>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ ESCALAS ============ -->
+  <section id="screen-escalas" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Escalas</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Las que usa el protocolo y las que cita sin incluir. Murray, APSS, RESP y SAVE tienen calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
+
+      <h3 class="rh">Murray score<span class="pill chub">CHUB</span></h3>
+      <div class="deflist tight">
+        <div class="dl-row"><span class="dl-k">Cuadrantes en Rx</span><span class="dl-v">0 · 1 · 2 · 3 · 4 puntos</span></div>
+        <div class="dl-row"><span class="dl-k">PaO₂/FiO₂</span><span class="dl-v">&gt;300=0 · 225–299=1 · 175–224=2 · 101–174=3 · &lt;100=4</span></div>
+        <div class="dl-row"><span class="dl-k">PEEP</span><span class="dl-v">&lt;5=0 · 6–8=1 · 9–11=2 · 12–14=3 · &gt;15=4</span></div>
+        <div class="dl-row"><span class="dl-k">Compliance</span><span class="dl-v">&gt;80=0 · 60–79=1 · 40–59=2 · 20–39=3 · &lt;19=4</span></div>
+        <div class="deflist-cap">Total ÷ 4. Indicación con 3–4; considerar con 2–3. CESAR usa ≥3,0 y ≥2,5.</div>
+      </div>
+
+      <h3 class="rh">APSS score<span class="pill chub">CHUB</span></h3>
+      <div class="deflist tight">
+        <div class="dl-row"><span class="dl-k">Edad</span><span class="dl-v">&lt;47=1 · 47–66=2 · &gt;66=3</span></div>
+        <div class="dl-row"><span class="dl-k">PaO₂/FiO₂</span><span class="dl-v">&gt;158=1 · 105–158=2 · &lt;105=3</span></div>
+        <div class="dl-row"><span class="dl-k">P. meseta</span><span class="dl-v">&lt;27=1 · 27–30=2 · &gt;30=3</span></div>
+        <div class="deflist-cap">Indicación con 8; considerar con 3.</div>
+      </div>
+
+      <h3 class="rh">AOI — índice de oxigenación adaptado<span class="pill chub">CHUB</span></h3>
+      <p class="rp">Tercer criterio de indicación: <b>AOI 60 = 50% mortalidad</b>, <b>AOI 80 = 80%</b>. La fórmula aparece corrupta en el PDF del protocolo y no se reproduce aquí — pendiente de recuperar en la próxima revisión.</p>
+
+      <h3 class="rh">SCAI SHOCK<span class="pill elso">EXTERNO</span></h3>
+      <p class="rp">El CHUB indica VA en SCAI D–E. Tabla completa del <i>SCAI SHOCK Bedside Checklist</i> 2022:</p>
+      <div class="deflist">
+        <div class="dl-row"><span class="dl-k">A · en riesgo</span><span class="dl-v">Caliente, bien perfundido, PAS &gt; 100, IC &gt; 2,5, lactato normal</span></div>
+        <div class="dl-row"><span class="dl-k">B · inicio</span><span class="dl-v">PVY elevada, PAS &lt; 90/PAM &lt; 60 o caída &gt; 30, FC &gt; 100, lactato normal</span></div>
+        <div class="dl-row"><span class="dl-k">C · shock clásico</span><span class="dl-v">IC &lt; 2,2, PCP &gt; 15, lactato &gt; 2, creat. 1,5×, diuresis &lt; 30 mL/h</span></div>
+        <div class="dl-row hl"><span class="dl-k">D · deteriorándose</span><span class="dl-v">Igual que C + fracaso de la estrategia inicial, con soporte ya puesto</span></div>
+        <div class="dl-row hl"><span class="dl-k">E · in extremis</span><span class="dl-v">Colapso circulatorio: lactato &gt; 8, pH &lt; 7,2, RCP en curso</span></div>
+      </div>
+      <div class="note">Criterios operativos CSWG (Kapur, 3455 pacientes): etapa = hipotensión + hipoperfusión + intensidad de tratamiento. Mortalidad hospitalaria: <b>B 24% · C 20% · D 37% · E 53%</b>. <span class="pill elso">EXTERNO</span></div>
+
+      <h3 class="rh">INTERMACS<span class="pill chub">CHUB</span></h3>
+      <div class="deflist tight">
+        <div class="dl-row hl"><span class="dl-k">1 · Crash and burn</span><span class="dl-v">Inestable pese a catecolaminas crecientes, hipoperfusión crítica</span></div>
+        <div class="dl-row hl"><span class="dl-k">2 · Sliding on inotropes</span><span class="dl-v">Soporte inotrópico, deterioro rápido de función renal/nutrición</span></div>
+        <div class="dl-row"><span class="dl-k">3 · Dependent stability</span><span class="dl-v">Estable con inotrópicos, imposible retirarlos</span></div>
+        <div class="dl-row"><span class="dl-k">4 · Frequent flyer</span><span class="dl-v">Retirada transitoria posible, recaídas frecuentes</span></div>
+        <div class="dl-row"><span class="dl-k">5–7</span><span class="dl-v">Housebound · Walking wounded · Placeholder (NYHA II–III)</span></div>
+        <div class="deflist-cap">Perfiles 1 y 2 son la indicación de VA del protocolo.</div>
+      </div>
+
+      <h3 class="rh">RESP y SAVE<span class="pill elso">EXTERNO</span></h3>
+      <p class="rp">El protocolo cita el <b>SAVE score</b> para decidir el inicio y valorar futilidad, sin tabla. Vall d'Hebron lo exige al activar: <b>clase V no tributaria</b>, clase IV valorar riesgo-beneficio. El <b>RESP score</b> no aparece en el protocolo. Calculadoras en <a href="#" data-go="calc">Calculadoras</a>.</p>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ CHECKLISTS ============ -->
+  <section id="screen-checklists" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Checklists</div></div></div>
+    <div class="content">
+      <p class="ref-lede">Material del protocolo, apartado de transporte. Se marca tocando cada línea; el estado se guarda en este móvil.</p>
+      <div id="checklists-host"></div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab on" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ DATOS ============ -->
+  <section id="screen-datos" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div></div>
+    <div class="content">
+      <p class="ref-lede">El protocolo no incluye resultados. Cifras del registro ELSO y de los artículos originales: orientan la conversación, no son pronóstico individual.</p>
+
+      <h3 class="rh">Registro ELSO — supervivencia al alta</h3>
+      <div id="elso-host"></div>
+
+      <h3 class="rh">Curvas de riesgo de los scores</h3>
+      <div id="score-host"></div>
+
+      <h3 class="rh">Flujo de ECMO y saturación arterial</h3>
+      <p class="rp">Por qué el flujo debe ser el 60% del gasto cardiaco: mueve los controles para ver cómo un gasto alto, una recirculación del 30% o una SvO₂ baja hunden la saturación aunque la bomba vaya bien.</p>
+      <div class="card">
+        <div class="slider"><div class="lbl"><span>Gasto cardiaco</span><b><span id="cv-gc-v">6,0</span> L/min</b></div><input type="range" id="cv-gc" min="3" max="10" step="0.5" value="6"></div>
+        <div class="slider"><div class="lbl"><span>Recirculación</span><b><span id="cv-rec-v">10</span>%</b></div><input type="range" id="cv-rec" min="0" max="50" step="5" value="10"></div>
+        <div class="slider"><div class="lbl"><span>SvO₂</span><b><span id="cv-svo2-v">60</span>%</b></div><input type="range" id="cv-svo2" min="40" max="80" step="5" value="60"></div>
+        <div id="curve-host"></div>
+        <p class="hint" style="margin-top:6px">Modelo simplificado: SaO₂ ≈ f·100 + (1−f)·SvO₂, f = flujo efectivo ÷ gasto cardiaco (pulmón nativo sin aporte). Para razonar, no sustituye a la gasometría.</p>
+      </div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+  <!-- ============ FUENTES ============ -->
+  <section id="screen-fuentes" class="screen">
+    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Fuentes</div></div></div>
+    <div class="content">
+      <div class="src-row"><span class="pill chub" style="margin:0 10px 0 0">CHUB</span><em>Protocolo Oxigenador de Membrana Extracorpórea – ECMO.</em> Servicio de Medicina Intensiva, Complejo Hospitalario Universitario de Badajoz. Aprobado 02/05/2024, con anexos de indicaciones VV/VA, Destete y Anticoagulación.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>ELSO Guidelines for Adult Respiratory Failure</em> y <em>General Guidelines for all ECLS Cases.</em> ELSO, v1.4, agosto 2017.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Protocolos de soporte VV-ECLS y VA-ECLS, v.1, 28/07/2016. Programa ECLS, Hospital Universitari Vall d'Hebron.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>Algoritmos ECMO v2.</em> Hospital Clínic, noviembre 2025.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>SCAI SHOCK Bedside Checklist 2022 · Naidu SS, et al. J Am Coll Cardiol 2022;79(9):933-946.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Kapur NK, et al. Criteria for Defining Stages of Cardiogenic Shock Severity. J Am Coll Cardiol 2022;80(3):185-198.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Schmidt M, et al. RESP score, Am J Respir Crit Care Med 2014;189(11):1374-82 · SAVE score, Eur Heart J 2015;36(33):2246-56.</div>
+      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>ELSO Live Registry Dashboard · Combes A, et al. EOLIA trial, N Engl J Med 2018;378:1965-1975.</div>
+    </div>
+    <nav class="tabbar">
+      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
+      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
+      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
+      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
+    </nav>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
