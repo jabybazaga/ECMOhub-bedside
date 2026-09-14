@@ -7,9 +7,10 @@
   var n1 = function (v) { return (Math.round(v * 10) / 10).toString().replace(".", ","); };
   var n2 = function (v) { return (Math.round(v * 100) / 100).toString().replace(".", ","); };
   function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  var ultimaRonda = null;
 
   // ---------- navegación entre pantallas ----------
-  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "datos", "fuentes"];
+  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "datos", "fuentes", "informes"];
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
@@ -229,7 +230,9 @@
     /* --- reglas --- */
     var f = [];
     var CH = "Protocolo CHUB", EL = "ELSO 1.4", CL = "Algoritmos Clínic";
+    function tagCat(from, cat) { for (var i = from; i < f.length; i++) if (!f[i].cat) f[i].cat = cat; }
 
+    var _iCirc = f.length;
     if (isFinite(flujoKg)) {
       if (flujoKg < 40) f.push(F("crit", "Flujo muy bajo", n0(flujoKg) + " mL/kg/min", "Por debajo de 40–50 mL/kg/min no se consigue transporte de O₂ adecuado. Subir rpm si el drenaje lo permite; si la succión lo impide, revisar volemia y posición de cánula.", CH));
       else if (flujoKg < 50) f.push(F("warn", "Flujo por debajo del objetivo", n0(flujoKg) + " mL/kg/min", "El objetivo es 50–80 mL/kg/min. Comprobar si es una decisión (destete) o una limitación del drenaje.", CH));
@@ -256,6 +259,8 @@
       else f.push(F("ok", "Membrana con buen intercambio", n0(po2post) + " mmHg", "Por encima de 300 mmHg.", CH));
     }
 
+    tagCat(_iCirc, "circuito");
+    var _iGas = f.length;
     if (isFinite(paco2)) {
       if (paco2 > 45) {
         var extra = (isFinite(dias) && dias <= 1) ? " Si la PaCO₂ de partida era alta, corregir despacio: 10–20 mmHg por hora, para no provocar oscilaciones de perfusión cerebral." : "";
@@ -271,7 +276,10 @@
       else if (ph > 7.45) f.push(F("warn", "Alcalosis", n2(ph), "Objetivo 7,35–7,45. Valorar bajar el gas de barrido.", CH));
     }
 
+    tagCat(_iGas, "gasometria");
+
     if (modo === "vv") {
+      var _iGasVV = f.length;
       if (isFinite(sao2)) {
         if (sao2 < 80) f.push(F("crit", "Hipoxemia significativa", n0(sao2) + " %", "Recorrer las cinco causas del protocolo: flujo efectivo, SvO₂ baja por consumo o anemia, gasto cardiaco nativo alto, fallo del oxigenador y pérdida de función pulmonar residual. El algoritmo del Clínic lo resuelve con la gasometría postmembrana: si es baja, es la membrana; si es normal con SvO₂ premembrana alta, es recirculación.", CH + " · " + CL));
         else if (sao2 < 85) f.push(F("warn", "SaO₂ por debajo del objetivo", n0(sao2) + " %", "El objetivo del protocolo es 85–92 %. Se acepta en torno al 80 % si el DO₂/VO₂ es 3–4 y no hay signos de hipoperfusión.", CH));
@@ -289,6 +297,8 @@
         else if (dv < 3) f.push(F("warn", "DO₂/VO₂ por debajo del objetivo", n1(dv), "El objetivo del protocolo es 3:1. Con 3–4 se tolera una SaO₂ en torno al 80 %." + nota, CH));
         else f.push(F("ok", "DO₂/VO₂ adecuado", n1(dv), "Igual o por encima de 3, el objetivo del protocolo." + nota, CH));
       }
+      tagCat(_iGasVV, "gasometria");
+      var _iVentVV = f.length;
       if (isFinite(pplat)) {
         if (pplat > 30) f.push(F("crit", "Presión meseta por encima del máximo", n0(pplat) + " cmH₂O", "El aceptable del protocolo es 30 y el recomendable < 25. Si no se alcanzan los parámetros de reposo, el soporte extracorpóreo es insuficiente: se optimiza el ECMO, no el ventilador.", CH + " · " + EL));
         else if (pplat > 25) f.push(F("warn", "Presión meseta por encima de lo recomendable", n0(pplat) + " cmH₂O", "Recomendable < 25 cmH₂O, aceptable hasta 30.", CH));
@@ -297,11 +307,15 @@
       if (isFinite(dp) && dp > 15) f.push(F("warn", "Driving pressure alta", n0(dp) + " cmH₂O", "Mantener por debajo de 15 cmH₂O.", CH));
       if (isFinite(vfio2) && vfio2 > 50) f.push(F("warn", "FiO₂ del ventilador alta", n0(vfio2) + " %", "En reposo, lo aceptable es 30–50 %. Evitar la tentación de subirla por una hipoxemia tolerada.", CH + " · " + EL));
       if (isFinite(fc) || isFinite(tas)) f.push(F("info", "Hemodinámica en VV", "—", "El VV no da soporte circulatorio: la frecuencia y la tensión se manejan como en cualquier crítico. No hay objetivos de FC, TA ni presión de pulso propios del modo VV — los de PAM 50–70 y presión de pulso ≥ 10 son del modo VA.", EL));
+      tagCat(_iVentVV, "ventilacion");
     } else {
+      var _iGasVA = f.length;
       if (isFinite(sao2)) {
         if (sao2 < 95) f.push(F("crit", "SaO₂ por debajo del objetivo", n0(sao2) + " %", "En VA el objetivo es 95–100 %. Si la muestra es de radial derecha, sospechar síndrome de Arlequín: comparar con la extremidad inferior y con NIRS. Escalado: subir flujo de ECMO → valorar reducir el gasto nativo → retorno axilar o central → V-VA.", CH));
         else f.push(F("ok", "SaO₂ en objetivo", n0(sao2) + " %", "Dentro de 95–100 %. Confirmar que la muestra es de radial derecha.", CH));
       }
+      tagCat(_iGasVA, "gasometria");
+      var _iHemoVA = f.length;
       if (isFinite(pam)) {
         if (pam < 65) f.push(F("crit", "PAM baja", n0(pam) + " mmHg", "Objetivo ≥ 65 mmHg. No variar el flujo de la bomba: tratar con medicación. Pensar en resistencias bajas (sepsis, hipertermia) y en hipocalcemia.", CH));
         else if (pam > 95) f.push(F("warn", "PAM alta", n0(pam) + " mmHg", "Por encima de 95–100 mmHg favorece la distensión del VI y empeora el flujo de la bomba. Vasodilatar (nitroprusiato, urapidilo) en lugar de bajar el flujo.", CH));
@@ -319,8 +333,10 @@
       }
       if (isFinite(svo2) && svo2 < 65) f.push(F("warn", "Saturación venosa baja", n0(svo2) + " %", "Objetivo > 65 % en el sistema y > 70 % en la cánula venosa. Ajustar el flujo de bomba.", CH));
       if (isFinite(fc) && fc > 120) f.push(F("info", "Taquicardia", n0(fc) + " lpm", "Ninguna de las fuentes fija un objetivo de frecuencia en ECMO. La arritmia más frecuente es la fibrilación auricular; TV y FV se relacionan con isquemia o dilatación ventricular.", CH));
+      tagCat(_iHemoVA, "hemodinamica");
     }
 
+    var _iAnalitica = f.length;
     if (isFinite(lactato)) {
       if (lactato > 5) f.push(F("crit", "Lactato muy elevado", n1(lactato) + " mmol/L", "Aporte insuficiente: revisar flujo, saturación venosa y PAM. En VA el protocolo espera normalización en las primeras 4–6 horas.", CH));
       else if (lactato > 2) f.push(F("warn", "Lactato elevado", n1(lactato) + " mmol/L", "Objetivo < 2 mmol/L. Lo que importa es la tendencia más que el valor aislado.", CH));
@@ -355,6 +371,8 @@
       else f.push(F("ok", "LDH normal", n0(ldh) + " UI/L", "Por debajo de 350 UI/L.", CH));
     }
 
+    tagCat(_iAnalitica, "analitica");
+    var _iAnticoag = f.length;
     if (sangrado === "grave") {
       f.push(F("crit", "Hemorragia grave", "—", "Suspender la heparina y reevaluar a las 12 horas. Si hay coagulopatía, corregirla. Transfundir plaquetas por encima de 100 ×10⁹/L y valorar antifibrinolíticos.", CH + " · " + EL));
     } else if (sangrado === "leve") {
@@ -387,6 +405,11 @@
     if (isFinite(plaq) && plaq > 0 && isFinite(dias) && dias >= 2) {
       f.push(F("info", "Vigilancia de HIT", "—", "Una caída de plaquetas del 50 % obliga a aplicar la escala 4Ts, pedir anti-PF4 y parar la perfusión. Incidencia descrita 0,3–0,6 %.", CH));
     }
+    tagCat(_iAnticoag, "anticoagulacion");
+
+    ultimaRonda = { modo: modo, findings: f.slice() };
+    var btnInforme = document.getElementById("r-informe-btn");
+    if (btnInforme) btnInforme.disabled = !f.some(function (x) { return x.sev === "crit" || x.sev === "warn"; });
 
     var orden = { crit: 0, warn: 1, info: 2, ok: 3 };
     f.sort(function (a, b) { return orden[a.sev] - orden[b.sev]; });
@@ -798,6 +821,120 @@
     if (elx) elx.addEventListener("input", drawCurve);
   });
 
+  // ---------- Informes de ronda ----------
+  var CAT_INFO = {
+    circuito: "Circuito ECMO",
+    ventilacion: "Ventilación",
+    gasometria: "Gasometría",
+    hemodinamica: "Hemodinámica",
+    analitica: "Analítica / hemostasia",
+    anticoagulacion: "Anticoagulación"
+  };
+  var CAT_ORDEN = ["circuito", "ventilacion", "gasometria", "hemodinamica", "analitica", "anticoagulacion"];
+  var INFORMES_KEY = "ecmo_informes";
+
+  function getInformes() { try { return JSON.parse(ls(INFORMES_KEY) || "[]"); } catch (e) { return []; } }
+  function setInformes(lista) { ls(INFORMES_KEY, JSON.stringify(lista)); }
+
+  function fmtFechaInforme(iso) {
+    var d = new Date(iso);
+    var dd = ("0" + d.getDate()).slice(-2), mm = ("0" + (d.getMonth() + 1)).slice(-2);
+    var hh = ("0" + d.getHours()).slice(-2), mi = ("0" + d.getMinutes()).slice(-2);
+    return dd + "/" + mm + "/" + d.getFullYear() + " · " + hh + ":" + mi;
+  }
+
+  function generarInforme() {
+    if (!ultimaRonda) return;
+    var relevantes = ultimaRonda.findings.filter(function (x) { return x.sev === "crit" || x.sev === "warn"; });
+    if (!relevantes.length) { window.alert("No hay hallazgos críticos ni a vigilar en esta ronda: no se genera informe."); return; }
+    var camaEl = document.getElementById("r-cama");
+    var informe = {
+      id: Date.now(),
+      fecha: new Date().toISOString(),
+      modo: ultimaRonda.modo,
+      cama: camaEl ? camaEl.value.trim() : "",
+      hallazgos: relevantes
+    };
+    var lista = getInformes();
+    lista.unshift(informe);
+    setInformes(lista);
+    renderListaInformes();
+    var fb = document.getElementById("r-informe-fb");
+    if (fb) {
+      fb.textContent = "Informe guardado (" + relevantes.length + (relevantes.length === 1 ? " hallazgo" : " hallazgos") + ").";
+      fb.classList.add("on");
+      clearTimeout(fb._t);
+      fb._t = setTimeout(function () { fb.classList.remove("on"); }, 2800);
+    }
+  }
+
+  function renderListaInformes() {
+    var host = document.getElementById("informes-list");
+    if (!host) return;
+    var lista = getInformes();
+    var empty = document.getElementById("informes-empty");
+    if (empty) empty.style.display = lista.length ? "none" : "block";
+    host.innerHTML = lista.map(function (inf) {
+      var nc = inf.hallazgos.filter(function (x) { return x.sev === "crit"; }).length;
+      var nw = inf.hallazgos.filter(function (x) { return x.sev === "warn"; }).length;
+      var cama = inf.cama ? " · " + inf.cama : "";
+      return '<button class="item" data-open-informe="' + inf.id + '">' +
+        '<div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></div>' +
+        '<div class="tx"><div class="t">ECMO ' + inf.modo.toUpperCase() + cama + '</div><div class="d">' + fmtFechaInforme(inf.fecha) + ' · ' + nc + ' críticos · ' + nw + ' a vigilar</div></div>' +
+        '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>' +
+        '</button>';
+    }).join("");
+  }
+
+  function abrirInforme(id) {
+    var inf = getInformes().filter(function (x) { return x.id === id; })[0];
+    if (!inf) return;
+    document.getElementById("informe-titulo").textContent = "ECMO " + inf.modo.toUpperCase() + (inf.cama ? " · " + inf.cama : "");
+    document.getElementById("informe-fecha").textContent = fmtFechaInforme(inf.fecha);
+    var porCat = {};
+    inf.hallazgos.forEach(function (h) { var c = h.cat || "otros"; (porCat[c] = porCat[c] || []).push(h); });
+    var html = "";
+    CAT_ORDEN.concat(["otros"]).forEach(function (cat) {
+      var items = porCat[cat];
+      if (!items || !items.length) return;
+      items.sort(function (a, b) { return (a.sev === "crit" ? 0 : 1) - (b.sev === "crit" ? 0 : 1); });
+      html += '<h3 class="rh">' + (CAT_INFO[cat] || "Otros") + '</h3>' +
+        items.map(function (x) {
+          return '<div class="fi ' + x.sev + '"><div class="body"><div class="t">' + x.t +
+            (x.v && x.v !== "—" ? ' <span class="val">' + x.v + '</span>' : '') +
+            '</div><div class="m">' + x.m + '</div><span class="src">' + x.src + '</span></div></div>';
+        }).join("");
+    });
+    document.getElementById("informe-body").innerHTML = html;
+    document.getElementById("informe-del-btn").setAttribute("data-del-informe", id);
+    document.getElementById("informes-view-lista").classList.remove("on");
+    document.getElementById("informes-view-detalle").classList.add("on");
+  }
+
+  function cerrarInforme() {
+    document.getElementById("informes-view-detalle").classList.remove("on");
+    document.getElementById("informes-view-lista").classList.add("on");
+  }
+
+  function eliminarInforme(id) {
+    if (!window.confirm("¿Eliminar este informe? No se puede deshacer.")) return;
+    setInformes(getInformes().filter(function (x) { return x.id !== id; }));
+    renderListaInformes();
+    cerrarInforme();
+  }
+
+  document.addEventListener("click", function (e) {
+    var openBtn = e.target.closest("[data-open-informe]");
+    if (openBtn) { abrirInforme(Number(openBtn.dataset.openInforme)); return; }
+    var delBtn = e.target.closest("[data-del-informe]");
+    if (delBtn) { eliminarInforme(Number(delBtn.dataset.delInforme)); return; }
+  });
+
+  var informeBtnEl = document.getElementById("r-informe-btn");
+  if (informeBtnEl) informeBtnEl.addEventListener("click", generarInforme);
+  var informeBackEl = document.getElementById("informe-back-btn");
+  if (informeBackEl) informeBackEl.addEventListener("click", cerrarInforme);
+
   // ---------- service worker (offline) ----------
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
@@ -813,6 +950,7 @@
   calcResp();
   calcSave();
   renderChecklists();
+  renderListaInformes();
   var elsoHost = document.getElementById("elso-host");
   if (elsoHost) ELSO.forEach(function (grp) { renderBars(elsoHost, grp); });
   var scoreHost = document.getElementById("score-host");
