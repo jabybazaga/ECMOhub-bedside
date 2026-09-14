@@ -41,11 +41,11 @@ a{color:var(--accent)}
 .foot small{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.04em}
 
 /* ---- app bar ---- */
-.appbar{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(14px + env(safe-area-inset-top,0)) 18px 12px}
-.brand-row{display:flex;align-items:center;gap:10px}
-.brand-logo{width:36px;height:36px;border-radius:9px;object-fit:cover;flex:0 0 auto;border:1px solid var(--line)}
+.appbar{flex:0 0 auto;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(16px + env(safe-area-inset-top,0)) 18px 14px}
+.brand-row{display:flex;align-items:center;gap:12px}
+.brand-logo{width:46px;height:46px;border-radius:11px;object-fit:cover;flex:0 0 auto;border:1px solid var(--line)}
 .brand{display:flex;align-items:baseline;gap:8px;min-width:0}
-.brand b{font-family:var(--cond);font-weight:700;font-size:18.5px;letter-spacing:-.01em;line-height:1.2}
+.brand b{font-family:var(--cond);font-weight:700;font-size:21.5px;letter-spacing:-.01em;line-height:1.2}
 .brand span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
 .toprow{display:flex;align-items:center;gap:10px}
 .back{width:32px;height:32px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:var(--ink-2);background:none;border:0;padding:0}
@@ -79,14 +79,25 @@ a{color:var(--accent)}
 .disclaimer b{color:var(--ink);font-family:var(--cond);font-weight:600}
 
 /* ---- grid tiles (inicio) ---- */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:0 0 4px}
-.tile{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;border:0;border-radius:16px;padding:15px;min-height:112px;text-align:left;font-family:inherit;box-shadow:0 3px 8px rgba(19,26,32,.14)}
-.tile .tic{width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:#fff}
-.tile .tic svg{width:25px;height:25px}
-.tile .tt{font-family:var(--cond);font-weight:700;font-size:14.5px;color:#fff;margin-top:12px;line-height:1.2}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 4px}
+.tile{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;border:0;border-radius:15px;padding:13px;min-height:100px;text-align:left;font-family:inherit;box-shadow:0 3px 8px rgba(19,26,32,.14)}
+.tile .tic{width:29px;height:29px;display:flex;align-items:center;justify-content:center;color:#fff}
+.tile .tic svg{width:22px;height:22px}
+.tile .tt{font-family:var(--cond);font-weight:700;font-size:14px;color:#fff;margin-top:10px;line-height:1.2}
 .tile.vv{background:linear-gradient(160deg,#2E82C9,#164F80)}
 .tile.va{background:linear-gradient(160deg,#C9433D,#7C211E)}
 .tile.neutral{background:linear-gradient(160deg,#5C6873,#2B333A)}
+.tile.warn{background:linear-gradient(160deg,#E3A61E,#8A5A0A)}
+.tile.light{background:linear-gradient(160deg,#8D96A0,#5A636D)}
+
+/* ---- hero card (ronda diaria) ---- */
+.hero{display:flex;align-items:center;gap:14px;border:0;border-radius:16px;padding:16px;width:100%;text-align:left;font-family:inherit;color:#fff;background:linear-gradient(135deg,#1F7A52,#0A3D28);box-shadow:0 4px 10px rgba(19,26,32,.18)}
+.hero .hic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.17);display:flex;align-items:center;justify-content:center}
+.hero .hic svg{width:26px;height:26px;color:#fff}
+.hero .htx{flex:1 1 auto;min-width:0}
+.hero .htx .t{font-family:var(--cond);font-weight:700;font-size:17px;line-height:1.2}
+.hero .htx .d{font-size:12px;color:rgba(255,255,255,.85);margin-top:2px}
+.hero .chev{flex:0 0 auto;width:18px;height:18px;color:rgba(255,255,255,.8)}
 
 /* ---- fieldsets (ronda) ---- */
 .fieldset{border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:10px;overflow:hidden}
