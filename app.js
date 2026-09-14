@@ -228,7 +228,7 @@
 
     /* --- reglas --- */
     var f = [];
-    var CH = "Protocolo CHUB", EL = "ELSO 1.4", VH = "Vall d'Hebron", CL = "Algoritmos Clínic";
+    var CH = "Protocolo CHUB", EL = "ELSO 1.4", CL = "Algoritmos Clínic";
 
     if (isFinite(flujoKg)) {
       if (flujoKg < 40) f.push(F("crit", "Flujo muy bajo", n0(flujoKg) + " mL/kg/min", "Por debajo de 40–50 mL/kg/min no se consigue transporte de O₂ adecuado. Subir rpm si el drenaje lo permite; si la succión lo impide, revisar volemia y posición de cánula.", CH));
@@ -247,11 +247,11 @@
     if (isFinite(p2) && p2 > 200) f.push(F("warn", "Presión de retorno alta", n0(p2) + " mmHg", "Límite del protocolo 200 mmHg. Descartar hipertensión, cánula de retorno obstruida o acodada, y membrana coagulada.", CH));
     if (isFinite(p3)) {
       if (p3 > 50) f.push(F("crit", "Gradiente transmembrana alto", n0(p3) + " mmHg", "Por encima del límite de 50 mmHg: sospechar trombosis del oxigenador. Comprobar gasometría pre y post, dímero D y plaquetas, y programar el recambio antes de que sea urgente.", CH));
-      else if (p3 > 35) f.push(F("warn", "Gradiente transmembrana en ascenso", n0(p3) + " mmHg", "Comparar con el valor basal: un ascenso del 30–50 % sugiere trombosis, aunque no se alcance el límite absoluto.", CH + " · " + VH));
+      else if (p3 > 35) f.push(F("warn", "Gradiente transmembrana en ascenso", n0(p3) + " mmHg", "Comparar con el valor basal: un ascenso del 30–50 % sugiere trombosis, aunque no se alcance el límite absoluto.", CH));
       else f.push(F("ok", "Gradiente transmembrana normal", n0(p3) + " mmHg", "Por debajo de 50 mmHg.", CH));
     }
     if (isFinite(po2post)) {
-      if (po2post < 150) f.push(F("crit", "PO₂ postmembrana baja", n0(po2post) + " mmHg", "Alerta de malfunción de la membrana. Con PaFi del oxigenador por debajo de 150 el protocolo obliga al cambio. Antes, descartar condensación: flush a 10 L/min durante 30 s y repetir la gasometría.", CH + " · " + VH));
+      if (po2post < 150) f.push(F("crit", "PO₂ postmembrana baja", n0(po2post) + " mmHg", "Alerta de malfunción de la membrana. Con PaFi del oxigenador por debajo de 150 el protocolo obliga al cambio. Antes, descartar condensación: flush a 10 L/min durante 30 s y repetir la gasometría.", CH));
       else if (po2post < 300) f.push(F("warn", "PO₂ postmembrana por debajo del objetivo", n0(po2post) + " mmHg", "El objetivo es > 300 mmHg. Vigilar la tendencia junto con el gradiente transmembrana.", CH));
       else f.push(F("ok", "Membrana con buen intercambio", n0(po2post) + " mmHg", "Por encima de 300 mmHg.", CH));
     }
@@ -260,7 +260,7 @@
       if (paco2 > 45) {
         var extra = (isFinite(dias) && dias <= 1) ? " Si la PaCO₂ de partida era alta, corregir despacio: 10–20 mmHg por hora, para no provocar oscilaciones de perfusión cerebral." : "";
         f.push(F(paco2 > 60 ? "crit" : "warn", "PaCO₂ alta", n0(paco2) + " mmHg", "Objetivo 35–45 mmHg: subir el gas de barrido." + extra, CH + (extra ? " · " + EL : "")));
-      } else if (paco2 < 35) f.push(F("warn", "PaCO₂ baja", n0(paco2) + " mmHg", "Objetivo 35–45 mmHg: bajar el gas de barrido. Si el paciente está despierto, el extremo bajo (35) es el razonable.", CH + " · " + VH));
+      } else if (paco2 < 35) f.push(F("warn", "PaCO₂ baja", n0(paco2) + " mmHg", "Objetivo 35–45 mmHg: bajar el gas de barrido. Si el paciente está despierto, el extremo bajo (35) es el razonable.", CH));
       else f.push(F("ok", "PaCO₂ en rango", n0(paco2) + " mmHg", "Dentro de 35–45 mmHg.", CH));
     }
     if (isFinite(ratio) && isFinite(flujo) && flujo > 0) {
@@ -280,7 +280,7 @@
       }
       if (isFinite(pao2) && pao2 < 60) f.push(F("warn", "PaO₂ baja", n0(pao2) + " mmHg", "El objetivo del protocolo es > 60 mmHg.", CH));
       if (isFinite(svo2) && isFinite(sao2)) {
-        if (svo2 > sao2 - 10 && sao2 < 90) f.push(F("crit", "Patrón de recirculación", n0(svo2) + " % premembrana", "La saturación premembrana está muy próxima a la arterial con SaO₂ baja: es el patrón de recirculación. Optimizar el flujo, reevaluar la posición de las cánulas con Rx y ecografía, y valorar aumentar el gasto cardiaco.", CH + " · " + VH));
+        if (svo2 > sao2 - 10 && sao2 < 90) f.push(F("crit", "Patrón de recirculación", n0(svo2) + " % premembrana", "La saturación premembrana está muy próxima a la arterial con SaO₂ baja: es el patrón de recirculación. Optimizar el flujo, reevaluar la posición de las cánulas con Rx y ecografía, y valorar aumentar el gasto cardiaco.", CH));
       }
       if (isFinite(svo2) && svo2 < 70) f.push(F("warn", "SvO₂ premembrana baja", n0(svo2) + " %", "Objetivo > 70 %. Mirar consumo (fiebre, agitación, desadaptación, infección), hemoglobina y flujo.", CH));
       if (isFinite(dv)) {
@@ -294,7 +294,7 @@
         else if (pplat > 25) f.push(F("warn", "Presión meseta por encima de lo recomendable", n0(pplat) + " cmH₂O", "Recomendable < 25 cmH₂O, aceptable hasta 30.", CH));
       }
       if (isFinite(peep) && peep < 10) f.push(F("warn", "PEEP baja", n0(peep) + " cmH₂O", "El protocolo pide PEEP ≥ 10 cmH₂O en reposo.", CH));
-      if (isFinite(dp) && dp > 15) f.push(F("warn", "Driving pressure alta", n0(dp) + " cmH₂O", "El protocolo del CHUB no fija objetivo; Vall d'Hebron la mantiene por debajo de 15 cmH₂O.", VH));
+      if (isFinite(dp) && dp > 15) f.push(F("warn", "Driving pressure alta", n0(dp) + " cmH₂O", "Mantener por debajo de 15 cmH₂O.", CH));
       if (isFinite(vfio2) && vfio2 > 50) f.push(F("warn", "FiO₂ del ventilador alta", n0(vfio2) + " %", "En reposo, lo aceptable es 30–50 %. Evitar la tentación de subirla por una hipoxemia tolerada.", CH + " · " + EL));
       if (isFinite(fc) || isFinite(tas)) f.push(F("info", "Hemodinámica en VV", "—", "El VV no da soporte circulatorio: la frecuencia y la tensión se manejan como en cualquier crítico. No hay objetivos de FC, TA ni presión de pulso propios del modo VV — los de PAM 50–70 y presión de pulso ≥ 10 son del modo VA.", EL));
     } else {
@@ -303,12 +303,12 @@
         else f.push(F("ok", "SaO₂ en objetivo", n0(sao2) + " %", "Dentro de 95–100 %. Confirmar que la muestra es de radial derecha.", CH));
       }
       if (isFinite(pam)) {
-        if (pam < 65) f.push(F("crit", "PAM baja", n0(pam) + " mmHg", "Objetivo ≥ 65 mmHg. Vall d'Hebron es explícito: no variar el flujo de la bomba, tratar con medicación. Pensar en resistencias bajas (sepsis, hipertermia) y en hipocalcemia.", CH + " · " + VH));
-        else if (pam > 95) f.push(F("warn", "PAM alta", n0(pam) + " mmHg", "Por encima de 95–100 mmHg favorece la distensión del VI y empeora el flujo de la bomba. Vasodilatar (nitroprusiato, urapidilo) en lugar de bajar el flujo.", CH + " · " + VH));
+        if (pam < 65) f.push(F("crit", "PAM baja", n0(pam) + " mmHg", "Objetivo ≥ 65 mmHg. No variar el flujo de la bomba: tratar con medicación. Pensar en resistencias bajas (sepsis, hipertermia) y en hipocalcemia.", CH));
+        else if (pam > 95) f.push(F("warn", "PAM alta", n0(pam) + " mmHg", "Por encima de 95–100 mmHg favorece la distensión del VI y empeora el flujo de la bomba. Vasodilatar (nitroprusiato, urapidilo) en lugar de bajar el flujo.", CH));
         else f.push(F("ok", "PAM en rango", n0(pam) + " mmHg", "Entre 65 y 95 mmHg.", CH));
       }
       if (isFinite(pp)) {
-        if (pp < 15) f.push(F("crit", "Presión de pulso muy baja", n0(pp) + " mmHg", "Sospechar distensión del ventrículo izquierdo. Eco urgente: apertura de la válvula aórtica, PCP, trombos. El protocolo es explícito en que la descarga mecánica es necesaria en la mayoría de los casos — Impella, o balón si hay trombo o no se puede colocar. Antes, dobutamina < 10 µg/kg/min y reducción de poscarga.", CH + " · " + VH));
+        if (pp < 15) f.push(F("crit", "Presión de pulso muy baja", n0(pp) + " mmHg", "Sospechar distensión del ventrículo izquierdo. Eco urgente: apertura de la válvula aórtica, PCP, trombos. El protocolo es explícito en que la descarga mecánica es necesaria en la mayoría de los casos — Impella, o balón si hay trombo o no se puede colocar. Antes, dobutamina < 10 µg/kg/min y reducción de poscarga.", CH));
         else if (pp < 30) f.push(F("warn", "Presión de pulso baja", n0(pp) + " mmHg", "Por debajo de 30 mmHg no se cumplen los criterios de destete. Vigilar la apertura de la válvula aórtica en la eco diaria.", CH));
         else f.push(F("ok", "Presión de pulso conservada", n0(pp) + " mmHg", "Por encima de 30 mmHg: criterio favorable de destete.", CH));
       }
@@ -317,18 +317,18 @@
         else if (ic < 2.5) f.push(F("warn", "Índice cardiaco por debajo del objetivo", n1(ic) + " L/min/m²", "El objetivo total es ≥ 2,5 L/min/m².", CH));
         else f.push(F("ok", "Índice cardiaco adecuado", n1(ic) + " L/min/m²", "Igual o por encima de 2,5.", CH));
       }
-      if (isFinite(svo2) && svo2 < 65) f.push(F("warn", "Saturación venosa baja", n0(svo2) + " %", "Objetivo > 65 % en el sistema y > 70 % en la cánula venosa. Ajustar el flujo de bomba.", CH + " · " + VH));
+      if (isFinite(svo2) && svo2 < 65) f.push(F("warn", "Saturación venosa baja", n0(svo2) + " %", "Objetivo > 65 % en el sistema y > 70 % en la cánula venosa. Ajustar el flujo de bomba.", CH));
       if (isFinite(fc) && fc > 120) f.push(F("info", "Taquicardia", n0(fc) + " lpm", "Ninguna de las fuentes fija un objetivo de frecuencia en ECMO. La arritmia más frecuente es la fibrilación auricular; TV y FV se relacionan con isquemia o dilatación ventricular.", CH));
     }
 
     if (isFinite(lactato)) {
-      if (lactato > 5) f.push(F("crit", "Lactato muy elevado", n1(lactato) + " mmol/L", "Aporte insuficiente: revisar flujo, saturación venosa y PAM. En VA el protocolo espera normalización en las primeras 4–6 horas.", CH + " · " + VH));
-      else if (lactato > 2) f.push(F("warn", "Lactato elevado", n1(lactato) + " mmol/L", "Objetivo < 2 mmol/L. Lo que importa es la tendencia más que el valor aislado.", CH + " · " + VH));
+      if (lactato > 5) f.push(F("crit", "Lactato muy elevado", n1(lactato) + " mmol/L", "Aporte insuficiente: revisar flujo, saturación venosa y PAM. En VA el protocolo espera normalización en las primeras 4–6 horas.", CH));
+      else if (lactato > 2) f.push(F("warn", "Lactato elevado", n1(lactato) + " mmol/L", "Objetivo < 2 mmol/L. Lo que importa es la tendencia más que el valor aislado.", CH));
       else f.push(F("ok", "Lactato normal", n1(lactato) + " mmol/L", "Por debajo de 2 mmol/L.", CH));
     }
     if (isFinite(diuresis) && diuresis < 0.5) f.push(F("warn", "Diuresis baja", n1(diuresis) + " mL/kg/h", "Objetivo > 0,5 mL/kg/h. Es uno de los criterios de hipoperfusión del protocolo. Valorar depuración extrarrenal si no se consigue balance negativo.", CH));
     if (isFinite(temp)) {
-      if (temp > 37.5) f.push(F("warn", "Hipertermia", n1(temp) + " °C", "Aumenta el consumo de O₂ y empeora la relación DO₂/VO₂. Antipirético endovenoso; Vall d'Hebron recomienda no modificar la temperatura del intercambiador salvo casos rebeldes.", VH));
+      if (temp > 37.5) f.push(F("warn", "Hipertermia", n1(temp) + " °C", "Aumenta el consumo de O₂ y empeora la relación DO₂/VO₂. Antipirético endovenoso; no modificar la temperatura del intercambiador salvo casos rebeldes.", CH));
       else if (temp < 35.5) f.push(F("warn", "Hipotermia", n1(temp) + " °C", "Fuera de la normotermia objetivo, salvo que sea deliberada tras parada cardiaca.", CH));
     }
 
@@ -622,7 +622,7 @@
     $("#save-pts").textContent = (p > 0 ? "+" : "") + p;
     $("#save-cls").textContent = c.cls;
     $("#save-surv").textContent = c.s + " %";
-    $("#save-msg").textContent = c.cls === "V" ? "Clase V: Vall d'Hebron la considera no tributaria de asistencia."
+    $("#save-msg").textContent = c.cls === "V" ? "Clase V: se considera no tributaria de asistencia."
       : c.cls === "IV" ? "Clase IV: valorar riesgo-beneficio antes de activar."
       : "Una puntuación de exactamente 5 es clase II, no clase I.";
   }

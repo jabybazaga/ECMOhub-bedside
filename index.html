@@ -40,7 +40,10 @@
   <!-- ============ INICIO ============ -->
   <section id="screen-inicio" class="screen">
     <div class="appbar">
-      <div class="brand"><b>ECMO a pie de cama</b><span>CHUB</span></div>
+      <div class="brand-row">
+        <img src="logo.jpg" alt="Equipo ECMO de Extremadura" class="brand-logo">
+        <div class="brand"><b>ECMO HUB bedside app</b></div>
+      </div>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
         <input type="text" placeholder="Buscar: recirculación, Arlequín…" readonly>
@@ -57,49 +60,38 @@
       </div>
 
       <div class="grp">Referencia</div>
-      <div class="row">
-        <button class="item" data-go="vv">
-          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16M18 4v16M6 12h12"/></svg></div>
-          <div class="tx"><div class="t">VV — respiratorio</div></div>
-          <span class="tag vv">VV</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <div class="grid2">
+        <button class="tile vv" data-go="vv">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/><path d="M9 6c-1.2-1.3-3.2-1.6-4.4-.4M15 6c1.2-1.3 3.2-1.6 4.4-.4"/></svg></div>
+          <div class="tt">ECMO VV</div>
         </button>
-        <button class="item" data-go="va">
-          <div class="ic" style="background:var(--va-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--va)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M8 6l-4 6 4 6M16 6l4 6-4 6"/></svg></div>
-          <div class="tx"><div class="t">VA — circulatorio</div></div>
-          <span class="tag va">VA</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile va" data-go="va">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></div>
+          <div class="tt">ECMO VA</div>
         </button>
-        <button class="item" data-go="anticoag">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 16v6M4.9 4.9l4.2 4.2M14.9 14.9l4.2 4.2M2 12h6M16 12h6M4.9 19.1l4.2-4.2M14.9 9.1l4.2-4.2"/></svg></div>
-          <div class="tx"><div class="t">Anticoagulación</div></div>
-          <span class="tag both">VV+VA</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile neutral" data-go="anticoag">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6.2 7.3 6.2 11.5a6.2 6.2 0 1 1-12.4 0C5.8 10.3 12 3 12 3Z"/></svg></div>
+          <div class="tt">Anticoagulación</div>
         </button>
-        <button class="item" data-go="complicaciones">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
-          <div class="tx"><div class="t">Complicaciones</div></div>
-          <span class="tag both">VV+VA</span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile neutral" data-go="complicaciones">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></div>
+          <div class="tt">Complicaciones</div>
         </button>
       </div>
 
       <div class="grp">Herramientas</div>
-      <div class="row">
-        <button class="item" data-go="escalas">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></div>
-          <div class="tx"><div class="t">Escalas</div><div class="d">Murray · APSS · SCAI · INTERMACS</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <div class="grid2">
+        <button class="tile neutral" data-go="escalas">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></div>
+          <div class="tt">Escalas</div>
         </button>
-        <button class="item" data-go="calc">
-          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0M8 19h2M12.5 19h2M17 19h0"/></svg></div>
-          <div class="tx"><div class="t">Calculadoras</div><div class="d">Indicación · recirculación · heparina · RESP · SAVE</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile neutral" data-go="calc">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0M8 19h2M12.5 19h2M17 19h0"/></svg></div>
+          <div class="tt">Calculadoras</div>
         </button>
-        <button class="item" data-go="checklists">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-          <div class="tx"><div class="t">Checklists</div><div class="d">Material y traslado</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile neutral" data-go="checklists">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <div class="tt">Checklists</div>
         </button>
       </div>
 
@@ -112,7 +104,7 @@
         </button>
         <button class="item" data-go="fuentes">
           <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
-          <div class="tx"><div class="t">Fuentes</div><div class="d">CHUB · ELSO · Vall d'Hebron · Clínic</div></div>
+          <div class="tx"><div class="t">Fuentes</div><div class="d">CHUB · ELSO · Clínic</div></div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
       </div>
@@ -515,7 +507,7 @@
       <h3 class="rh">Ventilación ultraprotectora de reposo</h3>
       <p class="rp">Objetivo: meseta <b>&lt; 25</b> (aceptable hasta 30) · <b>PEEP ≥ 10</b> (10–24) · FR <b>4–15</b> · FiO₂ mínima (30–50%) · Vt <b>≤ 6 mL/kg</b> peso ideal · <b>driving pressure &lt; 15</b>.</p>
       <div class="note"><b>La regla del 10.</b> Arranque estándar: <b>PEEP 10 · FR 10 · presión control 10 sobre PEEP</b> — pico de 20 cmH₂O. Desde ahí se titula, sin subir el ventilador para corregir una hipoxemia tolerada.</div>
-      <div class="note amber">El CHUB no fija driving pressure objetivo; Vall d'Hebron sí, <b>&lt; 15</b>. Y si no se alcanzan los parámetros de reposo, el problema es que <b>el soporte extracorpóreo es insuficiente</b> — se optimiza el ECMO, no el ventilador. <span class="pill elso">EXTERNO</span></div>
+      <div class="note amber">Objetivo de driving pressure <b>&lt; 15</b>. Si no se alcanzan los parámetros de reposo, el problema es que <b>el soporte extracorpóreo es insuficiente</b> — se optimiza el ECMO, no el ventilador.</div>
 
       <h3 class="rh">Hipoxemia refractaria</h3>
       <p class="rp">Diagnóstico diferencial en orden: <b>1)</b> descenso del flujo efectivo (flujo − recirculación) · <b>2)</b> descenso de SvO₂ por consumo o anemia (Hb &gt; 8, transfundir hasta ~10 si cae flujo o hay hemólisis) · <b>3)</b> gasto cardiaco nativo alto (sedar, controlar taquicardia, retirar inotrópicos) · <b>4)</b> fallo del oxigenador · <b>5)</b> pérdida de función pulmonar residual (neumotórax, atelectasia, derrame — reclutar, prono).</p>
@@ -523,7 +515,7 @@
 
       <h3 class="rh">Recirculación</h3>
       <p class="rp">Se sospecha con <b>SpO₂ que baja y SvO₂ premembrana que sube a la vez</b> — el patrón importa más que el número; ninguna fuente fija un umbral. Fórmula y calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
-      <div class="note">Vall d'Hebron: 1) optimizar flujo de bomba · 2) reevaluar posición de catéteres con Rx/eco · 3) aumentar gasto cardiaco si procede. Repetir Rx siempre que se sospeche.</div>
+      <div class="note">Manejo: 1) optimizar flujo de bomba · 2) reevaluar posición de catéteres con Rx/eco · 3) aumentar gasto cardiaco si procede. Repetir Rx siempre que se sospeche.</div>
 
       <h3 class="rh">Destete</h3>
       <p class="rp">Con el <b>gas</b>, nunca bajando el flujo de sangre. Requisitos: estabilidad hemodinámica, ventilación espontánea favorable, <b>FiO₂ &lt; 50%</b> sin acidosis, y prueba de FiO₂ 100% 15 min con PO₂ &gt; 200.</p>
@@ -570,7 +562,7 @@
       <h3 class="rh">Contraindicaciones<span class="pill chub">CHUB</span></h3>
       <div class="deflist">
         <div class="dl-row"><span class="dl-k">Absolutas</span><span class="dl-v">Enfermedad terminal (neoplasia, SNC irreversible, cirrosis Child B–C, ERC5/diálisis, EPOC terminal) · parada en asistolia o no presenciada · disección aórtica tipo A no reparada · deseo del paciente</span></div>
-        <div class="dl-row"><span class="dl-k">Relativas</span><span class="dl-v">Insuficiencia aórtica severa, acceso vascular limitado, sangrados/coagulopatías, edad. Vall d'Hebron añade IMC &gt; 45, edad &gt; 60 y shock séptico sin disfunción de VI; exige SAVE al activar.</span></div>
+        <div class="dl-row"><span class="dl-k">Relativas</span><span class="dl-v">Insuficiencia aórtica severa, acceso vascular limitado, sangrados/coagulopatías, edad, IMC &gt; 45, shock séptico sin disfunción de VI. Valorar SAVE al activar.</span></div>
       </div>
 
       <h3 class="rh">Canulación<span class="pill chub">CHUB</span></h3>
@@ -656,11 +648,11 @@
 
       <h3 class="rh">Umbrales de hemoderivados</h3>
       <div class="deflist">
-        <div class="dl-row"><span class="dl-k">Plaquetas sin sangrado</span><span class="dl-v">CHUB &gt; 50–100 · ELSO &gt; 80 · VH &gt; 75 (×10⁹/L)</span></div>
-        <div class="dl-row"><span class="dl-k">Plaquetas con sangrado</span><span class="dl-v">CHUB &gt; 100 · ELSO &gt; 100 · VH 150–200</span></div>
-        <div class="dl-row hl"><span class="dl-k">Fibrinógeno</span><span class="dl-v">CHUB &gt; 1,5 (con sangrado) / &gt; 1 (sin) · ELSO 2,5–3 · VH &gt; 1,5 g/L</span></div>
-        <div class="dl-row"><span class="dl-k">Hemoglobina / Hto</span><span class="dl-v">CHUB Hb 7–9 g/dL · ELSO Hto &gt; 40% · VH Hto 35–40%</span></div>
-        <div class="dl-row"><span class="dl-k">INR</span><span class="dl-v">CHUB &lt; 1,5 con sangrado · VH &lt; 1,5</span></div>
+        <div class="dl-row"><span class="dl-k">Plaquetas sin sangrado</span><span class="dl-v">CHUB &gt; 50–100 · ELSO &gt; 80 (×10⁹/L)</span></div>
+        <div class="dl-row"><span class="dl-k">Plaquetas con sangrado</span><span class="dl-v">CHUB &gt; 100 · ELSO &gt; 100</span></div>
+        <div class="dl-row hl"><span class="dl-k">Fibrinógeno</span><span class="dl-v">CHUB &gt; 1,5 (con sangrado) / &gt; 1 (sin) · ELSO 2,5–3 g/L</span></div>
+        <div class="dl-row"><span class="dl-k">Hemoglobina / Hto</span><span class="dl-v">CHUB Hb 7–9 g/dL · ELSO Hto &gt; 40%</span></div>
+        <div class="dl-row"><span class="dl-k">INR</span><span class="dl-v">CHUB &lt; 1,5 con sangrado</span></div>
         <div class="deflist-cap">El fibrinógeno es la mayor discrepancia: ELSO pide el doble que el CHUB. Los avisos de la ronda siguen al CHUB.</div>
       </div>
     </div>
@@ -735,7 +727,7 @@
         <div class="dl-row"><span class="dl-k">Coágulos en el cabezal</span><span class="dl-v">LDH &gt; 1000 · Hb libre &gt; 300 mg/L · vibración/ruido anormal</span></div>
       </div>
       <p class="rp">Cambiar membrana si: coágulos/fibrina groseros, hipoxia severa con FiO₂ 1, trombocitopenia severa, hemólisis masiva, rotura o fallo de bomba. <b>PaFi del oxigenador &lt; 150 obliga al cambio.</b> Trombosis de membrana: 10–13%.</p>
-      <p class="rp"><b>Membrana húmeda</b> (condensación, normal): subir flujo de barrido y calentar gas a 37°C. Vall d'Hebron: <b>flush 10 L/min 30 s</b>. Espuma amarillenta (plasma) obliga a cambiar el sistema.</p>
+      <p class="rp"><b>Membrana húmeda</b> (condensación, normal): subir flujo de barrido, calentar gas a 37°C y hacer un <b>flush de 10 L/min 30 s</b>. Espuma amarillenta (plasma) obliga a cambiar el sistema.</p>
 
       <h3 class="rh">Hemólisis</h3>
       <p class="rp">Por succión excesiva, <b>rpm &gt; 3500</b>, gradiente de membrana alto o pérdida de integridad del oxigenador. Vigilar LDH, <b>Hb libre &gt; 50 mg/dL</b> y color de la orina; pedir bilirrubina y haptoglobina.</p>
@@ -801,7 +793,7 @@
       </div>
 
       <h3 class="rh">RESP y SAVE<span class="pill elso">EXTERNO</span></h3>
-      <p class="rp">El protocolo cita el <b>SAVE score</b> para decidir el inicio y valorar futilidad, sin tabla. Vall d'Hebron lo exige al activar: <b>clase V no tributaria</b>, clase IV valorar riesgo-beneficio. El <b>RESP score</b> no aparece en el protocolo. Calculadoras en <a href="#" data-go="calc">Calculadoras</a>.</p>
+      <p class="rp">El protocolo cita el <b>SAVE score</b> para decidir el inicio y valorar futilidad, sin tabla: <b>clase V no tributaria</b>, clase IV valorar riesgo-beneficio. El <b>RESP score</b> no aparece en el protocolo. Calculadoras en <a href="#" data-go="calc">Calculadoras</a>.</p>
     </div>
     <nav class="tabbar">
       <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
@@ -862,7 +854,6 @@
     <div class="content">
       <div class="src-row"><span class="pill chub" style="margin:0 10px 0 0">CHUB</span><em>Protocolo Oxigenador de Membrana Extracorpórea – ECMO.</em> Servicio de Medicina Intensiva, Complejo Hospitalario Universitario de Badajoz. Aprobado 02/05/2024, con anexos de indicaciones VV/VA, Destete y Anticoagulación.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>ELSO Guidelines for Adult Respiratory Failure</em> y <em>General Guidelines for all ECLS Cases.</em> ELSO, v1.4, agosto 2017.</div>
-      <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Protocolos de soporte VV-ECLS y VA-ECLS, v.1, 28/07/2016. Programa ECLS, Hospital Universitari Vall d'Hebron.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>Algoritmos ECMO v2.</em> Hospital Clínic, noviembre 2025.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>SCAI SHOCK Bedside Checklist 2022 · Naidu SS, et al. J Am Coll Cardiol 2022;79(9):933-946.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Kapur NK, et al. Criteria for Defining Stages of Cardiogenic Shock Severity. J Am Coll Cardiol 2022;80(3):185-198.</div>
