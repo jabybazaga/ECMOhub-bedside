@@ -407,7 +407,21 @@
     }
     tagCat(_iAnticoag, "anticoagulacion");
 
-    ultimaRonda = { modo: modo, findings: f.slice() };
+    ultimaRonda = {
+      modo: modo,
+      findings: f.slice(),
+      datos: {
+        modo: modo, peso: peso, flujo: flujo, sweep: sweep, rpm: rpm,
+        p1: p1, p2: p2, p3: p3, po2post: po2post, dias: dias,
+        fc: fc, tas: tas, tad: tad, ic: ic, lactato: lactato,
+        sao2: sao2, svo2: svo2, pao2: pao2, paco2: paco2, ph: ph,
+        hb: hb, plaq: plaq, fibri: fibri, act: act, ttpa: ttpa, ldh: ldh,
+        diuresis: diuresis, temp: temp, ritmo: ritmo, gc: gc, svmix: svmix,
+        sangrado: sangrado, pplat: pplat, peep: peep, vfio2: vfio2,
+        pp: pp, pam: pam, flujoKg: flujoKg, ratio: ratio, svUsada: svUsada, svEsPre: svEsPre,
+        cao2: cao2, cvo2: cvo2, do2: do2, vo2: vo2, dv: dv, gap: gap, dp: dp
+      }
+    };
     var btnInforme = document.getElementById("r-informe-btn");
     if (btnInforme) btnInforme.disabled = !f.some(function (x) { return x.sev === "crit" || x.sev === "warn"; });
 
@@ -822,15 +836,6 @@
   });
 
   // ---------- Informes de ronda ----------
-  var CAT_INFO = {
-    circuito: "Circuito ECMO",
-    ventilacion: "Ventilación",
-    gasometria: "Gasometría",
-    hemodinamica: "Hemodinámica",
-    analitica: "Analítica / hemostasia",
-    anticoagulacion: "Anticoagulación"
-  };
-  var CAT_ORDEN = ["circuito", "ventilacion", "gasometria", "hemodinamica", "analitica", "anticoagulacion"];
   var INFORMES_KEY = "ecmo_informes";
 
   function getInformes() { try { return JSON.parse(ls(INFORMES_KEY) || "[]"); } catch (e) { return []; } }
@@ -843,17 +848,126 @@
     return dd + "/" + mm + "/" + d.getFullYear() + " · " + hh + ":" + mi;
   }
 
+  function capitalizar(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function primeraFrase(m) {
+    var idx = m.search(/\.\s/);
+    if (idx > -1) return m.slice(0, idx + 1);
+    return m.length > 140 ? m.slice(0, 137) + "…" : m;
+  }
+
+  /* ---- resumen clínico redactado, por aparatos y sistemas ---- */
+  function resumenRespiratorio(d) {
+    var partes = [];
+    if (d.modo === "vv") {
+      if (isFinite(d.sao2)) {
+        if (d.sao2 < 80) partes.push("hipoxemia significativa (SaO₂ " + n0(d.sao2) + " %, objetivo 85–92 %)" + (isFinite(d.dv) ? ", con DO₂/VO₂ de " + n1(d.dv) + (d.dv < 3 ? " — aporte insuficiente" : "") : ""));
+        else if (d.sao2 < 85) partes.push("SaO₂ algo por debajo del objetivo (" + n0(d.sao2) + " %, objetivo 85–92 %)");
+        else if (d.sao2 > 92) partes.push("SaO₂ por encima del objetivo (" + n0(d.sao2) + " %); valorar test de oxigenación si el pulmón está recuperando");
+        else partes.push("oxigenación en objetivo, SaO₂ " + n0(d.sao2) + " %" + (isFinite(d.dv) ? " con DO₂/VO₂ de " + n1(d.dv) : ""));
+      }
+      if (isFinite(d.paco2) || isFinite(d.ph)) {
+        var acidbase = [];
+        if (isFinite(d.paco2)) acidbase.push("PaCO₂ " + n0(d.paco2) + " mmHg");
+        if (isFinite(d.ph)) acidbase.push("pH " + n2(d.ph));
+        var alertaAB = (isFinite(d.paco2) && (d.paco2 > 45 || d.paco2 < 35)) || (isFinite(d.ph) && (d.ph < 7.35 || d.ph > 7.45));
+        partes.push((alertaAB ? "alteración del equilibrio ácido-base" : "equilibrio ácido-base conservado") + " (" + acidbase.join(", ") + ")");
+      }
+      if (isFinite(d.pplat) || isFinite(d.peep)) {
+        var vent = [];
+        if (isFinite(d.pplat)) vent.push("meseta " + n0(d.pplat) + " cmH₂O");
+        if (isFinite(d.peep)) vent.push("PEEP " + n0(d.peep) + " cmH₂O");
+        if (isFinite(d.dp)) vent.push("driving pressure " + n0(d.dp) + " cmH₂O");
+        var ventAlerta = (isFinite(d.pplat) && d.pplat > 25) || (isFinite(d.dp) && d.dp > 15);
+        partes.push("ventilador en parámetros de " + (ventAlerta ? "reposo no del todo conseguidos" : "reposo") + " (" + vent.join(", ") + ")");
+      }
+    } else {
+      if (isFinite(d.sao2)) {
+        if (d.sao2 < 95) partes.push("SaO₂ por debajo del objetivo VA (" + n0(d.sao2) + " %, objetivo 95–100 %); descartar síndrome de Arlequín si la muestra es de radial derecha");
+        else partes.push("oxigenación en objetivo, SaO₂ " + n0(d.sao2) + " %");
+      }
+    }
+    if (isFinite(d.flujoKg) || isFinite(d.p3) || isFinite(d.po2post)) {
+      var circ = [];
+      if (isFinite(d.flujoKg)) circ.push("flujo " + n0(d.flujoKg) + " mL/kg/min");
+      if (isFinite(d.p3)) circ.push("gradiente transmembrana " + n0(d.p3) + " mmHg");
+      if (isFinite(d.po2post)) circ.push("PO₂ postmembrana " + n0(d.po2post) + " mmHg");
+      var circAlerta = (isFinite(d.p3) && d.p3 > 35) || (isFinite(d.po2post) && d.po2post < 300) || (isFinite(d.flujoKg) && (d.flujoKg < 50 || d.flujoKg > 80));
+      partes.push("circuito " + (circAlerta ? "con signos a vigilar" : "sin signos de disfunción") + " (" + circ.join(", ") + ")");
+    }
+    return partes.length ? capitalizar(partes.join("; ")) + "." : "Sin datos suficientes para valorar la situación respiratoria.";
+  }
+
+  function resumenHemodinamico(d) {
+    var partes = [];
+    if (d.modo === "va") {
+      if (isFinite(d.pam)) partes.push((d.pam < 65 ? "PAM baja" : d.pam > 95 ? "PAM elevada" : "PAM en rango") + " (" + n0(d.pam) + " mmHg, objetivo 65–95)");
+      if (isFinite(d.pp)) partes.push((d.pp < 15 ? "presión de pulso muy baja, sospechar distensión del VI" : d.pp < 30 ? "presión de pulso baja, no cumple criterio de destete" : "presión de pulso conservada") + " (" + n0(d.pp) + " mmHg)");
+      if (isFinite(d.ic)) partes.push((d.ic < 2.2 ? "índice cardiaco en rango de shock" : d.ic < 2.5 ? "índice cardiaco por debajo del objetivo" : "índice cardiaco adecuado") + " (" + n1(d.ic) + " L/min/m²)");
+      if (isFinite(d.fc)) partes.push("FC " + n0(d.fc) + " lpm" + (d.fc > 120 ? " (taquicardia)" : ""));
+    } else {
+      var base = "el ECMO VV no aporta soporte circulatorio, por lo que la hemodinámica se maneja como en cualquier paciente crítico";
+      if (isFinite(d.fc) || (isFinite(d.tas) && isFinite(d.tad))) {
+        var vv = [];
+        if (isFinite(d.fc)) vv.push("FC " + n0(d.fc) + " lpm");
+        if (isFinite(d.tas) && isFinite(d.tad)) vv.push("TA " + n0(d.tas) + "/" + n0(d.tad) + " mmHg");
+        base += " (" + vv.join(", ") + ")";
+      }
+      partes.push(base);
+    }
+    if (isFinite(d.lactato) || isFinite(d.diuresis)) {
+      var perf = [];
+      if (isFinite(d.lactato)) perf.push("lactato " + n1(d.lactato) + " mmol/L");
+      if (isFinite(d.diuresis)) perf.push("diuresis " + n1(d.diuresis) + " mL/kg/h");
+      var perfAlerta = (isFinite(d.lactato) && d.lactato > 2) || (isFinite(d.diuresis) && d.diuresis < 0.5);
+      partes.push((perfAlerta ? "datos de hipoperfusión" : "sin datos de hipoperfusión") + " (" + perf.join(", ") + ")");
+    }
+    if (isFinite(d.temp)) {
+      if (d.temp > 37.5) partes.push("hipertermia (" + n1(d.temp) + " °C)");
+      else if (d.temp < 35.5) partes.push("hipotermia (" + n1(d.temp) + " °C)");
+    }
+    return partes.length ? capitalizar(partes.join("; ")) + "." : "Sin datos suficientes para valorar la situación hemodinámica.";
+  }
+
+  function resumenHematologico(d) {
+    var partes = [];
+    if (isFinite(d.hb)) partes.push((d.hb < 7 ? "anemia significativa, por debajo del umbral transfusional" : d.hb < 8 ? "hemoglobina por debajo del objetivo" : "hemoglobina en rango") + " (" + n1(d.hb) + " g/dL)");
+    if (isFinite(d.plaq)) {
+      var umbral = d.sangrado === "no" ? 50 : 100;
+      partes.push((d.plaq < umbral ? "plaquetopenia por debajo del umbral transfusional" : d.plaq < 100 ? "plaquetas bajas, vigilar tendencia" : "plaquetas adecuadas") + " (" + n0(d.plaq) + " ×10⁹/L)");
+    }
+    if (isFinite(d.fibri)) partes.push((d.fibri < (d.sangrado === "no" ? 1.0 : 1.5) ? "fibrinógeno bajo, a corregir" : (d.fibri < 2 ? "fibrinógeno en el límite" : "fibrinógeno adecuado")) + " (" + n1(d.fibri) + " g/L)");
+    if (isFinite(d.ldh)) partes.push((d.ldh > 1000 ? "LDH muy elevada, sospechar hemólisis por el circuito" : d.ldh > 350 ? "LDH elevada, vigilar hemólisis" : "LDH normal") + " (" + n0(d.ldh) + " UI/L)");
+    var anticoag = [];
+    if (isFinite(d.act)) anticoag.push("ACT " + n0(d.act) + " s");
+    if (isFinite(d.ttpa)) anticoag.push("TTPa " + n0(d.ttpa) + " s");
+    if (anticoag.length) {
+      var actAlerta = isFinite(d.act) && (d.act < 160 || d.act > 180);
+      var ttpaAlerta = isFinite(d.ttpa) && (d.ttpa < 46 || d.ttpa > 70);
+      partes.push("anticoagulación " + ((actAlerta || ttpaAlerta) ? "fuera de rango diana" : "en rango diana") + " (" + anticoag.join(", ") + ")");
+    }
+    if (d.sangrado === "grave") partes.push("hemorragia grave activa");
+    else if (d.sangrado === "leve") partes.push("sangrado leve");
+    return partes.length ? capitalizar(partes.join("; ")) + "." : "Sin datos suficientes para valorar la situación hematológica.";
+  }
+
   function generarInforme() {
     if (!ultimaRonda) return;
     var relevantes = ultimaRonda.findings.filter(function (x) { return x.sev === "crit" || x.sev === "warn"; });
     if (!relevantes.length) { window.alert("No hay hallazgos críticos ni a vigilar en esta ronda: no se genera informe."); return; }
     var camaEl = document.getElementById("r-cama");
+    var d = ultimaRonda.datos || {};
     var informe = {
       id: Date.now(),
       fecha: new Date().toISOString(),
       modo: ultimaRonda.modo,
       cama: camaEl ? camaEl.value.trim() : "",
-      hallazgos: relevantes
+      hallazgos: relevantes,
+      resumen: {
+        respiratorio: resumenRespiratorio(d),
+        hemodinamica: resumenHemodinamico(d),
+        hematologico: resumenHematologico(d)
+      }
     };
     var lista = getInformes();
     lista.unshift(informe);
@@ -886,29 +1000,77 @@
     }).join("");
   }
 
+  function planDeGuardia(inf) {
+    return inf.hallazgos.slice().sort(function (a, b) { return (a.sev === "crit" ? 0 : 1) - (b.sev === "crit" ? 0 : 1); });
+  }
+
   function abrirInforme(id) {
     var inf = getInformes().filter(function (x) { return x.id === id; })[0];
     if (!inf) return;
     document.getElementById("informe-titulo").textContent = "ECMO " + inf.modo.toUpperCase() + (inf.cama ? " · " + inf.cama : "");
     document.getElementById("informe-fecha").textContent = fmtFechaInforme(inf.fecha);
-    var porCat = {};
-    inf.hallazgos.forEach(function (h) { var c = h.cat || "otros"; (porCat[c] = porCat[c] || []).push(h); });
+
+    var r = inf.resumen || {};
+    var plan = planDeGuardia(inf);
+
     var html = "";
-    CAT_ORDEN.concat(["otros"]).forEach(function (cat) {
-      var items = porCat[cat];
-      if (!items || !items.length) return;
-      items.sort(function (a, b) { return (a.sev === "crit" ? 0 : 1) - (b.sev === "crit" ? 0 : 1); });
-      html += '<h3 class="rh">' + (CAT_INFO[cat] || "Otros") + '</h3>' +
-        items.map(function (x) {
-          return '<div class="fi ' + x.sev + '"><div class="body"><div class="t">' + x.t +
-            (x.v && x.v !== "—" ? ' <span class="val">' + x.v + '</span>' : '') +
-            '</div><div class="m">' + x.m + '</div><span class="src">' + x.src + '</span></div></div>';
-        }).join("");
-    });
+    html += '<h3 class="rh">Respiratorio</h3><p class="narr">' + (r.respiratorio || "—") + '</p>';
+    html += '<h3 class="rh">Hemodinámica</h3><p class="narr">' + (r.hemodinamica || "—") + '</p>';
+    html += '<h3 class="rh">Hematológico</h3><p class="narr">' + (r.hematologico || "—") + '</p>';
+    html += '<h3 class="rh plan">Plan de guardia</h3><ol class="plan-list">' +
+      plan.map(function (x) {
+        return '<li class="' + x.sev + '"><span class="t">' + x.t + (x.v && x.v !== "—" ? " (" + x.v + ")" : "") + '</span><span class="d">' + primeraFrase(x.m) + '</span></li>';
+      }).join("") + '</ol>';
+
     document.getElementById("informe-body").innerHTML = html;
     document.getElementById("informe-del-btn").setAttribute("data-del-informe", id);
+    document.getElementById("informe-copiar-btn").setAttribute("data-copiar-informe", id);
     document.getElementById("informes-view-lista").classList.remove("on");
     document.getElementById("informes-view-detalle").classList.add("on");
+  }
+
+  function textoPlanoInforme(inf) {
+    var r = inf.resumen || {};
+    var plan = planDeGuardia(inf);
+    var lineas = [];
+    lineas.push("ECMO " + inf.modo.toUpperCase() + (inf.cama ? " · " + inf.cama : ""));
+    lineas.push(fmtFechaInforme(inf.fecha));
+    lineas.push("");
+    lineas.push("RESPIRATORIO");
+    lineas.push(r.respiratorio || "—");
+    lineas.push("");
+    lineas.push("HEMODINÁMICA");
+    lineas.push(r.hemodinamica || "—");
+    lineas.push("");
+    lineas.push("HEMATOLÓGICO");
+    lineas.push(r.hematologico || "—");
+    lineas.push("");
+    lineas.push("PLAN DE GUARDIA");
+    plan.forEach(function (x, i) {
+      lineas.push((i + 1) + ". " + (x.sev === "crit" ? "[CRÍTICO] " : "[A VIGILAR] ") + x.t + (x.v && x.v !== "—" ? " (" + x.v + ")" : "") + " — " + primeraFrase(x.m));
+    });
+    lineas.push("");
+    lineas.push("Apoyo de lectura, no sustituye al protocolo ni al juicio clínico.");
+    return lineas.join("\n");
+  }
+
+  function copiarAlPortapapeles(texto) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(texto);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = texto;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (ok) resolve(); else reject(new Error("execCommand copy failed"));
+      } catch (e) { reject(e); }
+    });
   }
 
   function cerrarInforme() {
@@ -934,6 +1096,22 @@
   if (informeBtnEl) informeBtnEl.addEventListener("click", generarInforme);
   var informeBackEl = document.getElementById("informe-back-btn");
   if (informeBackEl) informeBackEl.addEventListener("click", cerrarInforme);
+
+  var informeCopiarEl = document.getElementById("informe-copiar-btn");
+  if (informeCopiarEl) {
+    informeCopiarEl.addEventListener("click", function () {
+      var id = Number(informeCopiarEl.dataset.copiarInforme);
+      var inf = getInformes().filter(function (x) { return x.id === id; })[0];
+      if (!inf) return;
+      var textoOriginal = informeCopiarEl.textContent;
+      copiarAlPortapapeles(textoPlanoInforme(inf)).then(function () {
+        informeCopiarEl.textContent = "Copiado ✓";
+        setTimeout(function () { informeCopiarEl.textContent = textoOriginal; }, 1800);
+      }).catch(function () {
+        window.alert("No se ha podido copiar automáticamente. Mantén pulsado el texto del informe para copiarlo a mano.");
+      });
+    });
+  }
 
   // ---------- service worker (offline) ----------
   if ("serviceWorker" in navigator) {
