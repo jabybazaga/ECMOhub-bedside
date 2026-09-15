@@ -1,7 +1,7 @@
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v8";
+const CACHE_NAME = "ecmo-pie-de-cama-v11";
 const ASSETS = [
   "./",
   "index.html",
