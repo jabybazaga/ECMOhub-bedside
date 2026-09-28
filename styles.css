@@ -279,3 +279,50 @@ p.rp b, p.rp strong{color:var(--ink);font-weight:600}
 .tab:not(.on) svg,.tab:not(.on) span{color:var(--ink-3)}
 
 .placeholder{padding:40px 8px;text-align:center;color:var(--ink-3);font-size:13.5px;line-height:1.6}
+
+/* =====================================================================
+   Sensación de app nativa en el móvil (skill mobile-native / emil-design-eng)
+   ===================================================================== */
+:root{
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+}
+html{
+  -webkit-text-size-adjust:100%;            /* sin inflado de letra al girar el móvil */
+}
+/* Que un gesto hacia abajo en lo alto no dispare "tirar para recargar"
+   (en el vídeo la app acababa recargándose sola a la pantalla de inicio). */
+html,body{overscroll-behavior:none}
+.content{overscroll-behavior:contain}
+
+/* iOS amplía la página al tocar un campo con letra < 16px y no vuelve. */
+.search input,
+.informe-box input[type="text"]{font-size:16px}
+
+/* Controles: toque inmediato (sin retardo de doble toque, clave para
+   pulsar +/– seguido), y que una pulsación larga no seleccione el texto
+   del botón ni saque el menú contextual. El texto de contenido sigue
+   siendo seleccionable. */
+button,a,[role="button"],.chk{
+  touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;
+  -webkit-touch-callout:none;
+}
+
+/* Respuesta al pulsar: se nota en cuanto el dedo toca, no al soltar. */
+.screen{transition:opacity 200ms var(--ease-out)}
+.tile,.hero,.item,.btn-informe,.btn-del-informe,.btn-copiar-informe,
+.stepper button,.seg button,.fs-head,.tab,.back{
+  transition:transform 120ms var(--ease-out),background-color 120ms var(--ease-out),filter 120ms var(--ease-out);
+}
+.tile:active,.hero:active,.btn-informe:active,
+.btn-del-informe:active,.btn-copiar-informe:active{transform:scale(0.97)}
+.item:active,.fs-head:active{background-color:var(--surface-2)}
+.stepper button:active,.stepper button.pressing{background-color:var(--line);transform:scale(0.94)}
+.seg button:active,.tab:active,.back:active{transform:scale(0.94)}
+.fs-head .chev{transition:transform 180ms var(--ease-out)}
+
+@media (prefers-reduced-motion:reduce){
+  .tile:active,.hero:active,.btn-informe:active,.btn-del-informe:active,
+  .btn-copiar-informe:active,.stepper button:active,.stepper button.pressing,
+  .seg button:active,.tab:active,.back:active{transform:none}
+}
