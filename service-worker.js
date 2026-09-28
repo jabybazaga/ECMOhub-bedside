@@ -1,7 +1,7 @@
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v11";
+const CACHE_NAME = "ecmo-pie-de-cama-v12";
 const ASSETS = [
   "./",
   "index.html",
@@ -12,6 +12,12 @@ const ASSETS = [
   "icon-192.png",
   "icon-512.png",
 ];
+
+// Solo las imágenes (cambian poco) se sirven caché-primero, para ahorrar
+// datos. Todo lo demás (HTML/CSS/JS/JSON) va siempre red-primero: así una
+// actualización se ve en cuanto hay conexión, en vez de quedar atascada en
+// una copia vieja hasta que el navegador decida revisar el service worker.
+const IMAGE_RE = /\.(png|jpg|jpeg|svg|gif|webp|ico)$/i;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -29,33 +35,41 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Estrategia: red primero para HTML (para ver cambios rápido),
-// caché primero para el resto (CSS/JS/iconos), con caída a caché si no hay red.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
 
-  if (req.mode === "navigate" || req.headers.get("accept")?.includes("text/html")) {
+  let isImage = false;
+  try {
+    isImage = IMAGE_RE.test(new URL(req.url).pathname);
+  } catch (e) {
+    isImage = false;
+  }
+
+  if (isImage) {
+    // Caché primero, con red de respaldo si no está cacheada todavía.
     event.respondWith(
-      fetch(req)
-        .then((res) => {
+      caches.match(req).then((cached) => {
+        if (cached) return cached;
+        return fetch(req).then((res) => {
           const copy = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
           return res;
-        })
-        .catch(() => caches.match(req).then((res) => res || caches.match("index.html")))
+        });
+      })
     );
     return;
   }
 
+  // Red primero para todo lo demás (HTML, CSS, JS, manifest), con caída a
+  // caché solo si no hay conexión.
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req).then((res) => {
+    fetch(req)
+      .then((res) => {
         const copy = res.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
         return res;
-      });
-    })
+      })
+      .catch(() => caches.match(req).then((res) => res || caches.match("index.html")))
   );
 });
