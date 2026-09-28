@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1F6FB2">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#FFFFFF">
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
@@ -228,7 +228,7 @@
           <div class="field"><label>LDH</label><div class="stepper"><button data-step="ldh" data-delta="-10">–</button><div class="val"><span data-val="ldh">420</span><span class="unit">UI/L</span></div><button data-step="ldh" data-delta="10">+</button></div></div>
           <div class="field"><label>Perfusión heparina</label><div class="stepper"><button data-step="ritmo" data-delta="-0.5">–</button><div class="val"><span data-val="ritmo">11</span><span class="unit">mL/h</span></div><button data-step="ritmo" data-delta="0.5">+</button></div></div>
           <div class="field"><label>Sangrado activo</label>
-            <select id="r-sangrado" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="r-sangrado" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="no">No</option><option value="leve">Leve</option><option value="grave">Grave</option>
             </select>
           </div>
@@ -309,7 +309,7 @@
             <div class="field"><label>P. media vía aérea</label><div class="stepper"><button data-step="k-pmedia" data-delta="-1">–</button><div class="val"><span data-val="k-pmedia">22</span><span class="unit">cmH₂O</span></div><button data-step="k-pmedia" data-delta="1">+</button></div></div>
             <div class="field"><label>Compliance</label><div class="stepper"><button data-step="k-comp" data-delta="-1">–</button><div class="val"><span data-val="k-comp">26</span><span class="unit">mL/cmH₂O</span></div><button data-step="k-comp" data-delta="1">+</button></div></div>
             <div class="field"><label>Cuadrantes en la Rx</label>
-              <select id="k-rx" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <select id="k-rx" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
                 <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option>
               </select>
             </div>
@@ -321,12 +321,12 @@
             <div class="field"><label>Edad</label><div class="stepper"><button data-step="k-edad" data-delta="-1">–</button><div class="val"><span data-val="k-edad">52</span><span class="unit">años</span></div><button data-step="k-edad" data-delta="1">+</button></div></div>
             <div class="field"><label>Días de ventilación mecánica</label><div class="stepper"><button data-step="k-vm" data-delta="-1">–</button><div class="val"><span data-val="k-vm">3</span><span class="unit">d</span></div><button data-step="k-vm" data-delta="1">+</button></div></div>
             <div class="field"><label>Tiempo en esta situación</label>
-              <select id="k-dur" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <select id="k-dur" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
                 <option value="lt3">Menos de 3 horas</option><option value="3a6" selected>Entre 3 y 6 horas</option><option value="gt6">Más de 6 horas</option>
               </select>
             </div>
             <div class="field"><label>Dónde está el paciente</label>
-              <select id="k-sitio" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+              <select id="k-sitio" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
                 <option value="centro" selected>Ya en centro ECMO</option><option value="espera">Esperando traslado</option>
               </select>
             </div>
@@ -395,17 +395,17 @@
           <h3>RESP score<span class="pill elso">EXTERNO</span></h3>
           <p class="hint">No está en el protocolo ni en el Red Book (Schmidt, AJRCCM 2014). Rango −22 a +15.</p>
           <div class="field"><label>Edad</label>
-            <select id="resp-edad" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="resp-edad" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="0">18–49 años</option><option value="-2">50–59 años</option><option value="-3">≥ 60 años</option>
             </select>
           </div>
           <div class="field"><label>Ventilación mecánica antes de ECMO</label>
-            <select id="resp-vm" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="resp-vm" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="3">&lt; 48 h</option><option value="1">48 h – 7 días</option><option value="0">&gt; 7 días</option>
             </select>
           </div>
           <div class="field"><label>Diagnóstico respiratorio agudo</label>
-            <select id="resp-dx" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="resp-dx" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="3">Neumonía vírica</option><option value="3">Neumonía bacteriana</option><option value="11">Asma</option>
               <option value="3">Traumatismo o quemadura</option><option value="5">Neumonitis por aspiración</option>
               <option value="1">Otro diagnóstico respiratorio agudo</option><option value="0">No respiratorio o crónico</option>
@@ -440,17 +440,17 @@
           <label class="chk"><input type="checkbox" data-save="3"><span>Post-trasplante cardiaco o pulmonar (+3)</span></label>
           <label class="chk"><input type="checkbox" data-save="-3"><span>Cardiopatía congénita (−3)</span></label>
           <div class="field" style="margin-top:10px"><label>Edad</label>
-            <select id="save-edad" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="save-edad" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="7">18–38 años</option><option value="4">39–52 años</option><option value="3">53–62 años</option><option value="0">≥ 63 años</option>
             </select>
           </div>
           <div class="field"><label>Peso</label>
-            <select id="save-peso" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="save-peso" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="1">≤ 65 kg</option><option value="2">66–89 kg</option><option value="0">≥ 90 kg</option>
             </select>
           </div>
           <div class="field"><label>Intubación antes de ECMO</label>
-            <select id="save-int" style="width:100%;font-family:var(--serif);font-size:14px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
+            <select id="save-int" style="width:100%;font-family:var(--serif);font-size:16px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:9px 10px">
               <option value="0">≤ 10 h</option><option value="-2">11–29 h</option><option value="-4">≥ 30 h</option>
             </select>
           </div>
