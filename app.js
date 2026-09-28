@@ -138,20 +138,77 @@
     });
   }
 
+  function aplicarPaso(btn) {
+    var key = btn.dataset.step;
+    var delta = parseFloat(btn.dataset.delta);
+    var st = stepState[key];
+    if (!st) return false;
+    var base = (st.v === null || st.v === undefined) ? st.blankStart : st.v;
+    var v = base + (st.v === null || st.v === undefined ? 0 : delta);
+    if (v < st.min) v = st.min;
+    if (v > st.max) v = st.max;
+    v = Math.round(v * Math.pow(10, st.dec)) / Math.pow(10, st.dec);
+    var cambio = v !== st.v;
+    st.v = v;
+    refreshStepOutputs(key);
+    return cambio;
+  }
+  function recalcularPaso(btn) {
+    var key = btn.dataset.step;
+    if (RONDA_KEYS.indexOf(key) > -1) ronda();
+    if (key.indexOf("k-") === 0) calcCriterios();
+  }
+
+  // Botones +/–: el botón responde visualmente en cuanto se apoya el dedo;
+  // el paso se aplica al soltar (así, si el dedo empieza un scroll encima
+  // de un +/–, el valor NO cambia por accidente). Manteniendo pulsado se
+  // repite y acelera, para no tener que dar decenas de toques (p. ej.
+  // plaquetas de 88 a 250, o las rpm).
   document.querySelectorAll("[data-step]").forEach(function (btn) {
+    var tEspera = null, tRepite = null, repeticiones = 0, porPuntero = false;
+
+    function limpiar() {
+      clearTimeout(tEspera); clearTimeout(tRepite);
+      tEspera = tRepite = null;
+      btn.classList.remove("pressing");
+    }
+    function soltar() {
+      if (!btn.classList.contains("pressing")) return;
+      if (repeticiones === 0) aplicarPaso(btn); // toque simple
+      limpiar();
+      recalcularPaso(btn); // recalcular avisos una vez, al soltar
+    }
+    function cancelar() { // scroll o dedo fuera del botón
+      var huboCambios = repeticiones > 0;
+      limpiar();
+      if (huboCambios) recalcularPaso(btn);
+    }
+    function repetir() {
+      repeticiones++;
+      var n = repeticiones > 30 ? 3 : repeticiones > 12 ? 2 : 1; // acelera
+      var seguir = false;
+      for (var i = 0; i < n; i++) seguir = aplicarPaso(btn) || seguir;
+      if (!seguir) { tRepite = null; return; } // tope alcanzado
+      tRepite = setTimeout(repetir, repeticiones > 6 ? 60 : 110);
+    }
+
+    btn.addEventListener("pointerdown", function (e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      porPuntero = true;
+      repeticiones = 0;
+      btn.classList.add("pressing");
+      tEspera = setTimeout(repetir, 450);
+    });
+    btn.addEventListener("pointerup", soltar);
+    btn.addEventListener("pointercancel", cancelar);
+    btn.addEventListener("pointerleave", cancelar);
+    btn.addEventListener("contextmenu", function (e) { e.preventDefault(); });
     btn.addEventListener("click", function () {
-      var key = btn.dataset.step;
-      var delta = parseFloat(btn.dataset.delta);
-      var st = stepState[key];
-      if (!st) return;
-      var base = (st.v === null || st.v === undefined) ? st.blankStart : st.v;
-      var v = base + (st.v === null || st.v === undefined ? 0 : delta);
-      if (v < st.min) v = st.min;
-      if (v > st.max) v = st.max;
-      st.v = Math.round(v * Math.pow(10, st.dec)) / Math.pow(10, st.dec);
-      refreshStepOutputs(key);
-      if (RONDA_KEYS.indexOf(key) > -1) ronda();
-      if (key.indexOf("k-") === 0) calcCriterios();
+      // Con dedo/ratón el paso ya se aplicó al soltar (pointerup); el click solo
+      // actúa para teclado / lectores de pantalla.
+      if (porPuntero) { porPuntero = false; return; }
+      aplicarPaso(btn);
+      recalcularPaso(btn);
     });
   });
 
@@ -1119,6 +1176,16 @@
       navigator.serviceWorker.register("service-worker.js").catch(function () {
         /* si falla el registro, la app sigue funcionando online */
       });
+    });
+    // En cuanto se active una versión nueva del service worker (tras subir
+    // cambios), recargar la página una sola vez para mostrarla al momento,
+    // en vez de quedarse con una versión vieja cacheada sin que se note.
+    var swRecargando = false;
+    var habiaControlador = !!navigator.serviceWorker.controller; // no recargar en la 1.ª visita
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (swRecargando || !habiaControlador) return;
+      swRecargando = true;
+      window.location.reload();
     });
   }
 
