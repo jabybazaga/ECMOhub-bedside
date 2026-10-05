@@ -1,7 +1,7 @@
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v14";
+const CACHE_NAME = "ecmo-pie-de-cama-v15";
 const ASSETS = [
   "./",
   "index.html",
@@ -9,10 +9,10 @@ const ASSETS = [
   "app.js",
   "manifest.json",
   "logo.jpg",
-  "icon-192.png",
-  "icon-512.png",
-  "apple-touch-icon.png",
-  "favicon-32.png",
+  "ecmo-chub-192.png",
+  "ecmo-chub-512.png",
+  "ecmo-chub-180.png",
+  "ecmo-chub-32.png",
 ];
 
 // Solo las imágenes (cambian poco) se sirven caché-primero, para ahorrar
@@ -23,7 +23,11 @@ const IMAGE_RE = /\.(png|jpg|jpeg|svg|gif|webp|ico)$/i;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      // "reload": saltarse la caché HTTP del navegador para no guardar
+      // copias antiguas de archivos que conservan el mismo nombre.
+      cache.addAll(ASSETS.map((u) => new Request(u, { cache: "reload" })))
+    )
   );
   self.skipWaiting();
 });
