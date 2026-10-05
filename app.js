@@ -2117,15 +2117,15 @@
   // Cifras agregadas del registro de llamadas del programa (solo recuentos,
   // medianas y tasas; ninguna fila de paciente). Actualizar a mano en cada corte.
   var PROGRAMA = {
-    corte: "05/09/2026",
-    activaciones: 87,
-    porAnio: [["2024", 18], ["2025", 35], ["2026", 34, true]],
+    corte: "02/10/2026",
+    activaciones: 89,
+    porAnio: [["2024", 18], ["2025", 35], ["2026", 36, true]],
     canulados: 47,
-    tipos: [["VV", 47], ["VA", 27], ["DAC (donación)", 10], ["VAV híbrida", 3]],
-    superv: { fav: 23, n: 29, ic: [61.6, 90.2] },
-    supervTipo: [["VV", 17, 20, [64.0, 94.8]], ["VA", 6, 9, [35.4, 87.9]]],
+    tipos: [["VV", 47], ["VA", 29], ["DAC (donación)", 10], ["VAV híbrida", 3]],
+    superv: { fav: 30, n: 37, ic: [65.8, 90.5] },
+    supervTipo: [["VV", 22, 26, [66.5, 93.9]], ["VA", 8, 11, [43.4, 90.3]]],
     diasEcmo: { med: 8, p25: 2, p75: 18 },
-    salidas: 56
+    salidas: 57
   };
   function renderPrograma() {
     var host = document.getElementById("prog-host");
