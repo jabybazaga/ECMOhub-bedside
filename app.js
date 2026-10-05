@@ -844,54 +844,6 @@
     host.appendChild(box);
   }
 
-  // ---------- Curva flujo / saturación ----------
-  var SVGNS = "http://www.w3.org/2000/svg";
-  function el(t, a) { var e = document.createElementNS(SVGNS, t); for (var k in a) { e.setAttribute(k, a[k]); } return e; }
-  function drawCurve() {
-    var gcEl = document.getElementById("cv-gc"), recEl = document.getElementById("cv-rec"), svo2El = document.getElementById("cv-svo2");
-    var host = document.getElementById("curve-host");
-    if (!gcEl || !host) return;
-    var gc = +gcEl.value, rec = +recEl.value / 100, svo2v = +svo2El.value;
-    document.getElementById("cv-gc-v").textContent = n1(gc);
-    document.getElementById("cv-rec-v").textContent = n0(rec * 100);
-    document.getElementById("cv-svo2-v").textContent = n0(svo2v);
-    host.innerHTML = "";
-    var W = 320, H = 200, L = 40, R = 12, T = 12, B = 30;
-    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": "Saturación arterial estimada según el flujo de ECMO" });
-    var x = function (f) { return L + (f / 8) * (W - L - R); };
-    var y = function (s) { return T + (1 - (s - 40) / 60) * (H - T - B); };
-    [40, 55, 70, 85, 100].forEach(function (s) {
-      svg.appendChild(el("line", { x1: L, y1: y(s), x2: W - R, y2: y(s), stroke: "var(--line)", "stroke-width": 1 }));
-      var t = el("text", { x: L - 6, y: y(s) + 3.5, "text-anchor": "end", "font-size": 9.5, fill: "var(--ink-3)", "font-family": "var(--mono)" });
-      t.textContent = s; svg.appendChild(t);
-    });
-    [0, 2, 4, 6, 8].forEach(function (ff) {
-      var t = el("text", { x: x(ff), y: H - 12, "text-anchor": "middle", "font-size": 9.5, fill: "var(--ink-3)", "font-family": "var(--mono)" });
-      t.textContent = ff; svg.appendChild(t);
-    });
-    var ax = el("text", { x: (L + W - R) / 2, y: H - 1, "text-anchor": "middle", "font-size": 10, fill: "var(--ink-3)", "font-family": "var(--serif)" });
-    ax.textContent = "Flujo de ECMO (L/min)"; svg.appendChild(ax);
-    svg.appendChild(el("line", { x1: L, y1: y(85), x2: W - R, y2: y(85), stroke: "var(--good)", "stroke-width": 1.5, "stroke-dasharray": "4 4" }));
-    var gl = el("text", { x: L + 4, y: y(85) - 5, "text-anchor": "start", "font-size": 9.5, fill: "var(--good)", "font-family": "var(--mono)", "font-weight": 500 });
-    gl.textContent = "objetivo 85 %"; svg.appendChild(gl);
-    var d = "", pts = [];
-    for (var ff2 = 0; ff2 <= 8.001; ff2 += 0.1) {
-      var eff = ff2 * (1 - rec), fr = Math.min(1, gc > 0 ? eff / gc : 0), s = fr * 100 + (1 - fr) * svo2v;
-      pts.push([ff2, s]);
-      d += (d ? "L" : "M") + x(ff2).toFixed(1) + " " + y(s).toFixed(1) + " ";
-    }
-    svg.appendChild(el("path", { d: d, fill: "none", stroke: "var(--accent)", "stroke-width": 2, "stroke-linecap": "round", "stroke-linejoin": "round" }));
-    var p4 = pts[40];
-    svg.appendChild(el("circle", { cx: x(p4[0]), cy: y(p4[1]), r: 4, fill: "var(--accent)", stroke: "var(--surface)", "stroke-width": 2 }));
-    var lb = el("text", { x: Math.min(x(p4[0]) + 8, W - 70), y: y(p4[1]) - 7, "font-size": 10, fill: "var(--ink)", "font-family": "var(--mono)", "font-weight": 500 });
-    lb.textContent = "4 L/min → " + n0(p4[1]) + " %"; svg.appendChild(lb);
-    host.appendChild(svg);
-  }
-  ["cv-gc", "cv-rec", "cv-svo2"].forEach(function (id) {
-    var elx = document.getElementById(id);
-    if (elx) elx.addEventListener("input", drawCurve);
-  });
-
   // ---------- Informes de ronda ----------
   var INFORMES_KEY = "ecmo_informes";
 
@@ -1200,5 +1152,4 @@
   if (elsoHost) ELSO.forEach(function (grp) { renderBars(elsoHost, grp); });
   var scoreHost = document.getElementById("score-host");
   if (scoreHost) SCORES.forEach(function (grp) { renderBars(scoreHost, grp); });
-  drawCurve();
 })();

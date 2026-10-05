@@ -840,16 +840,6 @@
 
       <h3 class="rh">Curvas de riesgo de los scores</h3>
       <div id="score-host"></div>
-
-      <h3 class="rh">Flujo de ECMO y saturación arterial</h3>
-      <p class="rp">Por qué el flujo debe ser el 60% del gasto cardiaco: mueve los controles para ver cómo un gasto alto, una recirculación del 30% o una SvO₂ baja hunden la saturación aunque la bomba vaya bien.</p>
-      <div class="card">
-        <div class="slider"><div class="lbl"><span>Gasto cardiaco</span><b><span id="cv-gc-v">6,0</span> L/min</b></div><input type="range" id="cv-gc" min="3" max="10" step="0.5" value="6"></div>
-        <div class="slider"><div class="lbl"><span>Recirculación</span><b><span id="cv-rec-v">10</span>%</b></div><input type="range" id="cv-rec" min="0" max="50" step="5" value="10"></div>
-        <div class="slider"><div class="lbl"><span>SvO₂</span><b><span id="cv-svo2-v">60</span>%</b></div><input type="range" id="cv-svo2" min="40" max="80" step="5" value="60"></div>
-        <div id="curve-host"></div>
-        <p class="hint" style="margin-top:6px">Modelo simplificado: SaO₂ ≈ f·100 + (1−f)·SvO₂, f = flujo efectivo ÷ gasto cardiaco (pulmón nativo sin aporte). Para razonar, no sustituye a la gasometría.</p>
-      </div>
     </div>
     <nav class="tabbar">
       <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
