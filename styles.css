@@ -235,6 +235,7 @@ html[data-theme="noche"] .tile .tt,html[data-theme="noche"] .tile .tic,html[data
 .badge.crit{background:var(--crit-soft);color:var(--crit)}
 .badge.warn{background:var(--warn-soft);color:var(--warn)}
 .badge.ok{background:var(--good-soft);color:var(--good)}
+.badge.zero{background:var(--surface-2);color:var(--ink-3)}
 .badge.vv{background:var(--accent-soft);color:var(--accent)}
 .badge.va{background:var(--va-soft);color:var(--va)}
 .rsum .go{border:0;background:none;font:600 14px var(--serif);color:var(--ronda);display:flex;align-items:center;gap:2px;padding:8px 4px;flex:0 0 auto}

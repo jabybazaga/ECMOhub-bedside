@@ -1378,8 +1378,8 @@
     var nk = f.filter(function (x) { return x.sev === "ok"; }).length;
     rondaNc = nc;
     var sum = document.getElementById("r-sum");
-    if (sum) sum.innerHTML = '<span class="badge crit">' + nc + (nc === 1 ? " crítico" : " críticos") + '</span>' +
-      '<span class="badge warn">' + nw + ' a vigilar</span><span class="badge ok">' + nk + ' en rango</span><span class="sp"></span>' +
+    if (sum) sum.innerHTML = '<span class="badge ' + (nc ? "crit" : "zero") + '">' + nc + (nc === 1 ? " crítico" : " críticos") + '</span>' +
+      '<span class="badge ' + (nw ? "warn" : "zero") + '">' + nw + ' a vigilar</span><span class="badge ' + (nk ? "ok" : "zero") + '">' + nk + ' en rango</span><span class="sp"></span>' +
       '<button type="button" class="go" id="r-go-avisos">Avisos' + SVG_CHEV + '</button>';
     var fe = document.getElementById("r-fecha");
     if (fe) fe.textContent = fechaCorta(new Date()) + (isFinite(sv("dias")) ? " · día " + n0(sv("dias")) + " de soporte" : "");
