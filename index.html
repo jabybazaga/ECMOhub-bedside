@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=15">
+<link rel="manifest" href="manifest.json?v=16">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -98,21 +98,18 @@
       </div>
 
       <div class="grp">Datos</div>
-      <div class="row">
-        <button class="item" data-go="informes">
-          <div class="ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div>
-          <div class="tx"><div class="t">Informes</div><div class="d">Guardados desde Ronda diaria</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      <div class="grid3">
+        <button class="tile inf" data-go="informes">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div>
+          <div class="tt">Informes</div><span class="tcount" id="inf-count" hidden></span>
         </button>
-        <button class="item" data-go="datos">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
-          <div class="tx"><div class="t">Supervivencia</div><div class="d">Registro ELSO</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile sup" data-go="datos">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
+          <div class="tt">Supervivencia</div>
         </button>
-        <button class="item" data-go="fuentes">
-          <div class="ic" style="background:var(--surface-2)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
-          <div class="tx"><div class="t">Fuentes</div><div class="d">CHUB · ELSO · Clínic</div></div>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+        <button class="tile light" data-go="fuentes">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+          <div class="tt">Fuentes</div>
         </button>
       </div>
 
@@ -776,11 +773,12 @@
 
   <!-- ============ DATOS ============ -->
   <section id="screen-datos" class="screen">
-    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div><div class="segc" id="elso-seg" role="tablist"><button class="on" data-g="0">Adulto</button><button data-g="1">Pediátrico</button><button data-g="2">Neonatal</button></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div></div>
     <div class="content">
-      <p class="ref-lede">El protocolo no incluye resultados. Cifras del registro ELSO y de los artículos originales: orientan la conversación, no son pronóstico individual.</p>
+      <p class="ref-lede">Primero los resultados de nuestro programa; después el registro ELSO y los scores. Orientan la conversación, no son un pronóstico individual.</p>
 
-      <div class="card sv-card"><h3 class="ch">Registro ELSO · al alta</h3><p class="cap" id="elso-cap"></p><div id="elso-host"></div></div>
+      <div class="card sv-card prog" id="prog-host"></div>
+      <div class="card sv-card"><h3 class="ch">Registro ELSO · al alta</h3><p class="cap" id="elso-cap"></p><div class="segc" id="elso-seg" role="tablist"><button class="on" data-g="0">Adulto</button><button data-g="1">Pediátrico</button><button data-g="2">Neonatal</button></div><div id="elso-host"></div></div>
       <div class="card sv-card"><div class="chrow"><h3 class="ch">Por clase de riesgo</h3><div class="segc mini" id="score-seg"><button class="on" data-s="0">RESP</button><button data-s="1">SAVE</button></div></div><div id="score-host"></div><p class="cap" id="score-cap"></p></div>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
@@ -877,7 +875,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 15 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 16 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 

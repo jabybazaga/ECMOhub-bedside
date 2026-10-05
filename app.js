@@ -11,13 +11,14 @@
 
   // ---------- ajustes (se guardan en este móvil) ----------
   var SET_KEY = "ecmo_ajustes";
-  var DEF_SET = { tema: "auto", letra: 0, densidad: "compacta", modo: "vv", recordar: true, rangos: true, vibrar: false, fuentes: "todas", gases: "mmhg", firma: "", boxes: 12, favs: [] };
+  var DEF_SET = { tema: "auto", letra: 0, densidad: "compacta", modo: "vv", recordar: true, rangos: true, vibrar: false, fuentes: "todas", gases: "mmhg", firma: "", boxes: 30, favs: [] };
   var S = (function () {
     var o = {};
     try { o = JSON.parse(ls(SET_KEY) || "{}") || {}; } catch (e) { o = {}; }
     var r = {};
     for (var k in DEF_SET) r[k] = (k in o) ? o[k] : DEF_SET[k];
     if (!Array.isArray(r.favs)) r.favs = [];
+    if (r.boxes === 12) r.boxes = 30; // el antiguo valor por defecto pasa a Box 1–30
     return r;
   })();
   function saveS() { ls(SET_KEY, JSON.stringify(S)); }
@@ -1140,12 +1141,17 @@
       var nc = inf.hallazgos.filter(function (x) { return x.sev === "crit"; }).length;
       var nw = inf.hallazgos.filter(function (x) { return x.sev === "warn"; }).length;
       var d = new Date(inf.fecha);
-      html += '<button class="icard" data-open-informe="' + inf.id + '"><div class="top"><span class="bx">' + esc(inf.cama || "Sin box") + '</span>' +
+      html += '<div class="swipe" data-id="' + inf.id + '"><div class="sw-acts">' +
+        '<button type="button" class="sw-share" data-share-id="' + inf.id + '" tabindex="-1">' + SVG_SHARE + 'Compartir</button>' +
+        '<button type="button" class="sw-del" data-del-id="' + inf.id + '" tabindex="-1">' + SVG_TRASH + 'Eliminar</button></div>' +
+        '<button class="icard" data-open-informe="' + inf.id + '"><div class="top"><span class="bx">' + esc(inf.cama || "Sin box") + '</span>' +
         '<span class="badge ' + inf.modo + '">' + inf.modo.toUpperCase() + '</span><span class="tm">' + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + '</span></div>' +
         '<div class="bdg">' + (nc ? '<span class="badge crit">' + nc + (nc === 1 ? " crítico" : " críticos") + '</span>' : "") + (nw ? '<span class="badge warn">' + nw + ' a vigilar</span>' : "") + '</div>' +
-        tendencias(inf, lista) + '</button>';
+        tendencias(inf, lista) + '</button></div>';
     });
-    host.innerHTML = html;
+    host.innerHTML = html + (html ? '<p class="sw-hint">Desliza un informe hacia la izquierda para compartirlo o eliminarlo.</p>' : "");
+    var cnt = document.getElementById("inf-count");
+    if (cnt) { cnt.textContent = lista.length; cnt.hidden = !lista.length; }
   }
   var infFiltro = document.getElementById("inf-filtro");
   if (infFiltro) infFiltro.addEventListener("change", renderListaInformes);
@@ -1278,6 +1284,8 @@
   var SVG_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
   var SVG_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
   var SVG_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+  var SVG_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>';
+  var SVG_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/></svg>';
   var SVG_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1Z"/><path d="M17 9l-5 6M12 9l5 6"/></svg>';
 
   // ---- de cada aviso al campo que lo dispara ----
@@ -1399,7 +1407,7 @@
     var sel = document.getElementById("r-box");
     if (!sel) return;
     var cur = document.getElementById("r-cama").value;
-    var n = Math.max(1, Math.min(40, parseInt(S.boxes, 10) || 12));
+    var n = Math.max(1, Math.min(40, parseInt(S.boxes, 10) || 30));
     var html = '<option value="">Sin box</option>';
     for (var i = 1; i <= n; i++) html += '<option value="Box ' + i + '">Box ' + i + '</option>';
     sel.innerHTML = html;
@@ -2106,11 +2114,52 @@
   });
 
   // ---- supervivencia ----
+  // Cifras agregadas del registro de llamadas del programa (solo recuentos,
+  // medianas y tasas; ninguna fila de paciente). Actualizar a mano en cada corte.
+  var PROGRAMA = {
+    corte: "05/09/2026",
+    activaciones: 87,
+    porAnio: [["2024", 18], ["2025", 35], ["2026", 34, true]],
+    canulados: 47,
+    tipos: [["VV", 47], ["VA", 27], ["DAC (donación)", 10], ["VAV híbrida", 3]],
+    superv: { fav: 23, n: 29, ic: [61.6, 90.2] },
+    supervTipo: [["VV", 17, 20, [64.0, 94.8]], ["VA", 6, 9, [35.4, 87.9]]],
+    diasEcmo: { med: 8, p25: 2, p75: 18 },
+    salidas: 56
+  };
+  function renderPrograma() {
+    var host = document.getElementById("prog-host");
+    if (!host) return;
+    var P = PROGRAMA, pct = Math.round(P.superv.fav / P.superv.n * 100);
+    var maxA = Math.max.apply(null, P.porAnio.map(function (a) { return a[1]; }));
+    var maxT = P.tipos[0][1];
+    var TCOL = ["var(--accent)", "var(--va)", "var(--c-cir)", "var(--tools)"];
+    host.innerHTML = '<div><h3 class="ch">Programa ECMO CHUB</h3><p class="cap" style="margin:2px 0 0">Registro de llamadas del equipo · corte ' + P.corte + '</p></div>' +
+      '<div class="kpis">' +
+      '<div class="kpi"><span class="k">Activaciones</span><span class="v">' + P.activaciones + '</span><span class="s">' + P.salidas + ' con salida del equipo</span></div>' +
+      '<div class="kpi"><span class="k">Canulaciones</span><span class="v">' + P.canulados + '</span><span class="s">' + Math.round(P.canulados / P.activaciones * 100) + ' % de las activaciones</span></div>' +
+      '<div class="kpi"><span class="k">Supervivencia en UCI</span><span class="v">' + pct + ' %</span><span class="s">' + P.superv.fav + ' de ' + P.superv.n + ' · IC95 ' + Math.round(P.superv.ic[0]) + '–' + Math.round(P.superv.ic[1]) + '</span></div>' +
+      '<div class="kpi"><span class="k">Días de ECMO</span><span class="v">' + P.diasEcmo.med + '</span><span class="s">mediana · RIC ' + P.diasEcmo.p25 + '–' + P.diasEcmo.p75 + '</span></div></div>' +
+      '<div class="sv-sub">Activaciones por año</div><div class="yr">' + P.porAnio.map(function (a) {
+        return '<div class="c' + (a[2] ? " parcial" : "") + '"><span class="n">' + a[1] + '</span><span class="b" style="height:' + Math.max(4, a[1] / maxA * 80) + 'px"></span><span class="a">' + a[0] + (a[2] ? " *" : "") + '</span></div>';
+      }).join("") + '</div>' +
+      '<div class="sv-sub">Activaciones por tipo de soporte</div>' + P.tipos.map(function (t, i) {
+        return '<div class="br"><div class="h"><i style="background:' + TCOL[i] + '"></i>' + t[0] + '<b>' + t[1] + '</b></div><div class="tr"><span style="width:' + (t[1] / maxT * 100) + '%;background:' + TCOL[i] + '"></span></div></div>';
+      }).join("") +
+      '<div class="sv-sub">Supervivencia en UCI por modalidad</div>' + P.supervTipo.map(function (t, i) {
+        var p = Math.round(t[1] / t[2] * 100), c = TCOL[i];
+        return '<div class="br"><div class="h"><i style="background:' + c + '"></i>' + t[0] + ' <span style="color:var(--ink-3);font-size:12.5px">' + t[1] + ' de ' + t[2] + '</span><b>' + p + ' %</b></div>' +
+          '<div class="ci"><span class="rg" style="left:' + t[3][0] + '%;width:' + (t[3][1] - t[3][0]) + '%;background:' + c + '"></span><span class="pt" style="left:' + p + '%;background:' + c + '"></span></div>' +
+          '<div class="n">IC95 ' + Math.round(t[3][0]) + '–' + Math.round(t[3][1]) + ' %</div></div>';
+      }).join("") +
+      '<p class="cap">* 2026 hasta el ' + P.corte + '. Supervivencia al alta de UCI de los canulados para soporte con desenlace conocido. Con series cortas los intervalos son anchos, y no es comparable sin más con ELSO: depende de a quién se canula.</p>';
+  }
   var MOD_COL = ["var(--accent)", "var(--va)", "var(--tools)"];
   var elsoG = 0, scoreS = 0;
   function renderSurv() {
     var g = ELSO[elsoG], host = document.getElementById("elso-host");
     if (!host) return;
+    renderPrograma();
     document.getElementById("elso-cap").textContent = g.title + " · " + g.cap.replace("Registro ELSO, ", "");
     host.innerHTML = g.rows.map(function (r, i) {
       return '<div class="br"><div class="h"><i style="background:' + MOD_COL[i] + '"></i>' + r.label + '<b>' + r.value + ' %</b></div>' +
@@ -2164,7 +2213,7 @@
       inp.addEventListener(inp.type === "text" || inp.type === "range" ? "input" : "change", function () {
         if (inp.type === "checkbox") S[k] = inp.checked;
         else if (inp.type === "range") S[k] = +inp.value;
-        else if (inp.type === "number") S[k] = Math.max(1, Math.min(40, parseInt(inp.value, 10) || 12));
+        else if (inp.type === "number") S[k] = Math.max(1, Math.min(40, parseInt(inp.value, 10) || 30));
         else S[k] = inp.value.trim();
         onAjuste(k);
       });
@@ -2172,14 +2221,77 @@
     syncAjustes();
   }
 
-  var shareEl = document.getElementById("informe-share-btn");
-  if (shareEl) shareEl.addEventListener("click", function () {
-    var inf = getInformes().filter(function (x) { return x.id === Number(shareEl.dataset.shareInforme); })[0];
+  function compartirInforme(id) {
+    var inf = getInformes().filter(function (x) { return x.id === id; })[0];
     if (!inf) return;
     var texto = textoPlanoInforme(inf);
     if (navigator.share) navigator.share({ title: tituloInforme(inf), text: texto }).catch(function () { /* cancelado */ });
     else copiarAlPortapapeles(texto).then(function () { window.alert("Este navegador no permite compartir: el informe se ha copiado al portapapeles."); });
-  });
+  }
+  var shareEl = document.getElementById("informe-share-btn");
+  if (shareEl) shareEl.addEventListener("click", function () { compartirInforme(Number(shareEl.dataset.shareInforme)); });
+
+  // ---- deslizar un informe de la lista: compartir o eliminar ----
+  var SW_OPEN = -168;
+  function cerrarSwipes(excepto) {
+    $$("#informes-list .swipe.open").forEach(function (w) {
+      if (w === excepto) return;
+      w.classList.remove("open");
+      w.querySelector(".icard").style.transform = "";
+    });
+  }
+  var infList = document.getElementById("informes-list");
+  if (infList) {
+    var SWP = null;
+    infList.addEventListener("pointerdown", function (e) {
+      var card = e.target.closest(".swipe .icard");
+      if (!card || (e.button !== undefined && e.button !== 0)) return;
+      var w = card.parentNode;
+      SWP = { w: w, card: card, x0: e.clientX, y0: e.clientY, base: w.classList.contains("open") ? SW_OPEN : 0, dx: 0, drag: false, id: e.pointerId };
+    });
+    infList.addEventListener("pointermove", function (e) {
+      if (!SWP || e.pointerId !== SWP.id) return;
+      var dx = e.clientX - SWP.x0, dy = e.clientY - SWP.y0;
+      if (!SWP.drag) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) { if (Math.abs(dy) > 10) SWP = null; return; }
+        SWP.drag = true;
+        SWP.w.classList.add("drag");
+        try { SWP.card.setPointerCapture(e.pointerId); } catch (err) { /* sin captura */ }
+        cerrarSwipes(SWP.w);
+      }
+      SWP.dx = dx;
+      var x = Math.max(SW_OPEN - 24, Math.min(0, SWP.base + dx));
+      SWP.card.style.transform = "translateX(" + x + "px)";
+    });
+    function soltarSwipe() {
+      if (!SWP) return;
+      var s = SWP; SWP = null;
+      if (!s.drag) return;
+      s.w.classList.remove("drag");
+      var abrir = s.base + s.dx < SW_OPEN / 2;
+      s.w.classList.toggle("open", abrir);
+      s.card.style.transform = abrir ? "translateX(" + SW_OPEN + "px)" : "";
+      s.card._noClick = true;
+      setTimeout(function () { s.card._noClick = false; }, 350);
+      if (abrir) vibrar();
+    }
+    infList.addEventListener("pointerup", soltarSwipe);
+    infList.addEventListener("pointercancel", soltarSwipe);
+    // un toque sobre una tarjeta abierta o recién deslizada la cierra en vez de abrir el informe
+    infList.addEventListener("click", function (e) {
+      var card = e.target.closest(".swipe .icard");
+      if (card && (card._noClick || card.parentNode.classList.contains("open"))) {
+        e.stopPropagation(); e.preventDefault();
+        if (!card._noClick) cerrarSwipes();
+        return;
+      }
+      var sh = e.target.closest("[data-share-id]");
+      if (sh) { e.stopPropagation(); compartirInforme(Number(sh.dataset.shareId)); cerrarSwipes(); return; }
+      var dl = e.target.closest("[data-del-id]");
+      if (dl) { e.stopPropagation(); eliminarInforme(Number(dl.dataset.delId)); }
+    }, true);
+  }
+  document.addEventListener("pointerdown", function (e) { if (!e.target.closest("#informes-list .swipe")) cerrarSwipes(); });
   var printEl = document.getElementById("informe-print-btn");
   if (printEl) printEl.addEventListener("click", function () { window.print(); });
 
