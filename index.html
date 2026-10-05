@@ -43,17 +43,20 @@
       <div class="brand-row">
         <img src="logo.jpg" alt="Equipo ECMO de Extremadura" class="brand-logo">
         <div class="brand"><b>ECMO HUB bedside app</b></div>
+        <button class="gear" data-go="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
       </div>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-        <input type="text" placeholder="Buscar: recirculación, Arlequín…" readonly>
+        <input type="search" id="home-search" placeholder="Buscar: recirculación, Arlequín…" aria-label="Buscar en la app" autocomplete="off">
       </div>
     </div>
     <div class="content">
+      <div class="grp" id="fav-grp" hidden>Favoritos</div>
+      <div class="row" id="fav-host" hidden></div>
       <div class="grp">A diario</div>
       <button class="hero" data-go="ronda">
         <div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></div>
-        <div class="htx"><div class="t">Ronda diaria</div><div class="d">Valores de hoy y avisos automáticos</div></div>
+        <div class="htx"><div class="t" id="hero-t">Ronda diaria</div><div class="d" id="hero-d">Valores de hoy y avisos automáticos</div></div>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
       </button>
 
@@ -78,7 +81,7 @@
       </div>
 
       <div class="grp">Herramientas</div>
-      <div class="grid2">
+      <div class="grid3">
         <button class="tile light" data-go="escalas">
           <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></div>
           <div class="tt">Escalas</div>
@@ -114,40 +117,15 @@
 
       <div class="disclaimer"><b>No sustituye al protocolo.</b> Consulta rápida a pie de cama; ante cualquier duda, el documento original.</div>
     </div>
-    <nav class="tabbar">
-      <button class="tab on" data-go="inicio">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
-        <span>Inicio</span>
-      </button>
-      <button class="tab" data-go="ronda">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg>
-        <span>Ronda</span>
-      </button>
-      <button class="tab" data-go="calc">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg>
-        <span>Calc</span>
-      </button>
-      <button class="tab" data-go="checklists">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>Check</span>
-      </button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ RONDA DIARIA ============ -->
   <section id="screen-ronda" class="screen">
-    <div class="appbar">
-      <div class="toprow">
-        <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="title">Ronda diaria</div>
-      </div>
-      <div class="seg" id="ronda-seg">
-        <button class="on" data-mode="vv">ECMO VV</button>
-        <button data-mode="va">ECMO VA</button>
-      </div>
-    </div>
+    <div class="appbar hdr m-ronda tall"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><label class="hchip" aria-label="Box o cama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg><select id="r-box"></select></label><button class="hbtn" id="r-menu-btn" aria-label="Más opciones" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" id="r-menu" hidden><button data-act="vaciar">Vaciar todos los valores</button><button data-act="ejemplo">Cargar valores de ejemplo</button></div></div><div class="title big">Ronda diaria</div><div class="hsub" id="r-fecha"></div><div class="seg" id="ronda-seg"><button class="on" data-mode="vv">ECMO VV</button><button data-mode="va">ECMO VA</button></div></div>
+    <div class="rsum" id="r-sum"></div>
     <div class="content">
-      <p style="font-size:11.5px;color:var(--ink-3);margin:0 0 12px">Los valores de partida son un ejemplo, no datos de ningún paciente. <button class="btn" type="button" id="r-clear" style="font-family:inherit;font-size:11.5px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;color:var(--ink-2)">Vaciar</button></p>
+      <p class="r-ejemplo" id="r-ejemplo">Valores de ejemplo, no de ningún paciente. Toca un valor para escribir el de tu paciente.</p>
 
       <div class="fieldset" data-group="pac">
         <button class="fs-head" aria-expanded="false">
@@ -251,34 +229,25 @@
       <h3 class="sub">Valores derivados</h3>
       <div class="deflist tight" id="r-derived"></div>
 
-      <h3 class="sub">Qué revisar hoy</h3>
+      <h3 class="sub" id="r-avisos">Qué revisar hoy</h3>
       <div class="tally" id="r-tally"></div>
       <div class="findings" id="r-findings"></div>
       <p class="note" style="margin-top:10px">Apoyo de lectura, no una indicación. Cada aviso lleva la fuente del umbral que lo dispara; donde el CHUB y las guías discrepan, el aviso sigue al protocolo y lo indica.</p>
 
-      <h3 class="sub">Guardar esta ronda</h3>
       <div class="informe-box">
-        <div class="field" style="margin-bottom:10px"><label>Cama / box (opcional)</label><input type="text" id="r-cama" placeholder="p. ej. Box 4" maxlength="20"></div>
-        <button type="button" class="btn-informe" id="r-informe-btn">Generar informe de esta ronda</button>
+        <input type="hidden" id="r-cama">
+        <button type="button" class="btn-informe" id="r-informe-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/></svg>Generar informe de la ronda</button>
         <p class="informe-fb" id="r-informe-fb"></p>
         <p class="note" style="margin-top:8px">Solo se guardan los avisos críticos y a vigilar de este momento, agrupados por sistema. Queda en este móvil, en el apartado <b>Informes</b> de Inicio.</p>
       </div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab on" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ CALCULADORAS ============ -->
   <section id="screen-calc" class="screen">
-    <div class="appbar">
-      <div class="toprow">
-        <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        <div class="title">Calculadoras</div>
-      </div>
+    <div class="appbar hdr m-tools compact"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Calculadoras</div><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button></div></div>
+    <div class="secnav static">
       <div class="chips" id="calc-chips">
         <button class="on" data-tab="criterios">Indicación</button>
         <button data-tab="recirc">Recirculación</button>
@@ -474,30 +443,30 @@
       </div>
 
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab on" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ VV ============ -->
   <section id="screen-vv" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">VV — respiratorio</div></div></div>
+    <div class="appbar hdr m-vv"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="vv" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></span><div class="htxt"><div class="title">ECMO VV</div><div class="hsub">Soporte respiratorio · sustituye al pulmón</div></div></div></div>
+    <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Insuficiencia respiratoria refractaria con función cardiaca conservada. El circuito sustituye al pulmón, no al corazón.</p>
 
       <h3 class="rh">Indicaciones</h3>
-      <p class="rp">El CHUB organiza la indicación por <b>riesgo estimado de mortalidad</b>, con tres escalas en paralelo con la PaFiO₂:</p>
+      <p class="rp">Por riesgo estimado de mortalidad, con tres escalas en paralelo a la PaFiO₂.</p>
+      <div class="kgrid">
+        <div class="kc crit"><span class="kl">Mortalidad &gt; 80 % · indicación</span><span class="kv">PaFiO₂ &lt; 80</span><span class="kd">FiO₂ &gt; 90 % · Murray 3–4 · APSS 8 · AOI 80</span></div>
+        <div class="kc warn"><span class="kl">Mortalidad &gt; 50 % · considerar</span><span class="kv">PaFiO₂ &lt; 150</span><span class="kd">FiO₂ &gt; 90 % · Murray 2–3 · APSS 3 · AOI 60</span></div>
+        <div class="kc wide"><span class="kl">Hipercapnia refractaria</span><span class="kv">pH &lt; 7,20 · PCO₂ &gt; 80</span><span class="kd">Sin respuesta pese a VM con Pplat &gt; 30</span></div>
+      </div>
+      <h4 class="rh4">Criterios de los ensayos <span class="pill elso">EXTERNO</span></h4>
       <div class="deflist">
-        <div class="dl-row hl"><span class="dl-k">CHUB · hipoxemia refractaria — mortalidad &gt; 80%</span><span class="dl-v">PaFiO₂ &lt; 80 con FiO₂ &gt; 90% · Murray 3–4 · APSS 8 · AOI 80</span></div>
-        <div class="dl-row"><span class="dl-k">CHUB · a considerar — mortalidad &gt; 50%</span><span class="dl-v">PaFiO₂ &lt; 150 con FiO₂ &gt; 90% · Murray 2–3 · APSS 3 · AOI 60</span></div>
-        <div class="dl-row"><span class="dl-k">CHUB · hipercapnia refractaria</span><span class="dl-v">pH &lt; 7,20 y/o PCO₂ &gt; 80 mmHg, sin respuesta pese a VM con Pplat &gt; 30</span></div>
         <div class="dl-row hl"><span class="dl-k">EOLIA <span class="pill elso">EXTERNO</span> — recomendado por ESICM</span><span class="dl-v">P/F &lt; 50 con FiO₂ &gt; 0,8 &gt; 3h · P/F &lt; 80 con FiO₂ &gt; 0,8 &gt; 6h · pH &lt; 7,25 &gt; 6h con FR≤35 y Pplat &lt; 32</span></div>
         <div class="dl-row"><span class="dl-k">CESAR <span class="pill elso">EXTERNO</span></span><span class="dl-v">Fallo reversible · Murray ≥ 3,0 · pH &lt; 7,20 pese a óptimo (considerar Murray ≥ 2,5)</span></div>
         <div class="dl-row"><span class="dl-k">ECMONET <span class="pill elso">EXTERNO</span></span><span class="dl-v">IO &gt; 30 · P/F &lt; 70 con PEEP≥15 · pH &lt; 7,25 &gt; 2h · inestabilidad hemodinámica</span></div>
       </div>
+      <a href="#" class="linkcard" data-go="calc" data-calc-tab="criterios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg><span>Calcular qué criterio cumple tu paciente</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a>
       <p class="rp" style="font-size:12px;color:var(--ink-3)">Premisa común: manejo optimizado, ventilación protectora y al menos un ciclo de prono. AOI 60 → 50% mortalidad; AOI 80 → 80%. Otras indicaciones: fuga aérea, intubación en lista de trasplante pulmonar, parada respiratoria inminente.</p>
 
       <h3 class="rh">Contraindicaciones — todas relativas<span class="pill chub">CHUB</span></h3>
@@ -539,17 +508,13 @@
       </div>
       <div class="note red"><b>Abortar si:</b> desaturación &lt; 88% &gt; 5 min · FR &gt; 35 · trabajo respiratorio (P0.1 &gt; 10) · PCO₂ +20% · inestabilidad hemodinámica.</div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ VA ============ -->
   <section id="screen-va" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">VA — circulatorio</div></div></div>
+    <div class="appbar hdr m-va"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="va" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></span><div class="htxt"><div class="title">ECMO VA</div><div class="hsub">Soporte circulatorio y respiratorio</div></div></div></div>
+    <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Shock cardiogénico refractario INTERMACS I–II: puente a recuperación, decisión, asistencia de larga duración o trasplante.</p>
 
@@ -616,17 +581,13 @@
       </div>
       <div class="note red"><b>Fracaso:</b> caída de PAM &gt; 10–20 o PAM &lt; 65 · aumento de presiones de llenado · arritmias · caída del gasto. Repetir la prueba a las 24 h.</div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ ANTICOAGULACIÓN ============ -->
   <section id="screen-anticoag" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Anticoagulación</div></div></div>
+    <div class="appbar hdr m-anti"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="anticoag" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6.2 7.3 6.2 11.5a6.2 6.2 0 1 1-12.4 0C5.8 10.3 12 3 12 3Z"/></svg></span><div class="htxt"><div class="title">Anticoagulación</div><div class="hsub">Heparina, bivalirudina y hemoderivados</div></div></div></div>
+    <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Pauta propia del CHUB. Rangos objetivo más bajos que los clásicos: ACT diana 160–180, no 180–220.</p>
 
@@ -667,21 +628,17 @@
         <div class="deflist-cap">El fibrinógeno es la mayor discrepancia: ELSO pide el doble que el CHUB. Los avisos de la ronda siguen al CHUB.</div>
       </div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ COMPLICACIONES ============ -->
   <section id="screen-complicaciones" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Complicaciones</div></div></div>
+    <div class="appbar hdr m-comp"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="complicaciones" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span><div class="htxt"><div class="title">Complicaciones</div><div class="hsub">Emergencias primero · algoritmos del Clínic</div></div></div></div>
     <div class="content">
-      <p class="ref-lede">Primero las emergencias con su secuencia de actuación. Después, lo que se vigila cada día. <span class="pill elso">EXTERNO</span> Algoritmos Clínic.</p>
+      <div class="h2row"><h2 class="h2">Emergencias</h2><span class="hint2">Toca para el paso a paso</span></div>
+      <div class="emgrid" id="em-grid"></div>
 
-      <div class="steps crit">
+      <div class="steps crit em-src">
         <div class="st-h crit">Caída de flujo · cimbreo (P1 &lt; −90 mmHg)</div>
         <p class="st-sig">Si es precarga, bajar rpm — nunca subirlas.</p>
         <ol>
@@ -692,7 +649,7 @@
         </ol>
       </div>
 
-      <div class="steps crit">
+      <div class="steps crit em-src">
         <div class="st-h crit">Alarma de aire</div>
         <p class="st-sig">Lo primero es mirar el circuito: la mayoría son falsas alarmas del sensor.</p>
         <ol>
@@ -702,7 +659,7 @@
         </ol>
       </div>
 
-      <div class="steps crit">
+      <div class="steps crit em-src">
         <div class="st-h crit">Fallo de bomba</div>
         <p class="st-sig">Pérdida súbita de flujo · consola apagada · alarma crítica.</p>
         <ol>
@@ -715,7 +672,7 @@
         </ol>
       </div>
 
-      <div class="steps crit">
+      <div class="steps crit em-src">
         <div class="st-h crit">Decanulación accidental</div>
         <p class="st-sig">Comprimir es el paso que salva.</p>
         <ol>
@@ -730,6 +687,7 @@
       </div>
       <div class="note red"><b>Taponamiento por falsa luz (yugular).</b> Si la cánula está introducida, <b>clamparla y no retirarla</b> hasta la corrección quirúrgica. <span class="pill chub">CHUB</span></div>
 
+      <h2 class="h2" id="vigilancia">Vigilancia diaria</h2>
       <h3 class="rh">Detección precoz de fallo del circuito<span class="pill chub">CHUB</span></h3>
       <div class="deflist">
         <div class="dl-row"><span class="dl-k">Trombosis de membrana</span><span class="dl-v">P3 &gt; 50 (ascenso 30–50%) · dímero D &gt; 25–30 mg/L · coágulos visibles</span></div>
@@ -748,17 +706,13 @@
       <p class="rp"><b>Infección:</b> sepsis hasta 30%; umbral de sospecha bajo. Profilaxis: <b>vancomicina 10 mg/kg + cefazolina 1 g</b> (linezolid si IRC, aztreonam si alergia a betalactámicos).</p>
       <p class="rp"><b>Hematológicas:</b> trombocitopenia muy frecuente, por consumo; si es aislada puede indicar trombosis de la membrana.</p>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ ESCALAS ============ -->
   <section id="screen-escalas" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Escalas</div></div></div>
+    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="escalas" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></span><div class="htxt"><div class="title">Escalas</div><div class="hsub">Murray, APSS, SCAI, INTERMACS</div></div></div></div>
+    <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Las que usa el protocolo y las que cita sin incluir. Murray, APSS, RESP y SAVE tienen calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
 
@@ -806,62 +760,34 @@
       <h3 class="rh">RESP y SAVE<span class="pill elso">EXTERNO</span></h3>
       <p class="rp">El protocolo cita el <b>SAVE score</b> para decidir el inicio y valorar futilidad, sin tabla: <b>clase V no tributaria</b>, clase IV valorar riesgo-beneficio. El <b>RESP score</b> no aparece en el protocolo. Calculadoras en <a href="#" data-go="calc">Calculadoras</a>.</p>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ CHECKLISTS ============ -->
   <section id="screen-checklists" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Checklists</div></div></div>
+    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="checklists" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div class="htxt"><div class="title">Checklists</div><div class="hsub">Material de transporte y canulación</div></div></div></div>
     <div class="content">
       <p class="ref-lede">Material del protocolo, apartado de transporte. Se marca tocando cada línea; el estado se guarda en este móvil.</p>
       <div id="checklists-host"></div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab on" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ DATOS ============ -->
   <section id="screen-datos" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div><div class="segc" id="elso-seg" role="tablist"><button class="on" data-g="0">Adulto</button><button data-g="1">Pediátrico</button><button data-g="2">Neonatal</button></div></div>
     <div class="content">
       <p class="ref-lede">El protocolo no incluye resultados. Cifras del registro ELSO y de los artículos originales: orientan la conversación, no son pronóstico individual.</p>
 
-      <h3 class="rh">Registro ELSO — supervivencia al alta</h3>
-      <div id="elso-host"></div>
-
-      <h3 class="rh">Curvas de riesgo de los scores</h3>
-      <div id="score-host"></div>
-
-      <h3 class="rh">Flujo de ECMO y saturación arterial</h3>
-      <p class="rp">Por qué el flujo debe ser el 60% del gasto cardiaco: mueve los controles para ver cómo un gasto alto, una recirculación del 30% o una SvO₂ baja hunden la saturación aunque la bomba vaya bien.</p>
-      <div class="card">
-        <div class="slider"><div class="lbl"><span>Gasto cardiaco</span><b><span id="cv-gc-v">6,0</span> L/min</b></div><input type="range" id="cv-gc" min="3" max="10" step="0.5" value="6"></div>
-        <div class="slider"><div class="lbl"><span>Recirculación</span><b><span id="cv-rec-v">10</span>%</b></div><input type="range" id="cv-rec" min="0" max="50" step="5" value="10"></div>
-        <div class="slider"><div class="lbl"><span>SvO₂</span><b><span id="cv-svo2-v">60</span>%</b></div><input type="range" id="cv-svo2" min="40" max="80" step="5" value="60"></div>
-        <div id="curve-host"></div>
-        <p class="hint" style="margin-top:6px">Modelo simplificado: SaO₂ ≈ f·100 + (1−f)·SvO₂, f = flujo efectivo ÷ gasto cardiaco (pulmón nativo sin aporte). Para razonar, no sustituye a la gasometría.</p>
-      </div>
+      <div class="card sv-card"><h3 class="ch">Registro ELSO · al alta</h3><p class="cap" id="elso-cap"></p><div id="elso-host"></div></div>
+      <div class="card sv-card"><div class="chrow"><h3 class="ch">Por clase de riesgo</h3><div class="segc mini" id="score-seg"><button class="on" data-s="0">RESP</button><button data-s="1">SAVE</button></div></div><div id="score-host"></div><p class="cap" id="score-cap"></p></div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ FUENTES ============ -->
   <section id="screen-fuentes" class="screen">
-    <div class="appbar"><div class="toprow"><button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Fuentes</div></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Fuentes</div></div></div>
     <div class="content">
       <div class="src-row"><span class="pill chub" style="margin:0 10px 0 0">CHUB</span><em>Protocolo Oxigenador de Membrana Extracorpórea – ECMO.</em> Servicio de Medicina Intensiva, Complejo Hospitalario Universitario de Badajoz. Aprobado 02/05/2024, con anexos de indicaciones VV/VA, Destete y Anticoagulación.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>ELSO Guidelines for Adult Respiratory Failure</em> y <em>General Guidelines for all ECLS Cases.</em> ELSO, v1.4, agosto 2017.</div>
@@ -871,12 +797,7 @@
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>Schmidt M, et al. RESP score, Am J Respir Crit Care Med 2014;189(11):1374-82 · SAVE score, Eur Heart J 2015;36(33):2246-56.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span>ELSO Live Registry Dashboard · Combes A, et al. EOLIA trial, N Engl J Med 2018;378:1965-1975.</div>
     </div>
-    <nav class="tabbar">
-      <button class="tab" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg><span>Inicio</span></button>
-      <button class="tab" data-go="ronda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg><span>Ronda</span></button>
-      <button class="tab" data-go="calc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M17 11h0M8 15h2M12.5 15h2M17 15h0"/></svg><span>Calc</span></button>
-      <button class="tab" data-go="checklists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Check</span></button>
-    </nav>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
   <!-- ============ INFORMES ============ -->
@@ -886,11 +807,12 @@
         <div class="toprow">
           <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
           <div class="title">Informes</div>
+          <span class="sp"></span><label class="fchip"><select id="inf-filtro" aria-label="Filtrar por cama"><option value="">Todas las camas</option></select></label>
         </div>
       </div>
       <div class="content">
         <p class="note" id="informes-empty">Todavía no has generado ningún informe. Ve a <b>Ronda diaria</b>, revisa los avisos y pulsa "Generar informe de esta ronda".</p>
-        <div class="row" id="informes-list"></div>
+        <div id="informes-list"></div>
       </div>
     </div>
     <div id="informes-view-detalle" class="pane">
@@ -903,15 +825,69 @@
       <div class="content">
         <p class="note" id="informe-fecha" style="margin:0 0 14px"></p>
         <div id="informe-body"></div>
-        <div class="informe-actions">
-          <button type="button" class="btn-copiar-informe" id="informe-copiar-btn">Copiar informe</button>
-          <button type="button" class="btn-del-informe" id="informe-del-btn">Eliminar este informe</button>
+        <div class="inf-acts">
+          <button type="button" class="ia pri" id="informe-share-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>Compartir</button>
+          <button type="button" class="ia" id="informe-copiar-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button>
+          <button type="button" class="ia" id="informe-print-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 14h10v7H7Z"/></svg>Imprimir</button>
         </div>
+        <button type="button" class="btn-del-informe" id="informe-del-btn">Eliminar este informe</button>
       </div>
     </div>
   </section>
 
+  <!-- ============ BUSCAR ============ -->
+  <section id="screen-buscar" class="screen">
+    <div class="appbar plain"><div class="searchrow">
+      <label class="search on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><input type="search" id="q" placeholder="Buscar en el protocolo…" aria-label="Buscar en la app" autocomplete="off" enterkeyhint="search"></label>
+      <button class="txtbtn" data-go="inicio">Cancelar</button>
+    </div></div>
+    <div class="content" id="q-host"></div>
+  </section>
+
+  <!-- ============ AJUSTES ============ -->
+  <section id="screen-ajustes" class="screen">
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Ajustes</div></div></div>
+    <div class="content">
+      <div class="grp">Apariencia</div>
+      <div class="sbox pad">
+        <div class="sfield"><span class="sl">Tema</span>
+          <div class="segc" data-set="tema"><button data-v="auto">Auto</button><button data-v="claro">Claro</button><button data-v="oscuro">Oscuro</button><button data-v="noche">Noche</button></div>
+          <span class="shint">Noche: fondo negro, brillo bajo y sin blancos puros, para no deslumbrar en el box.</span></div>
+        <div class="sfield"><span class="sl">Tamaño de letra</span>
+          <div class="fsrow"><span class="a1">A</span><input type="range" min="0" max="3" step="1" data-set="letra" aria-label="Tamaño de letra"><span class="a2">A</span></div></div>
+        <div class="sfield"><span class="sl">Densidad de la ronda</span>
+          <div class="segc" data-set="densidad"><button data-v="comoda">Cómoda</button><button data-v="compacta">Compacta</button></div></div>
+      </div>
+      <div class="grp">Ronda diaria</div>
+      <div class="sbox">
+        <div class="srow"><span class="sd">Modo al abrir</span><div class="segc mini" data-set="modo"><button data-v="vv">VV</button><button data-v="va">VA</button></div></div>
+        <label class="srow"><span class="sd">Recordar los últimos valores</span><input type="checkbox" class="sw" data-set="recordar"></label>
+        <label class="srow"><span class="sd">Mostrar rangos de referencia</span><input type="checkbox" class="sw" data-set="rangos"></label>
+        <label class="srow"><span class="sd">Vibrar al tocar</span><input type="checkbox" class="sw" data-set="vibrar"></label>
+      </div>
+      <div class="grp">Contenido</div>
+      <div class="sbox">
+        <div class="srow"><span class="sd">Fuentes mostradas</span><div class="segc mini" data-set="fuentes"><button data-v="todas">Todas</button><button data-v="chub">Solo CHUB</button></div></div>
+        <div class="srow"><span class="sd">Gases en</span><div class="segc mini" data-set="gases"><button data-v="mmhg">mmHg</button><button data-v="kpa">kPa</button></div></div>
+        <div class="srow col"><span class="sd">Favoritos en Inicio</span><div id="fav-edit" class="favedit"></div><span class="shint">Añade pantallas con la estrella de su cabecera.</span></div>
+      </div>
+      <div class="grp">Informes</div>
+      <div class="sbox">
+        <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
+        <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
+      </div>
+      <p class="about">ECMO a pie de cama · versión 13 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+    </div>
+  </section>
+
 </div>
+
+<!-- hoja para escribir un valor -->
+<div class="scrim" id="sheet-scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" hidden></div>
+
+<!-- modo crisis -->
+<div class="crisis" id="crisis" role="dialog" aria-modal="true" hidden></div>
 
 <script src="app.js"></script>
 </body>
