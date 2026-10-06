@@ -1,7 +1,7 @@
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v23";
+const CACHE_NAME = "ecmo-pie-de-cama-v25";
 const ASSETS = [
   "./",
   "index.html",
@@ -17,6 +17,8 @@ const ASSETS = [
   "img/vv-femoro-yugular.svg",
   "img/va-femoro-femoral.svg",
   "img/va-femoro-axilar.svg",
+  "perlas/perlas.json",
+  "perlas/hemofiltro.svg",
 ];
 
 // Solo las imágenes (cambian poco) se sirven caché-primero, para ahorrar
@@ -48,6 +50,10 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
+
+  // Los vídeos de las perlas van directos a la red: se piden por trozos
+  // (respuestas 206) que la caché no admite, y pesan demasiado para guardarlos.
+  if (/\.(mp4|webm|mov|m4v)$/i.test(req.url.split("?")[0])) return;
 
   let isImage = false;
   try {

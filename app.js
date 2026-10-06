@@ -42,7 +42,7 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
   // ---------- navegación entre pantallas ----------
-  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "datos", "fuentes", "informes", "buscar", "ajustes"];
+  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "buscar", "ajustes"];
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
@@ -108,6 +108,7 @@
     if (name === "inicio") updateHero();
     if (name === "informes") renderListaInformes();
     if (name === "datos") renderSurv();
+    if (name === "perlas") cargarPerlas();
     if (name === "ajustes") { syncAjustes(); renderFavs(); }
   }
 
@@ -162,8 +163,8 @@
     sweep: { v: 4, min: 0, max: 15, dec: 1 },
     rpm: { v: 3100, min: 0, max: 6000, dec: 0 },
     p1: { v: -70, min: -150, max: 0, dec: 0 },
-    p2: { v: 180, min: 0, max: 300, dec: 0 },
-    p3: { v: 28, min: 0, max: 100, dec: 0 },
+    p2: { v: 180, min: 0, max: 500, dec: 0 },
+    p3m: { v: 152, min: 0, max: 500, dec: 0 },
     po2post: { v: 380, min: 0, max: 600, dec: 0 },
     dias: { v: 4, min: 0, max: 90, dec: 0 },
     // Hemodinámica
@@ -206,7 +207,7 @@
     "k-vm": { v: 3, min: 0, max: 60, dec: 0 },
   };
 
-  var RONDA_KEYS = ["peso", "diuresis", "temp", "flujo", "sweep", "rpm", "p1", "p2", "p3", "po2post", "dias",
+  var RONDA_KEYS = ["peso", "diuresis", "temp", "flujo", "sweep", "rpm", "p1", "p2", "p3m", "po2post", "dias",
     "fc", "tas", "tad", "gc", "ic", "lactato", "sao2", "svo2", "pao2", "paco2", "ph", "svmix",
     "hb", "plaq", "fibri", "act", "ttpa", "ldh", "ritmo", "pplat", "peep", "vfio2"];
 
@@ -273,6 +274,16 @@
     });
   }
   buildTiles(document.getElementById("screen-ronda"), "ronda");
+  // ΔP de membrana: tarjeta calculada (P2 − P3) justo después de P3, a todo el ancho.
+  (function () {
+    var p3t = tileOf("p3m");
+    if (!p3t) return;
+    var el = document.createElement("div");
+    el.className = "vt calc"; el.id = "r-dpm";
+    el.innerHTML = '<span class="l"><i class="pip"></i><span>ΔP membrana · P2 − P3</span><em class="calc-tag">calculado</em></span>' +
+      '<span class="v"><span id="r-dpm-v">—</span><span class="u">mmHg</span></span>';
+    p3t.parentNode.insertBefore(el, p3t.nextSibling);
+  })();
   buildTiles(document.getElementById("pane-criterios"), "criterios");
 
   function sv(key) {
@@ -401,7 +412,9 @@
 
   function ronda() {
     var peso = sv("peso"), flujo = sv("flujo"), sweep = sv("sweep"), rpm = sv("rpm");
-    var p1 = sv("p1"), p2 = sv("p2"), p3 = sv("p3"), po2post = sv("po2post"), dias = sv("dias");
+    var p1 = sv("p1"), p2 = sv("p2"), p3m = sv("p3m"), po2post = sv("po2post"), dias = sv("dias");
+    // P2 premembrana y P3 postmembrana (ambas positivas); ΔP = P2 − P3 es el gradiente de la membrana.
+    var dpm = (isFinite(p2) && isFinite(p3m)) ? p2 - p3m : NaN;
     var fc = sv("fc"), tas = sv("tas"), tad = sv("tad"), ic = sv("ic"), lactato = sv("lactato");
     var sao2 = sv("sao2"), svo2 = sv("svo2"), pao2 = sv("pao2"), paco2 = sv("paco2"), ph = sv("ph");
     var hb = sv("hb"), plaq = sv("plaq"), fibri = sv("fibri"), act = sv("act"), ttpa = sv("ttpa"), ldh = sv("ldh");
@@ -461,11 +474,12 @@
       else if (p1 < -50) f.push(F("info", "Succión moderada", n0(p1) + " mmHg", "Por debajo de −50 mmHg ya son posibles microembolias gaseosas.", CH));
       else f.push(F("ok", "Succión correcta", n0(p1) + " mmHg", "Dentro del rango seguro.", CH));
     }
-    if (isFinite(p2) && p2 > 200) f.push(F("warn", "Presión de retorno alta", n0(p2) + " mmHg", "Límite del protocolo 200 mmHg. Descartar hipertensión, cánula de retorno obstruida o acodada, y membrana coagulada.", CH));
-    if (isFinite(p3)) {
-      if (p3 > 50) f.push(F("crit", "Gradiente transmembrana alto", n0(p3) + " mmHg", "Por encima del límite de 50 mmHg: sospechar trombosis del oxigenador. Comprobar gasometría pre y post, dímero D y plaquetas, y programar el recambio antes de que sea urgente.", CH));
-      else if (p3 > 35) f.push(F("warn", "Gradiente transmembrana en ascenso", n0(p3) + " mmHg", "Comparar con el valor basal: un ascenso del 30–50 % sugiere trombosis, aunque no se alcance el límite absoluto.", CH));
-      else f.push(F("ok", "Gradiente transmembrana normal", n0(p3) + " mmHg", "Por debajo de 50 mmHg.", CH));
+    if (isFinite(p2) && p2 > 200) f.push(F("warn", "Presión premembrana alta", n0(p2) + " mmHg", "Límite del protocolo 200 mmHg. Si sube también el ΔP, sospechar trombosis de la membrana. Si P3 sube a la par y el ΔP no cambia, la resistencia está después del oxigenador: línea o cánula de retorno acodada u obstruida, o hipertensión.", CH));
+    if (isFinite(dpm)) {
+      var p3 = dpm;
+      if (p3 > 50) f.push(F("crit", "Gradiente transmembrana alto (ΔP)", n0(p3) + " mmHg", "Por encima del límite de 50 mmHg: sospechar trombosis del oxigenador. Comprobar gasometría pre y post, dímero D y plaquetas, y programar el recambio antes de que sea urgente.", CH));
+      else if (p3 > 35) f.push(F("warn", "Gradiente transmembrana en ascenso (ΔP)", n0(p3) + " mmHg", "Comparar con el valor basal: un ascenso del 30–50 % sugiere trombosis, aunque no se alcance el límite absoluto.", CH));
+      else f.push(F("ok", "Gradiente transmembrana normal (ΔP)", n0(p3) + " mmHg", "ΔP = P2 − P3 por debajo de 50 mmHg.", CH));
     }
     if (isFinite(po2post)) {
       if (po2post < 150) f.push(F("crit", "PO₂ postmembrana baja", n0(po2post) + " mmHg", "Alerta de malfunción de la membrana. Con PaFi del oxigenador por debajo de 150 el protocolo obliga al cambio. Antes, descartar condensación: flush a 10 L/min durante 30 s y repetir la gasometría.", CH));
@@ -626,7 +640,7 @@
       findings: f.slice(),
       datos: {
         modo: modo, peso: peso, flujo: flujo, sweep: sweep, rpm: rpm,
-        p1: p1, p2: p2, p3: p3, po2post: po2post, dias: dias,
+        p1: p1, p2: p2, p3m: p3m, dpm: dpm, po2post: po2post, dias: dias,
         fc: fc, tas: tas, tad: tad, ic: ic, lactato: lactato,
         sao2: sao2, svo2: svo2, pao2: pao2, paco2: paco2, ph: ph,
         hb: hb, plaq: plaq, fibri: fibri, act: act, ttpa: ttpa, ldh: ldh,
@@ -1041,12 +1055,13 @@
         else partes.push("oxigenación en objetivo, SaO₂ " + n0(d.sao2) + " %");
       }
     }
-    if (isFinite(d.flujoKg) || isFinite(d.p3) || isFinite(d.po2post)) {
+    var dP = isFinite(d.dpm) ? d.dpm : d.p3;
+    if (isFinite(d.flujoKg) || isFinite(dP) || isFinite(d.po2post)) {
       var circ = [];
       if (isFinite(d.flujoKg)) circ.push("flujo " + n0(d.flujoKg) + " mL/kg/min");
-      if (isFinite(d.p3)) circ.push("gradiente transmembrana " + n0(d.p3) + " mmHg");
+      if (isFinite(dP)) circ.push("ΔP de membrana " + n0(dP) + " mmHg");
       if (isFinite(d.po2post)) circ.push("PO₂ postmembrana " + n0(d.po2post) + " mmHg");
-      var circAlerta = (isFinite(d.p3) && d.p3 > 35) || (isFinite(d.po2post) && d.po2post < 300) || (isFinite(d.flujoKg) && (d.flujoKg < 50 || d.flujoKg > 80));
+      var circAlerta = (isFinite(dP) && dP > 35) || (isFinite(d.po2post) && d.po2post < 300) || (isFinite(d.flujoKg) && (d.flujoKg < 50 || d.flujoKg > 80));
       partes.push("circuito " + (circAlerta ? "con signos a vigilar" : "sin signos de disfunción") + " (" + circ.join(", ") + ")");
     }
     return partes.length ? capitalizar(partes.join("; ")) + "." : "Sin datos suficientes para valorar la situación respiratoria.";
@@ -1139,7 +1154,7 @@
   }
 
   function tituloInforme(inf) { return (inf.cama ? inf.cama + " · " : "") + "ECMO " + inf.modo.toUpperCase(); }
-  var TREND = [["po2post", "PO₂ post", 0], ["p3", "P3", 0], ["sao2", "SaO₂", 0], ["paco2", "PaCO₂", 0], ["plaq", "Plaq", 0], ["fibri", "Fib", 1],
+  var TREND = [["po2post", "PO₂ post", 0], ["dpm", "ΔP", 0], ["sao2", "SaO₂", 0], ["paco2", "PaCO₂", 0], ["plaq", "Plaq", 0], ["fibri", "Fib", 1],
     ["hb", "Hb", 1], ["lactato", "Lac", 1], ["act", "ACT", 0], ["ldh", "LDH", 0], ["pp", "P. pulso", 0]];
   function datosTrend(d) { var o = {}; TREND.forEach(function (t) { if (isFinite(d[t[0]])) o[t[0]] = d[t[0]]; }); return o; }
   function etiquetaDia(iso) {
@@ -1344,7 +1359,7 @@
 
   // ---- de cada aviso al campo que lo dispara ----
   var FMAP = [
-    [/^Flujo/, ["flujo"]], [/^rpm/, ["rpm"]], [/^Succión/, ["p1"]], [/retorno alta/, ["p2"]], [/transmembrana/, ["p3"]],
+    [/^Flujo/, ["flujo"]], [/^rpm/, ["rpm"]], [/^Succión/, ["p1"]], [/premembrana alta/, ["p2"]], [/transmembrana/, ["dpm"]],
     [/postmembrana|^Membrana/, ["po2post"]], [/^PaCO₂/, ["paco2"]], [/gas:sangre/, ["sweep"]], [/^Acidosis|^Alcalosis/, ["ph"]],
     [/^Hipoxemia|^SaO₂/, ["sao2"]], [/^PaO₂/, ["pao2"]], [/recirculación|SvO₂ premembrana|venosa baja/, ["svo2"]],
     [/meseta/, ["pplat"]], [/^PEEP/, ["peep"]], [/^Driving/, ["pplat", "peep"]], [/FiO₂ del/, ["vfio2"]],
@@ -1355,7 +1370,7 @@
   function keysOfFinding(t) { for (var i = 0; i < FMAP.length; i++) if (FMAP[i][0].test(t)) return FMAP[i][1]; return []; }
   var SEV_RANK = { crit: 3, warn: 2, info: 1, ok: 0 };
   var fieldSev = {}, fieldFinding = {};
-  var SHORT = { flujo: "Flujo", sweep: "Sweep", rpm: "rpm", p1: "P1", p2: "P2", p3: "P3", po2post: "PO₂ post", dias: "Día",
+  var SHORT = { flujo: "Flujo", sweep: "Sweep", rpm: "rpm", p1: "P1", p2: "P2", p3m: "P3", po2post: "PO₂ post", dias: "Día",
     fc: "FC", tas: "TAS", tad: "TAD", gc: "GC", ic: "IC", lactato: "Lac", sao2: "SaO₂", svo2: "Spre", pao2: "PaO₂", paco2: "PaCO₂",
     ph: "pH", svmix: "SvO₂", hb: "Hb", plaq: "Plaq", fibri: "Fib", act: "ACT", ttpa: "TTPa", ldh: "LDH", ritmo: "Hep",
     pplat: "Pplat", peep: "PEEP", vfio2: "FiO₂", peso: "Peso", diuresis: "Diur", temp: "T" };
@@ -1409,7 +1424,7 @@
     var r = S.rangos ? rangeOf(k) : null;
     return r && r.z ? { a: r.min, b: r.max, z: r.z } : null;
   }
-  function pintarBarra(b, k) {
+  function pintarBarra(b, k, val) {
     var r = rangoDe(k), el = b.querySelector(".rb");
     if (!r) { if (el) el.remove(); b.classList.remove("hasrb"); return; }
     if (!el) { el = document.createElement("span"); el.className = "rb"; el.setAttribute("aria-hidden", "true"); el.innerHTML = '<i class="tr"></i><i class="mk"></i>'; b.appendChild(el); }
@@ -1418,7 +1433,7 @@
     var stops = [], prev = 0;
     r.z.forEach(function (z) { var e = pc(z[0]); stops.push("var(--rb-" + z[1] + ") " + prev.toFixed(2) + "% " + e.toFixed(2) + "%"); prev = e; });
     el.firstChild.style.background = "linear-gradient(90deg," + stops.join(",") + ")";
-    var v = sv(k), mk = el.lastChild;
+    var v = val !== undefined ? val : sv(k), mk = el.lastChild;
     if (!isFinite(v)) { mk.hidden = true; return; }
     var sev = r.z[r.z.length - 1][1];
     for (var i = 0; i < r.z.length; i++) if (v < r.z[i][0]) { sev = r.z[i][1]; break; }
@@ -1451,6 +1466,20 @@
       }
       if (sev === "crit") g.c++; else if (sev === "warn") g.w++;
     });
+    var dEl = document.getElementById("r-dpm");
+    if (dEl) {
+      var dv = sv("p2") - sv("p3m"), ds = fieldSev.dpm;
+      document.getElementById("r-dpm-v").textContent = isFinite(dv) ? n0(dv) : "—";
+      dEl.classList.toggle("empty", !isFinite(dv));
+      dEl.classList.toggle("crit", ds === "crit");
+      dEl.classList.toggle("warn", ds === "warn");
+      pintarBarra(dEl, "dpm", dv);
+      var gc = groups.cir;
+      if (gc) {
+        if (ds === "crit") gc.c++; else if (ds === "warn") gc.w++;
+        if (isFinite(dv)) { var i3 = gc.sum.indexOf("P3 " + fmtDisplay("p3m")); gc.sum.splice(i3 > -1 ? i3 + 1 : gc.sum.length, 0, "ΔP " + n0(dv)); gc.sum = gc.sum.slice(0, 5); }
+      }
+    }
     Object.keys(groups).forEach(function (id) {
       var g = groups[id], head = g.fs.querySelector(".fs-head");
       head.querySelector(".fs-sum").textContent = g.sum.join(" · ") || "Sin valores";
@@ -1529,7 +1558,8 @@
     var s = S.recordar ? leerRonda() : null;
     var m = S.modo === "va" ? "va" : "vv";
     if (s && s.vals) {
-      RONDA_KEYS.forEach(function (k) { if (k in s.vals) stepState[k].v = s.vals[k]; });
+      // Un campo que no estaba en la ronda guardada (p. ej. P3 postmembrana, nuevo) queda vacío, no con el valor de ejemplo.
+      RONDA_KEYS.forEach(function (k) { stepState[k].v = (k in s.vals) ? s.vals[k] : null; });
       var sg = document.getElementById("r-sangrado");
       if (sg && s.sangrado) { sg.value = s.sangrado; syncSeg(sg); }
       document.getElementById("r-cama").value = s.cama || "";
@@ -1548,9 +1578,10 @@
     var kg = function (x) { return x * sv("peso") / 1000; };
     var R = {
       po2post: { min: 0, max: 600, z: [[150, "crit"], [300, "warn"], [600, "ok"]], ref: "Objetivo > 300 mmHg · por debajo de 150, valorar el cambio de membrana." },
-      p3: { min: 0, max: 80, z: [[35, "ok"], [50, "warn"], [80, "crit"]], ref: "Límite 50 mmHg · un ascenso del 30–50 % sobre el basal sugiere trombosis." },
+      dpm: { min: 0, max: 80, z: [[35, "ok"], [50, "warn"], [80, "crit"]], ref: "ΔP = P2 − P3. Límite 50 mmHg · un ascenso del 30–50 % sobre el basal sugiere trombosis." },
       p1: { min: -150, max: 0, z: [[-100, "crit"], [-80, "warn"], [-50, "info"], [0, "ok"]], ref: "No pasar de −80 mmHg; −100 es succión excesiva; por debajo de −50, posibles microembolias." },
-      p2: { min: 0, max: 300, z: [[200, "ok"], [300, "warn"]], ref: "Límite del protocolo: 200 mmHg." },
+      p2: { min: 0, max: 300, z: [[200, "ok"], [300, "warn"]], ref: "Premembrana. Límite del protocolo: 200 mmHg. Lo que se vigila es el ΔP (P2 − P3)." },
+      p3m: { ref: "Postmembrana. Se usa para calcular el ΔP = P2 − P3." },
       rpm: { min: 1000, max: 5000, z: [[3500, "ok"], [5000, "warn"]], ref: "Por encima de 3500 rpm aumenta la hemólisis." },
       paco2: { min: 20, max: 80, z: [[35, "warn"], [45, "ok"], [60, "warn"], [80, "crit"]], ref: "Objetivo 35–45 mmHg." },
       ph: { min: 7.0, max: 7.7, z: [[7.25, "crit"], [7.35, "warn"], [7.45, "ok"], [7.7, "warn"]], ref: "Objetivo 7,35–7,45." },
@@ -1894,7 +1925,8 @@
     anticoag: { t: "Anticoagulación", d: "Heparina y hemoderivados", tile: ".tile.neutral", bg: "var(--surface-2)", fg: "var(--ink-2)" },
     escalas: { t: "Escalas", d: "Murray, APSS, SCAI, INTERMACS", tile: '.tile[data-go="escalas"]', bg: "var(--surface-2)", fg: "var(--ink-2)" },
     complicaciones: { t: "Complicaciones", d: "Emergencias y vigilancia diaria", tile: ".tile.warn", bg: "var(--warn-soft)", fg: "var(--warn)" },
-    checklists: { t: "Checklists", d: "Material de transporte y canulación", tile: '.tile[data-go="checklists"]', bg: "var(--surface-2)", fg: "var(--ink-2)" }
+    checklists: { t: "Checklists", d: "Material de transporte y canulación", tile: '.tile[data-go="checklists"]', bg: "var(--surface-2)", fg: "var(--ink-2)" },
+    perlas: { t: "Perlas", d: "Vídeos y esquemas prácticos", tile: '.tile[data-go="perlas"]', bg: "var(--surface-2)", fg: "var(--ink-2)" }
   };
   function iconoDe(sel) { var t = document.querySelector(sel + " .tic"); return t ? t.innerHTML : ""; }
   function renderFavs() {
@@ -1932,9 +1964,9 @@
 
   // ---- buscador ----
   var SCREEN_T = { vv: "ECMO VV", va: "ECMO VA", anticoag: "Anticoagulación", complicaciones: "Complicaciones", escalas: "Escalas",
-    checklists: "Checklists", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria" };
+    checklists: "Checklists", perlas: "Perlas", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria" };
   var SCREEN_IC = { vv: ".tile.vv", va: ".tile.va", anticoag: ".tile.neutral", complicaciones: ".tile.warn", escalas: '.tile[data-go="escalas"]',
-    checklists: '.tile[data-go="checklists"]', calc: '.tile[data-go="calc"]', ronda: ".hero" };
+    checklists: '.tile[data-go="checklists"]', perlas: '.tile[data-go="perlas"]', calc: '.tile[data-go="calc"]', ronda: ".hero" };
   var SCREEN_CLS = { vv: "vv", va: "va", complicaciones: "comp" };
   var SYN = { harlequin: ["arlequin"], arlequin: ["harlequin"], sweep: ["barrido"], barrido: ["sweep"], antixa: ["anti-xa", "anticoagul"],
     weaning: ["destete"], destete: ["weaning"], chatter: ["cimbreo"], cimbreo: ["chatter"], lv: ["vi"], ecpr: ["rcp"], hit: ["4ts", "pf4"] };
@@ -1989,6 +2021,9 @@
       ["resp", "RESP score", "Supervivencia en ECMO respiratorio (Schmidt 2014)"],
       ["save", "SAVE score", "Supervivencia en ECMO VA (Schmidt 2015)"]].forEach(function (c) {
       IDX.push({ s: "calc", tab: c[0], p: "Calculadora", t: c[1], x: c[2] });
+    });
+    (PERLAS || []).forEach(function (pl) {
+      IDX.push({ s: "perlas", perla: pl.id, p: "Perlas › " + pl.cat, t: pl.titulo, x: pl.resumen + " " + (pl.puntos || []).join(" ").replace(/<[^>]+>/g, "") });
     });
     IDX.forEach(function (e) { e.n = normStr(e.p + " " + e.t + " " + e.x); e.nt = normStr(e.t); });
   }
@@ -2060,6 +2095,7 @@
     go(e.s);
     if (e.tab) selectCalcTab(e.tab);
     if (e.crisis !== undefined && e.crisis > -1) { openCrisis(e.crisis); return; }
+    if (e.perla) { abrirPerla(e.perla); return; }
     if (e.el) setTimeout(function () {
       scrollA(e.el);
       e.el.classList.remove("flash"); void e.el.offsetWidth; e.el.classList.add("flash");
@@ -2109,6 +2145,7 @@
   }
   function cerrarEsquema() {
     if (!viewerEl || viewerEl.hidden) return;
+    $$("video", viewerEl).forEach(function (v) { try { v.pause(); } catch (e) { /* sin vídeo */ } });
     viewerEl.classList.remove("on");
     setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
     capaCerrada("esquema");
@@ -2119,6 +2156,71 @@
     if (e.target.closest("[data-vclose]")) cerrarEsquema();
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
+
+  // ---- perlas: vídeos, GIF y esquemas prácticos (perlas/perlas.json; ver perlas/LEEME.md) ----
+  var PERLAS = null, perlaCat = "";
+  var SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+  var SVG_FILM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg>';
+  function cargarPerlas() {
+    if (PERLAS) { renderPerlas(); return; }
+    fetch("perlas/perlas.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+      PERLAS = (d && d.perlas) || [];
+      IDX = null;
+      renderPerlas();
+    }).catch(function () {
+      var host = document.getElementById("perlas-host");
+      if (host && !PERLAS) host.innerHTML = '<p class="ref-lede">No se han podido cargar las perlas. Ábrelas una vez con conexión para tenerlas sin ella.</p>';
+    });
+  }
+  function estadoPerla(pl) {
+    var m = pl.media;
+    if (!m) return '<span class="pst pend">Vídeo pendiente' + (/propuesta/i.test(pl.fuente || "") ? " · propuesta" : "") + '</span>';
+    return '<span class="pst ok">' + (m.tipo === "video" ? "Vídeo" : m.tipo === "gif" ? "GIF" : "Esquema animado") + '</span>';
+  }
+  function miniaturaPerla(pl) {
+    var m = pl.media;
+    if (!m) return '<span class="pthumb pend">' + SVG_FILM + '</span>';
+    var src = m.tipo === "video" ? m.poster : m.src;
+    return '<span class="pthumb">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : SVG_FILM) + '<span class="pl">' + SVG_PLAY + '</span></span>';
+  }
+  function renderPerlas() {
+    var host = document.getElementById("perlas-host"), chips = document.getElementById("perlas-chips");
+    if (!host || !PERLAS) return;
+    var cats = [];
+    PERLAS.forEach(function (pl) { if (pl.cat && cats.indexOf(pl.cat) < 0) cats.push(pl.cat); });
+    if (cats.indexOf(perlaCat) < 0) perlaCat = "";
+    if (chips) chips.hidden = cats.length < 2;
+    if (chips) chips.innerHTML = [""].concat(cats).map(function (c) {
+      return '<button type="button" data-pcat="' + esc(c) + '"' + (c === perlaCat ? ' class="on"' : "") + '>' + (c ? esc(c) : "Todas") + '</button>';
+    }).join("");
+    var lista = PERLAS.filter(function (pl) { return !perlaCat || pl.cat === perlaCat; });
+    host.innerHTML = lista.length ? '<div class="plist">' + lista.map(function (pl) {
+      return '<button type="button" class="pcard" data-perla="' + esc(pl.id) + '">' + miniaturaPerla(pl) +
+        '<span class="ptx"><span class="pcat">' + esc(pl.cat || "") + '</span><b>' + esc(pl.titulo) + '</b><span class="pres">' + esc(pl.resumen || "") + '</span>' + estadoPerla(pl) + '</span></button>';
+    }).join("") + '</div>' : '<p class="ref-lede">Todavía no hay perlas en esta categoría.</p>';
+  }
+  function abrirPerla(id) {
+    if (!PERLAS) { cargarPerlas(); return; }
+    var pl = PERLAS.filter(function (x) { return x.id === id; })[0];
+    if (!pl || !viewerEl) return;
+    var m = pl.media, fig;
+    if (!m) fig = '<div class="pend-media">' + SVG_FILM + '<p>Vídeo pendiente de grabar.</p></div>';
+    else if (m.tipo === "video") fig = '<video src="' + esc(m.src) + '"' + (m.poster ? ' poster="' + esc(m.poster) + '"' : "") + ' controls autoplay muted loop playsinline preload="metadata"></video>';
+    else fig = '<img src="' + esc(m.src) + '" alt="' + esc(pl.titulo) + '">';
+    viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Perla · ' + esc(pl.cat || "") + '</div><div class="t" id="viewer-t">' + esc(pl.titulo) + '</div></div></div>' +
+      '<div class="vb"><div class="fig' + (m && m.tipo === "video" ? " vid" : "") + (m ? "" : " pend") + '">' + fig + '</div>' +
+      '<div class="vpts"><h4>Puntos clave</h4><ul class="lst">' + (pl.puntos || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul>' +
+      (pl.fuente ? '<p class="vsrc">' + esc(pl.fuente) + '</p>' : "") + '</div></div>';
+    viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    capaAbierta("esquema", cerrarEsquema);
+  }
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest("[data-pcat]");
+    if (c) { perlaCat = c.dataset.pcat; renderPerlas(); return; }
+    var b = e.target.closest("[data-perla]");
+    if (b) abrirPerla(b.dataset.perla);
+  });
+  cargarPerlas();
 
   // ---- emergencias y modo crisis ----
   var EM_ICONS = [
