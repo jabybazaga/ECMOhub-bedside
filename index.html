@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=19">
+<link rel="manifest" href="manifest.json?v=21">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -120,14 +120,14 @@
 
   <!-- ============ RONDA DIARIA ============ -->
   <section id="screen-ronda" class="screen">
-    <div class="appbar hdr m-ronda tall"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><label class="hchip" aria-label="Box o cama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg><select id="r-box"></select></label><button class="hbtn" id="r-menu-btn" aria-label="Más opciones" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" id="r-menu" hidden><button data-act="vaciar">Vaciar todos los valores</button><button data-act="ejemplo">Cargar valores de ejemplo</button></div></div><div class="title big">Ronda diaria</div><div class="hsub" id="r-fecha"></div><div class="seg" id="ronda-seg"><button class="on" data-mode="vv">ECMO VV</button><button data-mode="va">ECMO VA</button></div></div>
+    <div class="appbar hdr m-ronda tall"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><label class="hchip" aria-label="Box o cama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg><select id="r-box"></select></label><button class="hbtn" id="r-menu-btn" aria-label="Más opciones" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" id="r-menu" hidden><button data-act="vaciar">Vaciar todos los valores</button><button data-act="ejemplo">Cargar valores de ejemplo</button></div></div><div class="title big">Ronda diaria</div><div class="hsub" id="r-fecha"></div><div class="modesel" id="ronda-seg" role="radiogroup" aria-label="Tipo de soporte"><button type="button" class="on" data-mode="vv" role="radio" aria-checked="true"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></i><span><b>ECMO VV</b><small>Respiratorio</small></span></button><button type="button" data-mode="va" role="radio" aria-checked="false"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></i><span><b>ECMO VA</b><small>Cardiocirculatorio</small></span></button></div></div>
     <div class="rsum" id="r-sum"></div>
     <div class="content">
       <p class="r-ejemplo" id="r-ejemplo">Valores de ejemplo, no de ningún paciente. Toca un valor para escribir el de tu paciente.</p>
 
-      <div class="fieldset" data-group="pac">
+      <div class="fieldset" data-group="pac" style="--gc:var(--c-pac)">
         <button class="fs-head" aria-expanded="false">
-          <div class="dot" style="background:var(--c-pac)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></div>
           <div class="lbl">Paciente</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -138,9 +138,9 @@
         </div>
       </div>
 
-      <div class="fieldset open" data-group="cir">
+      <div class="fieldset open" data-group="cir" style="--gc:var(--c-cir)">
         <button class="fs-head" aria-expanded="true">
-          <div class="dot" style="background:var(--c-cir)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 10.4c0-2.6 1.3-4.4 3.6-4.6M13.4 12.8c2.3 1.2 3.3 3.2 2.3 5.3M10.6 12.8c-2.3 1.2-4.5 1-5.9-.9"/></svg></div>
           <div class="lbl">Circuito</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -156,9 +156,9 @@
         </div>
       </div>
 
-      <div class="fieldset" data-group="hem">
+      <div class="fieldset" data-group="hem" style="--gc:var(--c-hem)">
         <button class="fs-head" aria-expanded="false">
-          <div class="dot" style="background:var(--c-hem)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
           <div class="lbl">Hemodinámica</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -172,9 +172,9 @@
         </div>
       </div>
 
-      <div class="fieldset" data-group="gas">
+      <div class="fieldset" data-group="gas" style="--gc:var(--c-gas)">
         <button class="fs-head" aria-expanded="false">
-          <div class="dot" style="background:var(--c-gas)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s-6 6.6-6 10.7a6 6 0 0 0 12 0c0-4.1-6-10.7-6-10.7z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/></svg></div>
           <div class="lbl">Gasometría</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -189,9 +189,9 @@
         </div>
       </div>
 
-      <div class="fieldset" data-group="lab">
+      <div class="fieldset" data-group="lab" style="--gc:var(--c-lab)">
         <button class="fs-head" aria-expanded="false">
-          <div class="dot" style="background:var(--c-lab)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3h5M10.5 3v6L5.6 18.2A1.9 1.9 0 0 0 7.3 21h9.4a1.9 1.9 0 0 0 1.7-2.8L13.5 9V3"/><path d="M7.6 15h8.8"/></svg></div>
           <div class="lbl">Analítica</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -211,9 +211,9 @@
         </div>
       </div>
 
-      <div class="fieldset" data-group="ven" data-only="vv">
+      <div class="fieldset" data-group="ven" data-only="vv" style="--gc:var(--c-ven)">
         <button class="fs-head" aria-expanded="false">
-          <div class="dot" style="background:var(--c-ven)"></div>
+          <div class="gi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/></svg></div>
           <div class="lbl">Ventilador (reposo)</div>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
         </button>
@@ -225,7 +225,7 @@
       </div>
 
       <h3 class="sub">Valores derivados</h3>
-      <div class="deflist tight" id="r-derived"></div>
+      <div class="dgrid" id="r-derived"></div>
 
       <h3 class="sub" id="r-avisos">Qué revisar hoy</h3>
       <div class="tally" id="r-tally"></div>
@@ -873,7 +873,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 19 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 21 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
