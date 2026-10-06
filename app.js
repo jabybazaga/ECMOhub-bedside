@@ -1925,9 +1925,13 @@
   // ---- visor de esquemas de canulación ----
   var ESQUEMAS = {
     "vv-femoro-femoral": { t: "Fémoro-femoral", k: "ECMO VV · esquema de canulación",
-      cap: "<b>Retorno</b> por femoral derecha, con la punta en la entrada de la aurícula derecha. <b>Drenaje</b> multiperforado por femoral izquierda, alojado a la altura de las venas suprahepáticas. Confirmar la posición con ecografía y Rx." },
+      cap: "<b>Retorno</b> por femoral derecha, con la punta dentro de la aurícula derecha y orientada hacia la tricúspide. <b>Drenaje</b> multiperforado por femoral izquierda, con la punta en la VCI intrahepática. Confirmar la posición con ecografía y Rx." },
     "vv-femoro-yugular": { t: "Fémoro-yugular", k: "ECMO VV · esquema de canulación",
-      cap: "<b>Drenaje</b> multiperforado por femoral derecha, con la punta en la entrada de la aurícula derecha. <b>Retorno</b> por yugular interna derecha, dirigido hacia la tricúspide. Confirmar la posición con ecografía y Rx." }
+      cap: "<b>Retorno</b> por yugular interna derecha, con la punta dentro de la aurícula derecha y orientada hacia la tricúspide. <b>Drenaje</b> multiperforado por femoral derecha, con la punta en la VCI intrahepática. Confirmar la posición con ecografía y Rx." },
+    "va-femoro-femoral": { t: "Fémoro-femoral", k: "ECMO VA · esquema de canulación",
+      cap: "<b>Drenaje</b> multiperforado por femoral izquierda, con la punta en la aurícula derecha. <b>Retorno</b> corto en la femoral común derecha: flujo retrógrado por la aorta. <b>Perfusión distal</b> en la femoral superficial desde el inicio." },
+    "va-femoro-axilar": { t: "Fémoro-axilar", k: "ECMO VA · esquema de canulación",
+      cap: "<b>Drenaje</b> multiperforado por femoral, con la punta en la aurícula derecha. <b>Retorno</b> en la arteria axilar izquierda, directo o con injerto, hacia el arco aórtico: flujo anterógrado en la aorta. Sin acceso femoral o si hace falta flujo anterógrado." }
   };
   var viewerEl = document.getElementById("viewer");
   function abrirEsquema(k) {

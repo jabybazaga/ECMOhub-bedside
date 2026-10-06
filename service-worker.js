@@ -1,7 +1,7 @@
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v18";
+const CACHE_NAME = "ecmo-pie-de-cama-v19";
 const ASSETS = [
   "./",
   "index.html",
@@ -15,6 +15,8 @@ const ASSETS = [
   "ecmo-chub-32.png",
   "img/vv-femoro-femoral.svg",
   "img/vv-femoro-yugular.svg",
+  "img/va-femoro-femoral.svg",
+  "img/va-femoro-axilar.svg",
 ];
 
 // Solo las imágenes (cambian poco) se sirven caché-primero, para ahorrar
