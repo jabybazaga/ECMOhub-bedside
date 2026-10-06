@@ -46,8 +46,53 @@
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
-  function go(name) {
+  // ---- botón o gesto «Atrás» del móvil ----
+  // Cada pantalla distinta de Inicio y cada capa (hoja de valores, esquema, modo crisis, informe)
+  // añade una entrada al historial; «Atrás» cierra la capa de arriba o vuelve a la pantalla anterior.
+  // En Inicio, «Atrás» sale de la app como siempre.
+  var HIST = { d: 0, skip: 0, pop: false };
+  var CAPAS = [];
+  var actual = "inicio";
+  try { history.replaceState({ s: "inicio", d: 0 }, ""); } catch (e) { /* sin historial */ }
+  function capaAbierta(n, cerrar) {
+    if (CAPAS.some(function (c) { return c.n === n; })) return;
+    CAPAS.push({ n: n, cerrar: cerrar });
+    try { history.pushState({ s: actual, d: ++HIST.d, capa: n }, ""); } catch (e) { /* sin historial */ }
+  }
+  function capaCerrada(n) {
+    var i = -1;
+    CAPAS.forEach(function (c, j) { if (c.n === n) i = j; });
+    if (i < 0) return;
+    CAPAS.splice(i, 1);
+    if (!HIST.pop) { HIST.skip++; history.back(); }
+  }
+  function navegar(name) {
+    if (name === "inicio") {
+      if (HIST.d > 0) { HIST.skip++; history.go(-HIST.d); HIST.d = 0; }
+      return;
+    }
+    try { history.pushState({ s: name, d: ++HIST.d }, ""); } catch (e) { /* sin historial */ }
+  }
+  window.addEventListener("popstate", function (e) {
+    var st = e.state || { s: "inicio", d: 0 };
+    HIST.d = st.d || 0;
+    if (HIST.skip > 0) { HIST.skip--; return; }
+    HIST.pop = true;
+    try {
+      if (CAPAS.length) CAPAS.pop().cerrar();
+      else go(st.s || "inicio", true);
+    } finally { HIST.pop = false; }
+  });
+
+  function go(name, desdeHistorial) {
     if (!screens[name]) return;
+    if (!desdeHistorial && name !== actual) {
+      // Capas que quedaran abiertas debajo (p. ej. un informe) se cierran sin tocar el historial.
+      HIST.pop = true;
+      try { while (CAPAS.length) CAPAS.pop().cerrar(); } finally { HIST.pop = false; }
+      navegar(name);
+    }
+    actual = name;
     screenNames.forEach(function (k) {
       screens[k].classList.toggle("on", k === name);
     });
@@ -1190,6 +1235,7 @@
     document.getElementById("informe-share-btn").setAttribute("data-share-informe", id);
     document.getElementById("informes-view-lista").classList.remove("on");
     document.getElementById("informes-view-detalle").classList.add("on");
+    capaAbierta("informe", cerrarInforme);
   }
 
   function textoPlanoInforme(inf) {
@@ -1240,6 +1286,7 @@
   function cerrarInforme() {
     document.getElementById("informes-view-detalle").classList.remove("on");
     document.getElementById("informes-view-lista").classList.add("on");
+    capaCerrada("informe");
   }
 
   function eliminarInforme(id) {
@@ -1547,6 +1594,7 @@
     SH.key = key; SH.fresh = true; SH.err = ""; SH.buf = bufFromState(key); SH.prev = stepState[key].v;
     renderSheet();
     sheet.hidden = false; scrim.hidden = false;
+    capaAbierta("hoja", closeSheet);
     colocarRegla();
     void sheet.offsetWidth;
     sheet.classList.add("on"); scrim.classList.add("on");
@@ -1560,6 +1608,7 @@
     setTimeout(function () { if (!sheet.classList.contains("on")) { sheet.hidden = true; scrim.hidden = true; } }, 330);
     recalcScope(k);
     var t = tileOf(k); if (t) t.focus({ preventScroll: true });
+    capaCerrada("hoja");
   }
   function parseBuf() {
     if (SH.buf === "" || SH.buf === "-") return null;
@@ -2050,6 +2099,7 @@
     viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">' + e.k + '</div><div class="t" id="viewer-t">' + e.t + '</div></div></div>' +
       '<div class="vb"><div class="fig" id="viewer-fig" aria-busy="true"></div><p class="cap">' + e.cap + '</p></div>';
     viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    capaAbierta("esquema", cerrarEsquema);
     var f = document.getElementById("viewer-fig"), img = new Image();
     img.alt = "Esquema de canulación " + e.t.toLowerCase();
     img.onload = function () { f.removeAttribute("aria-busy"); };
@@ -2061,6 +2111,7 @@
     if (!viewerEl || viewerEl.hidden) return;
     viewerEl.classList.remove("on");
     setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
+    capaCerrada("esquema");
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest("[data-esquema]");
@@ -2119,6 +2170,7 @@
     CR.i = 0; CR.t0 = Date.now();
     renderCrisis();
     crisisEl.hidden = false; void crisisEl.offsetWidth; crisisEl.classList.add("on");
+    capaAbierta("crisis", closeCrisis);
     clearInterval(CR.timer);
     CR.timer = setInterval(function () { var c = document.getElementById("cr-clock"); if (c) c.textContent = reloj(); }, 1000);
     if (navigator.wakeLock && navigator.wakeLock.request) navigator.wakeLock.request("screen").then(function (l) { CR.lock = l; }).catch(function () { /* sin bloqueo */ });
@@ -2129,6 +2181,7 @@
     clearInterval(CR.timer);
     if (CR.lock) { try { CR.lock.release(); } catch (e) { /* ya liberado */ } CR.lock = null; }
     setTimeout(function () { if (!crisisEl.classList.contains("on")) crisisEl.hidden = true; }, 220);
+    capaCerrada("crisis");
   }
   if (crisisEl) crisisEl.addEventListener("click", function (e) {
     var b = e.target.closest("[data-cr]");
