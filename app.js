@@ -1355,6 +1355,56 @@
   }
 
   // ---- ronda: pintar estado de teselas, secciones y resumen ----
+  // Barra de rango bajo cada valor de la ronda. Los tramos repiten los umbrales de las reglas de ronda().
+  function rangoDe(k) {
+    var sang = $("#r-sangrado") ? $("#r-sangrado").value : "no", vv = modo === "vv", peso = sv("peso");
+    switch (k) {
+      case "diuresis": return { a: 0, b: 2, z: [[0.5, "warn"], [2, "ok"]] };
+      case "temp": return { a: 34, b: 40, z: [[35.5, "warn"], [37.5, "ok"], [40, "warn"]] };
+      case "flujo":
+        if (!(peso > 0)) return null;
+        var l = function (x) { return x * peso / 1000; };
+        return { a: 0, b: Math.max(7, l(100)), z: [[l(40), "crit"], [l(50), "warn"], [l(80), "ok"], [Math.max(7, l(100)), "warn"]] };
+      case "rpm": return { a: 1000, b: 5000, z: [[3500, "ok"], [5000, "warn"]] };
+      case "p1": return { a: -150, b: 0, z: [[-100, "crit"], [-80, "warn"], [-50, "info"], [0, "ok"]] };
+      case "p2": return { a: 0, b: 300, z: [[200, "ok"], [300, "warn"]] };
+      case "p3": return { a: 0, b: 80, z: [[35, "ok"], [50, "warn"], [80, "crit"]] };
+      case "po2post": return { a: 0, b: 600, z: [[150, "crit"], [300, "warn"], [600, "ok"]] };
+      case "ic": return { a: 1, b: 4, z: [[2.2, "crit"], [2.5, "warn"], [4, "ok"]] };
+      case "lactato": return { a: 0, b: 8, z: [[2, "ok"], [5, "warn"], [8, "crit"]] };
+      case "sao2": return vv ? { a: 60, b: 100, z: [[80, "crit"], [85, "warn"], [92, "ok"], [100, "info"]] } : { a: 80, b: 100, z: [[95, "crit"], [100, "ok"]] };
+      case "svo2": return vv ? { a: 40, b: 100, z: [[70, "warn"], [100, "ok"]] } : { a: 40, b: 100, z: [[65, "warn"], [100, "ok"]] };
+      case "pao2": return vv ? { a: 30, b: 150, z: [[60, "warn"], [150, "ok"]] } : null;
+      case "paco2": return { a: 20, b: 80, z: [[35, "warn"], [45, "ok"], [60, "warn"], [80, "crit"]] };
+      case "ph": return { a: 7.0, b: 7.7, z: [[7.25, "crit"], [7.35, "warn"], [7.45, "ok"], [7.7, "warn"]] };
+      case "hb": return { a: 5, b: 14, z: [[7, "crit"], [8, "warn"], [14, "ok"]] };
+      case "plaq": return { a: 0, b: 300, z: [[sang === "no" ? 50 : 100, "crit"], [100, "warn"], [300, "ok"]] };
+      case "fibri": return { a: 0, b: 5, z: [[sang === "no" ? 1 : 1.5, "crit"], [2, "warn"], [5, "ok"]] };
+      case "act": return sang === "grave" ? null : { a: 60, b: 360, z: [[90, "crit"], [160, "warn"], [180, "ok"], [320, "warn"], [360, "crit"]] };
+      case "ttpa": return sang === "grave" ? null : { a: 20, b: 110, z: [[35, "crit"], [46, "warn"], [70, "ok"], [90, "warn"], [110, "crit"]] };
+      case "ldh": return { a: 0, b: 1500, z: [[350, "ok"], [1000, "warn"], [1500, "crit"]] };
+      case "pplat": return { a: 10, b: 40, z: [[25, "ok"], [30, "warn"], [40, "crit"]] };
+      case "peep": return { a: 0, b: 24, z: [[10, "warn"], [24, "ok"]] };
+      case "vfio2": return { a: 21, b: 100, z: [[50, "ok"], [100, "warn"]] };
+    }
+    return null;
+  }
+  function pintarBarra(b, k) {
+    var r = rangoDe(k), el = b.querySelector(".rb");
+    if (!r) { if (el) el.remove(); b.classList.remove("hasrb"); return; }
+    if (!el) { el = document.createElement("span"); el.className = "rb"; el.setAttribute("aria-hidden", "true"); el.innerHTML = '<i class="tr"></i><i class="mk"></i>'; b.appendChild(el); }
+    b.classList.add("hasrb");
+    var pc = function (x) { return Math.max(0, Math.min(100, (x - r.a) / (r.b - r.a) * 100)); };
+    var stops = [], prev = 0;
+    r.z.forEach(function (z) { var e = pc(z[0]); stops.push("var(--rb-" + z[1] + ") " + prev.toFixed(2) + "% " + e.toFixed(2) + "%"); prev = e; });
+    el.firstChild.style.background = "linear-gradient(90deg," + stops.join(",") + ")";
+    var v = sv(k), mk = el.lastChild;
+    if (!isFinite(v)) { mk.hidden = true; return; }
+    var sev = r.z[r.z.length - 1][1];
+    for (var i = 0; i < r.z.length; i++) if (v < r.z[i][0]) { sev = r.z[i][1]; break; }
+    mk.hidden = false; mk.className = "mk " + sev; mk.style.left = pc(v) + "%";
+  }
+
   function rondaUI(f) {
     fieldSev = {}; fieldFinding = {};
     f.forEach(function (x) {
@@ -1369,6 +1419,7 @@
       var sev = fieldSev[k];
       b.classList.toggle("crit", sev === "crit");
       b.classList.toggle("warn", sev === "warn");
+      pintarBarra(b, k);
       var fs = FIELD_META[k].fs, id = fs.dataset.group;
       var g = groups[id] || (groups[id] = { fs: fs, n: 0, filled: 0, c: 0, w: 0, sum: [] });
       if (b.hidden) return;
