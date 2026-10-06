@@ -42,7 +42,7 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
   // ---------- navegación entre pantallas ----------
-  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "datos", "fuentes", "informes", "buscar", "ajustes"];
+  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "buscar", "ajustes"];
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
@@ -108,6 +108,7 @@
     if (name === "inicio") updateHero();
     if (name === "informes") renderListaInformes();
     if (name === "datos") renderSurv();
+    if (name === "perlas") cargarPerlas();
     if (name === "ajustes") { syncAjustes(); renderFavs(); }
   }
 
@@ -1894,7 +1895,8 @@
     anticoag: { t: "Anticoagulación", d: "Heparina y hemoderivados", tile: ".tile.neutral", bg: "var(--surface-2)", fg: "var(--ink-2)" },
     escalas: { t: "Escalas", d: "Murray, APSS, SCAI, INTERMACS", tile: '.tile[data-go="escalas"]', bg: "var(--surface-2)", fg: "var(--ink-2)" },
     complicaciones: { t: "Complicaciones", d: "Emergencias y vigilancia diaria", tile: ".tile.warn", bg: "var(--warn-soft)", fg: "var(--warn)" },
-    checklists: { t: "Checklists", d: "Material de transporte y canulación", tile: '.tile[data-go="checklists"]', bg: "var(--surface-2)", fg: "var(--ink-2)" }
+    checklists: { t: "Checklists", d: "Material de transporte y canulación", tile: '.tile[data-go="checklists"]', bg: "var(--surface-2)", fg: "var(--ink-2)" },
+    perlas: { t: "Perlas", d: "Vídeos y esquemas prácticos", tile: '.tile[data-go="perlas"]', bg: "var(--surface-2)", fg: "var(--ink-2)" }
   };
   function iconoDe(sel) { var t = document.querySelector(sel + " .tic"); return t ? t.innerHTML : ""; }
   function renderFavs() {
@@ -1932,9 +1934,9 @@
 
   // ---- buscador ----
   var SCREEN_T = { vv: "ECMO VV", va: "ECMO VA", anticoag: "Anticoagulación", complicaciones: "Complicaciones", escalas: "Escalas",
-    checklists: "Checklists", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria" };
+    checklists: "Checklists", perlas: "Perlas", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria" };
   var SCREEN_IC = { vv: ".tile.vv", va: ".tile.va", anticoag: ".tile.neutral", complicaciones: ".tile.warn", escalas: '.tile[data-go="escalas"]',
-    checklists: '.tile[data-go="checklists"]', calc: '.tile[data-go="calc"]', ronda: ".hero" };
+    checklists: '.tile[data-go="checklists"]', perlas: '.tile[data-go="perlas"]', calc: '.tile[data-go="calc"]', ronda: ".hero" };
   var SCREEN_CLS = { vv: "vv", va: "va", complicaciones: "comp" };
   var SYN = { harlequin: ["arlequin"], arlequin: ["harlequin"], sweep: ["barrido"], barrido: ["sweep"], antixa: ["anti-xa", "anticoagul"],
     weaning: ["destete"], destete: ["weaning"], chatter: ["cimbreo"], cimbreo: ["chatter"], lv: ["vi"], ecpr: ["rcp"], hit: ["4ts", "pf4"] };
@@ -1989,6 +1991,9 @@
       ["resp", "RESP score", "Supervivencia en ECMO respiratorio (Schmidt 2014)"],
       ["save", "SAVE score", "Supervivencia en ECMO VA (Schmidt 2015)"]].forEach(function (c) {
       IDX.push({ s: "calc", tab: c[0], p: "Calculadora", t: c[1], x: c[2] });
+    });
+    (PERLAS || []).forEach(function (pl) {
+      IDX.push({ s: "perlas", perla: pl.id, p: "Perlas › " + pl.cat, t: pl.titulo, x: pl.resumen + " " + (pl.puntos || []).join(" ").replace(/<[^>]+>/g, "") });
     });
     IDX.forEach(function (e) { e.n = normStr(e.p + " " + e.t + " " + e.x); e.nt = normStr(e.t); });
   }
@@ -2060,6 +2065,7 @@
     go(e.s);
     if (e.tab) selectCalcTab(e.tab);
     if (e.crisis !== undefined && e.crisis > -1) { openCrisis(e.crisis); return; }
+    if (e.perla) { abrirPerla(e.perla); return; }
     if (e.el) setTimeout(function () {
       scrollA(e.el);
       e.el.classList.remove("flash"); void e.el.offsetWidth; e.el.classList.add("flash");
@@ -2109,6 +2115,7 @@
   }
   function cerrarEsquema() {
     if (!viewerEl || viewerEl.hidden) return;
+    $$("video", viewerEl).forEach(function (v) { try { v.pause(); } catch (e) { /* sin vídeo */ } });
     viewerEl.classList.remove("on");
     setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
     capaCerrada("esquema");
@@ -2119,6 +2126,70 @@
     if (e.target.closest("[data-vclose]")) cerrarEsquema();
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
+
+  // ---- perlas: vídeos, GIF y esquemas prácticos (perlas/perlas.json; ver perlas/LEEME.md) ----
+  var PERLAS = null, perlaCat = "";
+  var SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+  var SVG_FILM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg>';
+  function cargarPerlas() {
+    if (PERLAS) { renderPerlas(); return; }
+    fetch("perlas/perlas.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (d) {
+      PERLAS = (d && d.perlas) || [];
+      IDX = null;
+      renderPerlas();
+    }).catch(function () {
+      var host = document.getElementById("perlas-host");
+      if (host && !PERLAS) host.innerHTML = '<p class="ref-lede">No se han podido cargar las perlas. Ábrelas una vez con conexión para tenerlas sin ella.</p>';
+    });
+  }
+  function estadoPerla(pl) {
+    var m = pl.media;
+    if (!m) return '<span class="pst pend">Vídeo pendiente' + (/propuesta/i.test(pl.fuente || "") ? " · propuesta" : "") + '</span>';
+    return '<span class="pst ok">' + (m.tipo === "video" ? "Vídeo" : m.tipo === "gif" ? "GIF" : "Esquema animado") + '</span>';
+  }
+  function miniaturaPerla(pl) {
+    var m = pl.media;
+    if (!m) return '<span class="pthumb pend">' + SVG_FILM + '</span>';
+    var src = m.tipo === "video" ? m.poster : m.src;
+    return '<span class="pthumb">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : SVG_FILM) + '<span class="pl">' + SVG_PLAY + '</span></span>';
+  }
+  function renderPerlas() {
+    var host = document.getElementById("perlas-host"), chips = document.getElementById("perlas-chips");
+    if (!host || !PERLAS) return;
+    var cats = [];
+    PERLAS.forEach(function (pl) { if (pl.cat && cats.indexOf(pl.cat) < 0) cats.push(pl.cat); });
+    if (cats.indexOf(perlaCat) < 0) perlaCat = "";
+    if (chips) chips.innerHTML = [""].concat(cats).map(function (c) {
+      return '<button type="button" data-pcat="' + esc(c) + '"' + (c === perlaCat ? ' class="on"' : "") + '>' + (c ? esc(c) : "Todas") + '</button>';
+    }).join("");
+    var lista = PERLAS.filter(function (pl) { return !perlaCat || pl.cat === perlaCat; });
+    host.innerHTML = lista.length ? '<div class="plist">' + lista.map(function (pl) {
+      return '<button type="button" class="pcard" data-perla="' + esc(pl.id) + '">' + miniaturaPerla(pl) +
+        '<span class="ptx"><span class="pcat">' + esc(pl.cat || "") + '</span><b>' + esc(pl.titulo) + '</b><span class="pres">' + esc(pl.resumen || "") + '</span>' + estadoPerla(pl) + '</span></button>';
+    }).join("") + '</div>' : '<p class="ref-lede">Todavía no hay perlas en esta categoría.</p>';
+  }
+  function abrirPerla(id) {
+    if (!PERLAS) { cargarPerlas(); return; }
+    var pl = PERLAS.filter(function (x) { return x.id === id; })[0];
+    if (!pl || !viewerEl) return;
+    var m = pl.media, fig;
+    if (!m) fig = '<div class="pend-media">' + SVG_FILM + '<p>Vídeo pendiente de grabar.</p></div>';
+    else if (m.tipo === "video") fig = '<video src="' + esc(m.src) + '"' + (m.poster ? ' poster="' + esc(m.poster) + '"' : "") + ' controls autoplay muted loop playsinline preload="metadata"></video>';
+    else fig = '<img src="' + esc(m.src) + '" alt="' + esc(pl.titulo) + '">';
+    viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Perla · ' + esc(pl.cat || "") + '</div><div class="t" id="viewer-t">' + esc(pl.titulo) + '</div></div></div>' +
+      '<div class="vb"><div class="fig' + (m && m.tipo === "video" ? " vid" : "") + (m ? "" : " pend") + '">' + fig + '</div>' +
+      '<div class="vpts"><h4>Puntos clave</h4><ul class="lst">' + (pl.puntos || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul>' +
+      (pl.fuente ? '<p class="vsrc">' + esc(pl.fuente) + '</p>' : "") + '</div></div>';
+    viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    capaAbierta("esquema", cerrarEsquema);
+  }
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest("[data-pcat]");
+    if (c) { perlaCat = c.dataset.pcat; renderPerlas(); return; }
+    var b = e.target.closest("[data-perla]");
+    if (b) abrirPerla(b.dataset.perla);
+  });
+  cargarPerlas();
 
   // ---- emergencias y modo crisis ----
   var EM_ICONS = [
