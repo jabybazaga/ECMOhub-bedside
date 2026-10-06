@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=26">
+<link rel="manifest" href="manifest.json?v=27">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,7 +43,7 @@
     <div class="appbar">
       <div class="brand-row">
         <img src="logo.jpg" alt="Equipo ECMO de Extremadura" class="brand-logo">
-        <div class="brand"><b>ECMO HUB bedside app</b></div>
+        <h1 class="brand"><b>ECMO HUB bedside app</b></h1>
         <button class="gear" data-go="ajustes" aria-label="Ajustes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></button>
       </div>
       <div class="search">
@@ -124,10 +124,11 @@
 
   <!-- ============ RONDA DIARIA ============ -->
   <section id="screen-ronda" class="screen">
-    <div class="appbar hdr m-ronda tall"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><label class="hchip" aria-label="Box o cama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg><select id="r-box"></select></label><button class="hbtn" id="r-menu-btn" aria-label="Más opciones" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" id="r-menu" hidden><button data-act="vaciar">Vaciar todos los valores</button><button data-act="ejemplo">Cargar valores de ejemplo</button></div></div><div class="title big">Ronda diaria</div><div class="hsub" id="r-fecha"></div><div class="modesel" id="ronda-seg" role="radiogroup" aria-label="Tipo de soporte"><button type="button" class="on" data-mode="vv" role="radio" aria-checked="true"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></i><span><b>ECMO VV</b><small>Respiratorio</small></span></button><button type="button" data-mode="va" role="radio" aria-checked="false"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></i><span><b>ECMO VA</b><small>Cardiocirculatorio</small></span></button></div></div>
+    <div class="appbar hdr m-ronda tall"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><label class="hchip" aria-label="Box o cama"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/></svg><select id="r-box"></select></label><button class="hbtn" id="r-menu-btn" aria-label="Más opciones" aria-haspopup="true"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" id="r-menu" hidden><button data-act="vaciar">Vaciar todos los valores</button><button data-act="ejemplo">Cargar valores de ejemplo</button></div></div><h1 class="title big">Ronda diaria</h1><div class="hsub" id="r-fecha"></div><div class="modesel" id="ronda-seg" role="radiogroup" aria-label="Tipo de soporte"><button type="button" class="on" data-mode="vv" role="radio" aria-checked="true"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></i><span><b>ECMO VV</b><small>Respiratorio</small></span></button><button type="button" data-mode="va" role="radio" aria-checked="false"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></i><span><b>ECMO VA</b><small>Cardiocirculatorio</small></span></button></div></div>
     <div class="rsum" id="r-sum"></div>
     <div class="content">
-      <p class="r-ejemplo" id="r-ejemplo">Valores de ejemplo, no de ningún paciente. Toca un valor para escribir el de tu paciente.</p>
+      <div class="r-demo" id="r-demo" role="status" hidden><span class="r-demo-tag">Ejemplo</span><span class="r-demo-tx">Valores ficticios. No se guardan ni generan informe.</span><button type="button" id="r-demo-vaciar">Vaciar</button></div>
+      <p class="r-ejemplo" id="r-ejemplo">Ronda vacía. Toca un valor para escribirlo; los avisos aparecen según rellenas. Para ver cómo funciona, abre <b>⋯</b> y elige <b>Cargar valores de ejemplo</b>.</p>
 
       <div class="fieldset" data-group="pac" style="--gc:var(--c-pac)">
         <button class="fs-head" aria-expanded="false">
@@ -248,7 +249,7 @@
 
   <!-- ============ CALCULADORAS ============ -->
   <section id="screen-calc" class="screen">
-    <div class="appbar hdr m-tools compact"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Calculadoras</div><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button></div></div>
+    <div class="appbar hdr m-tools compact"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Calculadoras</h1><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button></div></div>
     <div class="secnav static">
       <div class="chips" id="calc-chips">
         <button class="on" data-tab="criterios">Indicación</button>
@@ -405,7 +406,7 @@
         <div class="card">
           <h3>SAVE score<span class="pill elso">EXTERNO</span></h3>
           <p class="hint">Citado por el protocolo sin tabla (Schmidt, Eur Heart J 2015). Incluye la constante −6.</p>
-          <h4 style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Diagnóstico cardiaco (pueden sumarse varios)</h4>
+          <h4 style="font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Diagnóstico cardiaco (pueden sumarse varios)</h4>
           <label class="chk"><input type="checkbox" data-save="3"><span>Miocarditis (+3)</span></label>
           <label class="chk"><input type="checkbox" data-save="2"><span>TV/FV refractaria (+2)</span></label>
           <label class="chk"><input type="checkbox" data-save="3"><span>Post-trasplante cardiaco o pulmonar (+3)</span></label>
@@ -425,7 +426,7 @@
               <option value="0">≤ 10 h</option><option value="-2">11–29 h</option><option value="-4">≥ 30 h</option>
             </select>
           </div>
-          <h4 style="font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Fallo orgánico y otros</h4>
+          <h4 style="font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px">Fallo orgánico y otros</h4>
           <label class="chk"><input type="checkbox" data-save="-3"><span>Fallo hepático agudo (−3)</span></label>
           <label class="chk"><input type="checkbox" data-save="-3"><span>Disfunción del SNC (−3)</span></label>
           <label class="chk"><input type="checkbox" data-save="-3"><span>Fracaso renal agudo (−3)</span></label>
@@ -450,7 +451,7 @@
 
   <!-- ============ VV ============ -->
   <section id="screen-vv" class="screen">
-    <div class="appbar hdr m-vv"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="vv" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></span><div class="htxt"><div class="title">ECMO VV</div><div class="hsub">Soporte respiratorio · sustituye al pulmón</div></div></div></div>
+    <div class="appbar hdr m-vv"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="vv" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/></svg></span><div class="htxt"><h1 class="title">ECMO VV</h1><div class="hsub">Soporte respiratorio · sustituye al pulmón</div></div></div></div>
     <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Insuficiencia respiratoria refractaria con función cardiaca conservada. El circuito sustituye al pulmón, no al corazón.</p>
@@ -515,7 +516,7 @@
 
   <!-- ============ VA ============ -->
   <section id="screen-va" class="screen">
-    <div class="appbar hdr m-va"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="va" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></span><div class="htxt"><div class="title">ECMO VA</div><div class="hsub">Soporte circulatorio y respiratorio</div></div></div></div>
+    <div class="appbar hdr m-va"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="va" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/></svg></span><div class="htxt"><h1 class="title">ECMO VA</h1><div class="hsub">Soporte circulatorio y respiratorio</div></div></div></div>
     <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Shock cardiogénico refractario INTERMACS I–II: puente a recuperación, decisión, asistencia de larga duración o trasplante.</p>
@@ -588,7 +589,7 @@
 
   <!-- ============ ANTICOAGULACIÓN ============ -->
   <section id="screen-anticoag" class="screen">
-    <div class="appbar hdr m-anti"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="anticoag" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6.2 7.3 6.2 11.5a6.2 6.2 0 1 1-12.4 0C5.8 10.3 12 3 12 3Z"/></svg></span><div class="htxt"><div class="title">Anticoagulación</div><div class="hsub">Heparina, bivalirudina y hemoderivados</div></div></div></div>
+    <div class="appbar hdr m-anti"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="anticoag" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6.2 7.3 6.2 11.5a6.2 6.2 0 1 1-12.4 0C5.8 10.3 12 3 12 3Z"/></svg></span><div class="htxt"><h1 class="title">Anticoagulación</h1><div class="hsub">Heparina, bivalirudina y hemoderivados</div></div></div></div>
     <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Pauta propia del CHUB. Rangos objetivo más bajos que los clásicos: ACT diana 160–180, no 180–220.</p>
@@ -635,7 +636,7 @@
 
   <!-- ============ COMPLICACIONES ============ -->
   <section id="screen-complicaciones" class="screen">
-    <div class="appbar hdr m-comp"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="complicaciones" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span><div class="htxt"><div class="title">Complicaciones</div><div class="hsub">Emergencias primero · algoritmos del Clínic</div></div></div></div>
+    <div class="appbar hdr m-comp"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="complicaciones" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span><div class="htxt"><h1 class="title">Complicaciones</h1><div class="hsub">Emergencias primero · algoritmos del Clínic</div></div></div></div>
     <div class="content">
       <div class="h2row"><h2 class="h2">Emergencias</h2><span class="hint2">Toca para el paso a paso</span></div>
       <div class="emgrid" id="em-grid"></div>
@@ -711,7 +712,7 @@
 
   <!-- ============ ESCALAS ============ -->
   <section id="screen-escalas" class="screen">
-    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="escalas" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></span><div class="htxt"><div class="title">Escalas</div><div class="hsub">Murray, APSS, SCAI, INTERMACS</div></div></div></div>
+    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="escalas" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v6h6"/></svg></span><div class="htxt"><h1 class="title">Escalas</h1><div class="hsub">Murray, APSS, SCAI, INTERMACS</div></div></div></div>
     <div class="secnav" data-secnav></div>
     <div class="content">
       <p class="ref-lede">Las que usa el protocolo y las que cita sin incluir. Murray, APSS, RESP y SAVE tienen calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
@@ -765,7 +766,7 @@
 
   <!-- ============ CHECKLISTS ============ -->
   <section id="screen-checklists" class="screen">
-    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="checklists" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div class="htxt"><div class="title">Checklists</div><div class="hsub">Material de transporte y canulación</div></div></div></div>
+    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="checklists" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div class="htxt"><h1 class="title">Checklists</h1><div class="hsub">Material de transporte y canulación</div></div></div></div>
     <div class="content">
       <p class="ref-lede">Material del protocolo, apartado de transporte. Se marca tocando cada línea; el estado se guarda en este móvil.</p>
       <div id="checklists-host"></div>
@@ -775,7 +776,7 @@
 
   <!-- ============ PERLAS ============ -->
   <section id="screen-perlas" class="screen">
-    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="perlas" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg></span><div class="htxt"><div class="title">Perlas</div><div class="hsub">Vídeos y esquemas prácticos de ECMO</div></div></div></div>
+    <div class="appbar hdr m-tools"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span class="sp"></span><button class="hbtn" data-find aria-label="Buscar en la app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg></button><button class="hbtn" data-fav="perlas" aria-label="Añadir a favoritos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9Z"/></svg></button></div><div class="hhead"><span class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg></span><div class="htxt"><h1 class="title">Perlas</h1><div class="hsub">Vídeos y esquemas prácticos de ECMO</div></div></div></div>
     <div class="content">
       <p class="ref-lede">Píldoras cortas para el día a día con el circuito. Toca una para verla.</p>
       <div class="chips pchips" id="perlas-chips"></div>
@@ -786,7 +787,7 @@
 
   <!-- ============ DATOS ============ -->
   <section id="screen-datos" class="screen">
-    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Supervivencia</div></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Supervivencia</h1></div></div>
     <div class="content">
       <p class="ref-lede">Primero los resultados de nuestro programa; después el registro ELSO y los scores. Orientan la conversación, no son un pronóstico individual.</p>
 
@@ -799,7 +800,7 @@
 
   <!-- ============ FUENTES ============ -->
   <section id="screen-fuentes" class="screen">
-    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Fuentes</div></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Fuentes</h1></div></div>
     <div class="content">
       <div class="src-row"><span class="pill chub" style="margin:0 10px 0 0">CHUB</span><em>Protocolo Oxigenador de Membrana Extracorpórea – ECMO.</em> Servicio de Medicina Intensiva, Complejo Hospitalario Universitario de Badajoz. Aprobado 02/05/2024, con anexos de indicaciones VV/VA, Destete y Anticoagulación.</div>
       <div class="src-row"><span class="pill elso" style="margin:0 10px 0 0">EXT</span><em>ELSO Guidelines for Adult Respiratory Failure</em> y <em>General Guidelines for all ECLS Cases.</em> ELSO, v1.4, agosto 2017.</div>
@@ -817,8 +818,8 @@
     <div id="informes-view-lista" class="pane on">
       <div class="appbar">
         <div class="toprow">
-          <button class="back" data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-          <div class="title">Informes</div>
+          <button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <h1 class="title">Informes</h1>
           <span class="sp"></span><label class="fchip"><select id="inf-filtro" aria-label="Filtrar por cama"><option value="">Todas las camas</option></select></label>
         </div>
       </div>
@@ -830,8 +831,8 @@
     <div id="informes-view-detalle" class="pane">
       <div class="appbar">
         <div class="toprow">
-          <button class="back" id="informe-back-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-          <div class="title" id="informe-titulo">Informe</div>
+          <button class="back" id="informe-back-btn" aria-label="Volver a la lista de informes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <h1 class="title" id="informe-titulo">Informe</h1>
         </div>
       </div>
       <div class="content">
@@ -858,7 +859,7 @@
 
   <!-- ============ AJUSTES ============ -->
   <section id="screen-ajustes" class="screen">
-    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="title">Ajustes</div></div></div>
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Ajustes</h1></div></div>
     <div class="content">
       <div class="grp">Apariencia</div>
       <div class="sbox pad">
@@ -888,7 +889,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 26 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 27 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
@@ -904,6 +905,7 @@
 <!-- modo crisis -->
 <div class="crisis" id="crisis" role="dialog" aria-modal="true" hidden></div>
 
+<script src="reglas.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
