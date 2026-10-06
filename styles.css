@@ -140,9 +140,10 @@ button{font-family:inherit;color:inherit}
 .hdr.compact .title{font-size:22px;margin-left:4px}
 .hdr .title.big{font-size:27px;margin-top:12px}
 .hdr.tall{padding-bottom:38px}
-.hchip{height:40px;border-radius:20px;background:rgba(255,255,255,.15);display:flex;align-items:center;gap:4px;padding:0 4px 0 11px;position:relative}
-.hchip svg{width:15px;height:15px;flex:0 0 auto}
-.hchip select{appearance:none;-webkit-appearance:none;background:transparent;border:0;color:#fff;font:600 14px var(--serif);padding:0 8px 0 2px;height:36px;max-width:120px}
+.hchip{height:40px;min-width:118px;border-radius:20px;background:rgba(255,255,255,.15);display:flex;align-items:center;padding:0 0 0 11px;position:relative}
+.hchip svg{width:15px;height:15px;flex:0 0 auto;pointer-events:none;position:relative;z-index:1}
+/* el select cubre todo el chip, icono incluido, con 2 px de margen arriba y abajo (área de 44 px) */
+.hchip select{appearance:none;-webkit-appearance:none;position:absolute;left:0;right:0;top:-2px;bottom:-2px;width:100%;background:transparent;border:0;border-radius:22px;color:#fff;font:600 14px var(--serif);padding:0 10px 0 32px;cursor:pointer;text-overflow:ellipsis}
 .hchip select option{color:#131A20}
 .menu{position:absolute;right:16px;top:calc(56px + env(safe-area-inset-top,0));background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-width:230px;overflow:hidden;z-index:10;transform-origin:top right;animation:pop 160ms var(--ease-out)}
 .menu button{border:0;background:none;text-align:left;font-size:15px;padding:14px 16px;color:var(--ink)}
@@ -876,7 +877,7 @@ button,a,[role="button"],.chk,.vt{touch-action:manipulation;-webkit-user-select:
 
 /* ---- accesibilidad: zona táctil de 44 px y foco visible ---- */
 /* Controles que se dibujan algo más pequeños: el margen invisible lleva la zona sensible a 44 px. */
-.secnav button::after,.chips button::after,.segc button::after,.hchip::after{content:"";position:absolute;inset:-2px 0}
+.secnav button::after,.chips button::after,.segc button::after{content:"";position:absolute;inset:-2px 0}
 .segc.mini button::after{inset:-3px 0}
 .esq-btn::after{content:"";position:absolute;inset:-4px -2px}
 /* Enlaces dentro del texto («Calculadora»): área táctil ampliada sin mover las líneas. */
