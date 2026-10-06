@@ -1750,6 +1750,12 @@
     function spy() {
       var y = content.scrollTop + 60, idx = 0;
       hs.forEach(function (h, i) { if (h.offsetParent !== null && h.offsetTop - content.offsetTop <= y) idx = i; });
+      // Al final del todo, la última sección puede no llegar arriba: se marca su pestaña si se ve.
+      if (content.scrollTop + content.clientHeight >= content.scrollHeight - 4) {
+        for (var j = hs.length - 1; j > idx; j--) {
+          if (hs[j].offsetParent !== null && hs[j].offsetTop - content.offsetTop < content.scrollTop + content.clientHeight) { idx = j; break; }
+        }
+      }
       if (idx === actual) return;
       actual = idx;
       chips.forEach(function (c, i) { c.classList.toggle("on", i === idx); });
