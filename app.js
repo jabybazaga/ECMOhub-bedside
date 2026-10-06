@@ -324,9 +324,10 @@
   document.getElementById("ronda-seg").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-mode]");
     if (!btn) return;
-    this.querySelectorAll("button").forEach(function (b) { b.classList.remove("on"); });
-    btn.classList.add("on");
+    this.querySelectorAll("button").forEach(function (b) { b.classList.remove("on"); b.setAttribute("aria-checked", "false"); });
+    btn.classList.add("on"); btn.setAttribute("aria-checked", "true");
     modo = btn.dataset.mode;
+    document.getElementById("screen-ronda").dataset.modo = modo;
     $$("#screen-ronda [data-only]").forEach(function (el) {
       el.hidden = el.getAttribute("data-only") !== modo;
     });
@@ -335,6 +336,7 @@
   $$("#screen-ronda [data-only]").forEach(function (el) {
     el.hidden = el.getAttribute("data-only") !== modo;
   });
+  document.getElementById("screen-ronda").dataset.modo = modo;
 
   var rSangrado = document.getElementById("r-sangrado");
   if (rSangrado) rSangrado.addEventListener("change", ronda);
@@ -389,7 +391,10 @@
       ["SaO₂ − SvO₂", isFinite(gap) ? n0(gap) + " puntos" : "—"],
     ];
     if (modo === "vv" && isFinite(dp)) der.push(["Driving pressure", n0(dp) + " cmH₂O"]);
-    $("#r-derived").innerHTML = der.map(function (d) { return dlRow(d[0], d[1]); }).join("");
+    $("#r-derived").innerHTML = der.map(function (d) {
+      var m = /^(\S+) (.+)$/.exec(d[1]);
+      return '<div class="dt"><span class="l">' + d[0] + '</span><span class="v">' + (m ? m[1] + '<span class="u">' + m[2] + '</span>' : d[1]) + '</span></div>';
+    }).join("");
 
     /* --- reglas --- */
     var f = [];
