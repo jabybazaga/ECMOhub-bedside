@@ -1,0 +1,18 @@
+name: Pruebas de las reglas clínicas
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  reglas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Comprobar sintaxis
+        run: node --check reglas.js && node --check app.js && node --check service-worker.js
+      - name: Pruebas de umbrales (reglas.js)
+        run: node --test
