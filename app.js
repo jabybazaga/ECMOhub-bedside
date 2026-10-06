@@ -1189,13 +1189,30 @@
   RONDA_KEYS.forEach(function (k) { stepState[k].v = null; });
   var rondaEditada = false, rondaT = 0, rondaNc = 0, rondaEjemplo = false;
   function marcarEditada() { rondaEditada = true; rondaT = Date.now(); }
-  function leerRonda() { try { var s = ls(RONDA_LS); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+  // Hasta la v26, con solo tocar VV/VA se guardaba la ronda con todos los valores de ejemplo como si
+  // fueran del paciente. Las rondas sin la marca "ej: 0" se limpian una vez: cada valor idéntico al de
+  // ejemplo se vacía y se conservan solo los que se escribieron a mano.
+  function leerRonda() {
+    var s;
+    try { s = JSON.parse(ls(RONDA_LS) || "null"); } catch (e) { return null; }
+    if (!s || !s.vals || s.ej === 0) return s;
+    var quedan = 0;
+    RONDA_KEYS.forEach(function (k) {
+      if (!(k in s.vals)) return;
+      if (s.vals[k] === RONDA_DEF[k]) s.vals[k] = null;
+      if (s.vals[k] !== null && s.vals[k] !== undefined) quedan++;
+    });
+    if (!quedan && !s.cama) { ls(RONDA_LS, ""); return null; }
+    s.ej = 0;
+    ls(RONDA_LS, JSON.stringify(s));
+    return s;
+  }
   function guardarRonda() {
     if (!S.recordar || !rondaEditada || rondaEjemplo) return;
     var vals = {};
     RONDA_KEYS.forEach(function (k) { vals[k] = stepState[k].v; });
     var sg = document.getElementById("r-sangrado");
-    ls(RONDA_LS, JSON.stringify({ t: rondaT, modo: modo, vals: vals, sangrado: sg ? sg.value : "no", cama: document.getElementById("r-cama").value, nc: rondaNc }));
+    ls(RONDA_LS, JSON.stringify({ t: rondaT, modo: modo, vals: vals, sangrado: sg ? sg.value : "no", cama: document.getElementById("r-cama").value, nc: rondaNc, ej: 0 }));
   }
   function haceCuanto(t) {
     var m = Math.round((Date.now() - t) / 60000);
