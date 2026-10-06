@@ -4,14 +4,14 @@
       "id": "hemofiltro",
       "titulo": "Conexión del hemofiltro al ECMO",
       "cat": "Circuito",
-      "resumen": "Extracción en P3 (tras el oxigenador) y retorno en P2 (antes del oxigenador).",
+      "resumen": "Drenaje del hemofiltro en P3 (tras el oxigenador) y retorno en P2 (antes del oxigenador).",
       "media": {
         "tipo": "svg",
         "src": "perlas/hemofiltro.svg"
       },
       "puntos": [
-        "<b>Extracción</b> (línea arterial del monitor de TCRR) desde la toma <b>P3</b>, después del oxigenador.",
-        "<b>Retorno</b> (línea venosa del monitor) a la toma <b>P2</b>, antes del oxigenador: si vuelve aire o un microcoágulo, el oxigenador lo atrapa antes de llegar al paciente.",
+        "<b>Drenaje del hemofiltro</b> (línea azul) desde la toma <b>P3</b>, después del oxigenador.",
+        "<b>Retorno del hemofiltro</b> (línea roja) a la toma <b>P2</b>, antes del oxigenador: si vuelve aire o un microcoágulo, el oxigenador lo atrapa antes de llegar al paciente.",
         "<b>Nunca en P1</b> ni en la rama de drenaje: es presión negativa y puede entrar aire.",
         "Las dos tomas están a presión positiva: revisar las alarmas de presión de acceso y retorno del monitor de TCRR.",
         "Purgar las líneas antes de conectar, roscas Luer-lock bien apretadas y revisar las conexiones en cada turno."
