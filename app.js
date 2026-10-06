@@ -1291,6 +1291,8 @@
   var SVG_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
   var SVG_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg>';
   var SVG_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/></svg>';
+  var SVG_MINUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg>';
+  var SVG_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
   var SVG_DEL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1Z"/><path d="M17 9l-5 6M12 9l5 6"/></svg>';
 
   // ---- de cada aviso al campo que lo dispara ----
@@ -1355,39 +1357,10 @@
   }
 
   // ---- ronda: pintar estado de teselas, secciones y resumen ----
-  // Barra de rango bajo cada valor de la ronda. Los tramos repiten los umbrales de las reglas de ronda().
+  // Barra de rango bajo cada valor de la ronda: mismos tramos que la hoja (rangeOf) y que los avisos.
   function rangoDe(k) {
-    var sang = $("#r-sangrado") ? $("#r-sangrado").value : "no", vv = modo === "vv", peso = sv("peso");
-    switch (k) {
-      case "diuresis": return { a: 0, b: 2, z: [[0.5, "warn"], [2, "ok"]] };
-      case "temp": return { a: 34, b: 40, z: [[35.5, "warn"], [37.5, "ok"], [40, "warn"]] };
-      case "flujo":
-        if (!(peso > 0)) return null;
-        var l = function (x) { return x * peso / 1000; };
-        return { a: 0, b: Math.max(7, l(100)), z: [[l(40), "crit"], [l(50), "warn"], [l(80), "ok"], [Math.max(7, l(100)), "warn"]] };
-      case "rpm": return { a: 1000, b: 5000, z: [[3500, "ok"], [5000, "warn"]] };
-      case "p1": return { a: -150, b: 0, z: [[-100, "crit"], [-80, "warn"], [-50, "info"], [0, "ok"]] };
-      case "p2": return { a: 0, b: 300, z: [[200, "ok"], [300, "warn"]] };
-      case "p3": return { a: 0, b: 80, z: [[35, "ok"], [50, "warn"], [80, "crit"]] };
-      case "po2post": return { a: 0, b: 600, z: [[150, "crit"], [300, "warn"], [600, "ok"]] };
-      case "ic": return { a: 1, b: 4, z: [[2.2, "crit"], [2.5, "warn"], [4, "ok"]] };
-      case "lactato": return { a: 0, b: 8, z: [[2, "ok"], [5, "warn"], [8, "crit"]] };
-      case "sao2": return vv ? { a: 60, b: 100, z: [[80, "crit"], [85, "warn"], [92, "ok"], [100, "info"]] } : { a: 80, b: 100, z: [[95, "crit"], [100, "ok"]] };
-      case "svo2": return vv ? { a: 40, b: 100, z: [[70, "warn"], [100, "ok"]] } : { a: 40, b: 100, z: [[65, "warn"], [100, "ok"]] };
-      case "pao2": return vv ? { a: 30, b: 150, z: [[60, "warn"], [150, "ok"]] } : null;
-      case "paco2": return { a: 20, b: 80, z: [[35, "warn"], [45, "ok"], [60, "warn"], [80, "crit"]] };
-      case "ph": return { a: 7.0, b: 7.7, z: [[7.25, "crit"], [7.35, "warn"], [7.45, "ok"], [7.7, "warn"]] };
-      case "hb": return { a: 5, b: 14, z: [[7, "crit"], [8, "warn"], [14, "ok"]] };
-      case "plaq": return { a: 0, b: 300, z: [[sang === "no" ? 50 : 100, "crit"], [100, "warn"], [300, "ok"]] };
-      case "fibri": return { a: 0, b: 5, z: [[sang === "no" ? 1 : 1.5, "crit"], [2, "warn"], [5, "ok"]] };
-      case "act": return sang === "grave" ? null : { a: 60, b: 360, z: [[90, "crit"], [160, "warn"], [180, "ok"], [320, "warn"], [360, "crit"]] };
-      case "ttpa": return sang === "grave" ? null : { a: 20, b: 110, z: [[35, "crit"], [46, "warn"], [70, "ok"], [90, "warn"], [110, "crit"]] };
-      case "ldh": return { a: 0, b: 1500, z: [[350, "ok"], [1000, "warn"], [1500, "crit"]] };
-      case "pplat": return { a: 10, b: 40, z: [[25, "ok"], [30, "warn"], [40, "crit"]] };
-      case "peep": return { a: 0, b: 24, z: [[10, "warn"], [24, "ok"]] };
-      case "vfio2": return { a: 21, b: 100, z: [[50, "ok"], [100, "warn"]] };
-    }
-    return null;
+    var r = S.rangos ? rangeOf(k) : null;
+    return r && r.z ? { a: r.min, b: r.max, z: r.z } : null;
   }
   function pintarBarra(b, k) {
     var r = rangoDe(k), el = b.querySelector(".rb");
@@ -1525,32 +1498,33 @@
   // ---- hoja para escribir un valor ----
   function rangeOf(key) {
     var sang = (document.getElementById("r-sangrado") || {}).value || "no";
+    var kg = function (x) { return x * sv("peso") / 1000; };
     var R = {
       po2post: { min: 0, max: 600, z: [[150, "crit"], [300, "warn"], [600, "ok"]], ref: "Objetivo > 300 mmHg · por debajo de 150, valorar el cambio de membrana." },
       p3: { min: 0, max: 80, z: [[35, "ok"], [50, "warn"], [80, "crit"]], ref: "Límite 50 mmHg · un ascenso del 30–50 % sobre el basal sugiere trombosis." },
-      p1: { min: -150, max: 0, z: [[-100, "crit"], [-80, "warn"], [0, "ok"]], ref: "No pasar de −80 mmHg; −100 es succión excesiva." },
+      p1: { min: -150, max: 0, z: [[-100, "crit"], [-80, "warn"], [-50, "info"], [0, "ok"]], ref: "No pasar de −80 mmHg; −100 es succión excesiva; por debajo de −50, posibles microembolias." },
       p2: { min: 0, max: 300, z: [[200, "ok"], [300, "warn"]], ref: "Límite del protocolo: 200 mmHg." },
-      rpm: { min: 0, max: 5000, z: [[3500, "ok"], [5000, "warn"]], ref: "Por encima de 3500 rpm aumenta la hemólisis." },
+      rpm: { min: 1000, max: 5000, z: [[3500, "ok"], [5000, "warn"]], ref: "Por encima de 3500 rpm aumenta la hemólisis." },
       paco2: { min: 20, max: 80, z: [[35, "warn"], [45, "ok"], [60, "warn"], [80, "crit"]], ref: "Objetivo 35–45 mmHg." },
-      ph: { min: 7.0, max: 7.6, z: [[7.25, "crit"], [7.35, "warn"], [7.45, "ok"], [7.6, "warn"]], ref: "Objetivo 7,35–7,45." },
+      ph: { min: 7.0, max: 7.7, z: [[7.25, "crit"], [7.35, "warn"], [7.45, "ok"], [7.7, "warn"]], ref: "Objetivo 7,35–7,45." },
       lactato: { min: 0, max: 8, z: [[2, "ok"], [5, "warn"], [8, "crit"]], ref: "Objetivo < 2 mmol/L; importa la tendencia." },
       hb: { min: 5, max: 14, z: [[7, "crit"], [8, "warn"], [14, "ok"]], ref: "El protocolo pide > 8 g/dL." },
       ldh: { min: 0, max: 1500, z: [[350, "ok"], [1000, "warn"], [1500, "crit"]], ref: "Por encima de 1000 UI/L, sospechar coágulos en el cabezal." },
-      act: { min: 60, max: 360, z: [[90, "crit"], [160, "warn"], [180, "ok"], [320, "warn"], [360, "crit"]], ref: "Diana del protocolo: 160–180 s." },
-      ttpa: { min: 20, max: 110, z: [[35, "crit"], [46, "warn"], [70, "ok"], [90, "warn"], [110, "crit"]], ref: "Diana del protocolo: 46–70 s." },
-      diuresis: { min: 0, max: 3, z: [[0.5, "warn"], [3, "ok"]], ref: "Objetivo > 0,5 mL/kg/h." },
+      act: sang === "grave" ? null : { min: 60, max: 360, z: [[90, "crit"], [160, "warn"], [180, "ok"], [320, "warn"], [360, "crit"]], ref: "Diana del protocolo: 160–180 s." },
+      ttpa: sang === "grave" ? null : { min: 20, max: 110, z: [[35, "crit"], [46, "warn"], [70, "ok"], [90, "warn"], [110, "crit"]], ref: "Diana del protocolo: 46–70 s." },
+      diuresis: { min: 0, max: 2, z: [[0.5, "warn"], [3, "ok"]], ref: "Objetivo > 0,5 mL/kg/h." },
       temp: { min: 34, max: 40, z: [[35.5, "warn"], [37.5, "ok"], [40, "warn"]], ref: "Normotermia: 35,5–37,5 °C." },
       pplat: { min: 10, max: 40, z: [[25, "ok"], [30, "warn"], [40, "crit"]], ref: "Recomendable < 25, aceptable hasta 30 cmH₂O." },
-      peep: { min: 0, max: 20, z: [[10, "warn"], [20, "ok"]], ref: "≥ 10 cmH₂O en reposo." },
+      peep: { min: 0, max: 24, z: [[10, "warn"], [20, "ok"]], ref: "≥ 10 cmH₂O en reposo." },
       vfio2: { min: 21, max: 100, z: [[50, "ok"], [100, "warn"]], ref: "En reposo, 30–50 %." },
       plaq: { min: 0, max: 300, z: [[sang === "no" ? 50 : 100, "crit"], [100, "warn"], [300, "ok"]], ref: sang === "no" ? "Sin sangrado: > 50–100 ×10⁹/L." : "Con sangrado: > 100 ×10⁹/L." },
       fibri: { min: 0, max: 5, z: [[sang === "no" ? 1 : 1.5, "crit"], [2, "warn"], [5, "ok"]], ref: sang === "no" ? "Sin sangrado: > 1 g/L (ELSO pide 2,5–3)." : "Con sangrado: > 1,5 g/L (ELSO pide 2,5–3)." },
-      sao2: modo === "vv" ? { min: 60, max: 100, z: [[80, "crit"], [85, "warn"], [92, "ok"], [100, "warn"]], ref: "VV: objetivo 85–92 %." }
+      sao2: modo === "vv" ? { min: 60, max: 100, z: [[80, "crit"], [85, "warn"], [92, "ok"], [100, "info"]], ref: "VV: objetivo 85–92 %." }
         : { min: 80, max: 100, z: [[95, "crit"], [100, "ok"]], ref: "VA: objetivo 95–100 %, en radial derecha." },
-      pao2: modo === "vv" ? { ref: "VV: objetivo > 60 mmHg." } : null,
-      svo2: { ref: modo === "vv" ? "Premembrana: objetivo > 70 %." : "Objetivo > 65 % en el sistema y > 70 % en la cánula venosa." },
+      pao2: modo === "vv" ? { min: 30, max: 150, z: [[60, "warn"], [150, "ok"]], ref: "VV: objetivo > 60 mmHg." } : null,
+      svo2: { min: 40, max: 100, z: [[modo === "vv" ? 70 : 65, "warn"], [100, "ok"]], ref: modo === "vv" ? "Premembrana: objetivo > 70 %." : "Objetivo > 65 % en el sistema y > 70 % en la cánula venosa." },
       ic: modo === "va" ? { min: 1, max: 4, z: [[2.2, "crit"], [2.5, "warn"], [4, "ok"]], ref: "Objetivo total (bomba + gasto residual) ≥ 2,5 L/min/m²." } : null,
-      flujo: { ref: "Objetivo 50–80 mL/kg/min" + (isFinite(sv("flujo")) && sv("peso") > 0 ? " (ahora " + n0(sv("flujo") * 1000 / sv("peso")) + " mL/kg/min)." : ".") }
+      flujo: { min: 0, max: Math.max(7, kg(100)), z: sv("peso") > 0 ? [[kg(40), "crit"], [kg(50), "warn"], [kg(80), "ok"], [Math.max(7, kg(100)), "warn"]] : null, ref: "Objetivo 50–80 mL/kg/min" + (isFinite(sv("flujo")) && sv("peso") > 0 ? " (ahora " + n0(sv("flujo") * 1000 / sv("peso")) + " mL/kg/min)." : ".") }
     };
     if (FIELD_META[key] && FIELD_META[key].scope !== "ronda") return null;
     return R[key] || null;
@@ -1573,6 +1547,7 @@
     SH.key = key; SH.fresh = true; SH.err = ""; SH.buf = bufFromState(key); SH.prev = stepState[key].v;
     renderSheet();
     sheet.hidden = false; scrim.hidden = false;
+    colocarRegla();
     void sheet.offsetWidth;
     sheet.classList.add("on"); scrim.classList.add("on");
     vibrar();
@@ -1631,7 +1606,7 @@
     var r = S.rangos ? rangeOf(key) : null;
     if (r && r.z) {
       var span = r.max - r.min, prev = r.min, zones = "", ticks = "";
-      var conv = function (x) { return enKpa(key) ? numES(x / KPA, 1) : (Math.abs(x) < 10 && x % 1 ? numES(x, 1) : numES(x, 0)); };
+      var conv = function (x) { if (enKpa(key)) return numES(x / KPA, 1); var d = Math.abs(x - Math.round(x)) < 1e-9 ? 0 : Math.abs(x * 10 - Math.round(x * 10)) < 1e-6 ? 1 : 2; return numES(x, d).replace("-", "−"); };
       r.z.forEach(function (z, zi) {
         zones += '<span class="z-' + z[1] + '" style="width:' + ((z[0] - prev) / span * 100) + '%"></span>';
         if (zi < r.z.length - 1) ticks += '<span style="left:' + ((z[0] - r.min) / span * 100) + '%">' + conv(z[0]) + '</span>';
@@ -1645,11 +1620,8 @@
     if (SH.err) html += '<div class="sh-err">' + esc(SH.err) + '</div>';
     html += '</div>';
     var d = enKpa(key) ? 0.1 : m.delta;
-    var qd = [-5 * d, -d, d, 5 * d];
-    html += '<div class="sh-q">' + qd.map(function (q) {
-      var dd = (q % 1 !== 0) ? 1 : 0;
-      return '<button type="button" data-q="' + q + '">' + (q > 0 ? "+" : "−") + numES(Math.abs(q), dd) + '</button>';
-    }).join("") + '</div>';
+    html += '<div class="sh-rul"><button type="button" data-q="' + (-d) + '" aria-label="Restar ' + numES(d, d % 1 ? (d < 0.1 ? 2 : 1) : 0) + '">' + SVG_MINUS + '</button>' +
+      reglaHTML(key) + '<button type="button" data-q="' + d + '" aria-label="Sumar ' + numES(d, d % 1 ? (d < 0.1 ? 2 : 1) : 0) + '">' + SVG_PLUS + '</button></div>';
     var special = dec > 0 ? '<button type="button" data-k=".">,</button>' : (st.min < 0 ? '<button type="button" data-k="sign" aria-label="Cambiar signo">±</button>' : '<button type="button" data-k="clear" aria-label="Borrar todo">C</button>');
     html += '<div class="sh-k">' + [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return '<button type="button" data-k="' + n + '">' + n + '</button>'; }).join("") +
       special + '<button type="button" data-k="0">0</button><button type="button" data-k="back" aria-label="Borrar">' + SVG_DEL + '</button></div>';
@@ -1657,6 +1629,88 @@
     html += '<div class="sh-nav">' + (prevK ? '<button type="button" class="prev" data-nav="prev">' + SVG_CHEV_L + '<span>' + esc(SHORT[prevK] || FIELD_META[prevK].label) + '</span></button>' : "") +
       '<button type="button" class="next" data-nav="next"><span>' + (nextK ? "Siguiente: " + esc(FIELD_META[nextK].label.toLowerCase()) : "Hecho") + '</span>' + (nextK ? SVG_CHEV : SVG_OK) + '</button></div>';
     sheet.innerHTML = html;
+    colocarRegla();
+  }
+
+  // ---- regla deslizable: se arrastra con el dedo y encaja en cada paso; el teclado sigue disponible ----
+  var RUL_STEP = { vfio2: 1, "k-fio2": 1 };
+  function reglaDe(key) {
+    var st = stepState[key], kp = enKpa(key);
+    var step = kp ? 0.1 : (RUL_STEP[key] || FIELD_META[key].delta);
+    var dmin = kp ? st.min / KPA : st.min, dmax = kp ? st.max / KPA : st.max;
+    var lo = Math.ceil(dmin / step - 1e-9) * step, hi = Math.floor(dmax / step + 1e-9) * step;
+    var n = Math.round((hi - lo) / step);
+    return { step: step, lo: lo, hi: hi, n: n, px: n < 40 ? 16 : 9, dec: kp ? 1 : st.dec, kp: kp };
+  }
+  function reglaHTML(key) {
+    var g = reglaDe(key), w = g.n * g.px;
+    var i0 = ((10 - (Math.round(g.lo / g.step) % 10)) % 10 + 10) % 10, labs = "";
+    for (var i = i0; i <= g.n; i += 10) {
+      var v = g.lo + i * g.step;
+      labs += '<span class="lb" style="left:' + (i * g.px) + 'px">' + numES(v, Math.abs(Math.round(v) - v) > 1e-9 ? (g.step < 0.1 ? 2 : 1) : 0).replace("-", "−") + '</span>';
+    }
+    var band = "";
+    var r = S.rangos ? rangeOf(key) : null;
+    if (r && r.z) {
+      var toPx = function (x) { var xv = g.kp ? x / KPA : x; return Math.max(0, Math.min(w, (xv - g.lo) / g.step * g.px)); };
+      var prev = 0, stops = [];
+      r.z.forEach(function (z, zi) {
+        var e = zi === r.z.length - 1 ? w : toPx(z[0]);
+        stops.push("var(--rb-" + z[1] + ") " + prev + "px " + e + "px"); prev = e;
+      });
+      band = '<i class="band" style="background:linear-gradient(90deg,' + stops.join(",") + ')"></i>';
+    }
+    return '<div class="rul-w"><div class="rul" role="slider" tabindex="-1" aria-label="Deslizar para elegir el valor" style="--px:' + g.px + 'px">' +
+      '<div class="rul-in"><div class="rul-tr" style="width:' + w + 'px"><i class="tk"></i><i class="tk mj" style="background-position:' + (i0 * g.px) + 'px 0"></i>' + band + labs + '</div></div></div><i class="rul-c" aria-hidden="true"></i></div>';
+  }
+  var RUL = { el: null, set: false, t: 0 };
+  function valorRegla(key) {
+    var st = stepState[key], g = reglaDe(key);
+    var v = st.v !== null && st.v !== undefined ? st.v : (st.blankStart !== undefined ? st.blankStart : RONDA_DEF[key]);
+    if (v === null || v === undefined || !isFinite(v)) v = (st.min + st.max) / 2;
+    return g.kp ? v / KPA : v;
+  }
+  function colocarRegla() {
+    var el = sheet.querySelector(".rul");
+    RUL.el = el;
+    if (!el) return;
+    var g = reglaDe(SH.key), v = valorRegla(SH.key);
+    var x = Math.max(0, Math.min(g.n, Math.round((v - g.lo) / g.step))) * g.px;
+    RUL.set = x; el.scrollLeft = x;
+    el.setAttribute("aria-valuemin", g.lo); el.setAttribute("aria-valuemax", g.hi); el.setAttribute("aria-valuenow", v);
+    if (!el.dataset.on) { el.dataset.on = "1"; el.addEventListener("scroll", alDeslizar, { passive: true }); }
+  }
+  function alDeslizar() {
+    var el = RUL.el;
+    if (!el || !SH.key) return;
+    // Mientras la regla siga en la posición que fijó el programa, no cambia el valor (un campo vacío sigue vacío).
+    if (RUL.set !== false && Math.abs(el.scrollLeft - RUL.set) < 1) return;
+    RUL.set = false;
+    var g = reglaDe(SH.key);
+    var i = Math.max(0, Math.min(g.n, Math.round(el.scrollLeft / g.px)));
+    var buf = (g.lo + i * g.step).toFixed(g.dec);
+    clearTimeout(RUL.t);
+    RUL.t = setTimeout(function () { if (RUL.el === el && Math.abs(el.scrollLeft - i * g.px) >= 1) el.scrollTo({ left: i * g.px, behavior: "smooth" }); }, 160);
+    if (buf === SH.buf) return;
+    SH.buf = buf; SH.fresh = false;
+    if (i % 10 === 0) vibrar();
+    commitBuf(false);
+    refrescarHoja();
+  }
+  // Actualiza la cifra, el estado y la barra de la hoja sin redibujarla (no interrumpe el deslizamiento).
+  function refrescarHoja() {
+    var key = SH.key, st = stepState[key];
+    var num = sheet.querySelector(".sh-num");
+    if (num) { num.textContent = SH.buf === "" ? "—" : fmtBuf(SH.buf); num.classList.toggle("ph", SH.buf === "" || SH.buf === "-"); }
+    var f = FIELD_META[key].scope === "ronda" ? fieldFinding[key] : null;
+    var chip = sheet.querySelector(".sh-st"), html = "";
+    if (f && (f.sev === "crit" || f.sev === "warn")) html = '<span class="sh-st ' + f.sev + '">' + esc(f.t) + '</span>';
+    else if (f && f.sev === "ok") html = '<span class="sh-st ok">En rango</span>';
+    if (chip) chip.outerHTML = html || '<span class="sh-st" hidden></span>';
+    else if (html) sheet.querySelector(".sh-val").insertAdjacentHTML("beforeend", html);
+    var mk = sheet.querySelector(".rbar .mk"), r = S.rangos ? rangeOf(key) : null;
+    if (mk && r && st.v !== null && st.v !== undefined) mk.style.left = Math.max(0, Math.min(100, (st.v - r.min) / (r.max - r.min) * 100)) + "%";
+    if (RUL.el) RUL.el.setAttribute("aria-valuenow", SH.buf);
   }
   function pressKey(k) {
     var st = stepState[SH.key];

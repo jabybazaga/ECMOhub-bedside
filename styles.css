@@ -427,6 +427,22 @@ html[data-theme="noche"] .btn-informe{background:var(--surface-3);color:var(--in
 .rbar .ticks .t1{right:0;left:auto;transform:none}
 .sh-ref{font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .sh-err{font-size:12.5px;color:var(--crit);font-weight:600}
+.sh-rul{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:stretch}
+.sh-rul>button{height:64px;border:1px solid var(--line-2);border-radius:12px;background:var(--surface);color:var(--ink);display:grid;place-items:center;padding:0}
+.sh-rul>button svg{width:20px;height:20px}
+.rul-w{position:relative;height:64px;border-radius:12px;background:var(--surface);border:1px solid var(--line-2);overflow:hidden;min-width:0}
+.rul{height:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;outline:0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent)}
+.rul::-webkit-scrollbar{display:none}
+.rul-in{width:max-content;height:100%;padding:0 50%}
+.rul-tr{position:relative;height:100%}
+.rul .tk{position:absolute;left:-.5px;width:calc(100% + 1px);top:12px;height:11px;background:repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px var(--px))}
+.rul .tk.mj{left:-.75px;width:calc(100% + 1.5px);top:7px;height:21px;background:repeating-linear-gradient(90deg,var(--ink-3) 0 1.5px,transparent 1.5px calc(var(--px) * 10))}
+.rul .band{position:absolute;left:0;right:0;top:31px;height:4px;border-radius:2px}
+.rul .lb{position:absolute;top:40px;transform:translateX(-50%);font:500 11.5px var(--mono);color:var(--ink-3);white-space:nowrap}
+.rul-c{position:absolute;left:50%;top:0;width:3px;height:36px;margin-left:-1.5px;border-radius:0 0 2px 2px;background:var(--ink);pointer-events:none}
+.rul-c::before{content:"";position:absolute;left:50%;top:0;margin-left:-6px;border:6px solid transparent;border-top-color:var(--ink);border-bottom:0}
+.rbar .z-info{background:var(--line-2)}
 .sh-q{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .sh-q button{height:40px;border:1px solid var(--line-2);border-radius:10px;background:var(--surface);font:600 14px var(--mono);color:var(--ink)}
 .sh-k{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
@@ -440,7 +456,7 @@ html[data-theme="noche"] .btn-informe{background:var(--surface-3);color:var(--in
 html[data-theme="oscuro"] .sh-nav .next,html[data-theme="noche"] .sh-nav .next{color:var(--ronda-ink)}
 .sh-nav svg{width:16px;height:16px;flex:0 0 auto}
 .sh-nav .clr{padding:0 14px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);flex:0 0 auto}
-@media (max-height:700px){.sh-k button{height:44px}.sh-num{font-size:36px}.sheet{gap:9px}}
+@media (max-height:700px){.sh-k button{height:44px}.sh-num{font-size:36px}.sheet{gap:9px}.rul-w,.sh-rul>button{height:58px}}
 
 /* ---- modo crisis ---- */
 .crisis{position:fixed;inset:0;z-index:50;background:#111518;color:#F1F4F6;display:flex;flex-direction:column;padding:calc(16px + env(safe-area-inset-top,0)) 0 calc(20px + env(safe-area-inset-bottom,0));opacity:0;transition:opacity 200ms var(--ease-out)}
