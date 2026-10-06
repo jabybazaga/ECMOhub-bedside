@@ -1991,8 +1991,10 @@
     img.src = "img/" + k + ".svg";
     f.appendChild(img);
   }
+  var pararPix = null;
   function cerrarEsquema() {
     if (!viewerEl || viewerEl.hidden) return;
+    if (pararPix) { try { pararPix(); } catch (e) { /* ya parada */ } pararPix = null; }
     $$("video", viewerEl).forEach(function (v) { try { v.pause(); } catch (e) { /* sin vídeo */ } });
     viewerEl.classList.remove("on");
     setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
@@ -2006,6 +2008,76 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
 
   // ---- perlas: vídeos, GIF y esquemas prácticos (perlas/perlas.json; ver perlas/LEEME.md) ----
+  // ---- escalas con puntuación: una casilla por fila y el total al momento ----
+  // Sin valores por defecto: el total solo aparece cuando todas las filas tienen respuesta.
+  var ESCALAS_PUNT = {
+    murray: {
+      nombre: "Murray", div: 4, dec: 2, min: 0, max: 4,
+      filas: [
+        { l: "Cuadrantes afectados en la Rx", o: [["0", 0], ["1", 1], ["2", 2], ["3", 3], ["4", 4]] },
+        { l: "PaO₂/FiO₂", o: [["> 300", 0], ["225–299", 1], ["175–224", 2], ["101–174", 3], ["< 100", 4]] },
+        { l: "PEEP (cmH₂O)", o: [["< 5", 0], ["6–8", 1], ["9–11", 2], ["12–14", 3], ["> 15", 4]] },
+        { l: "Compliance (mL/cmH₂O)", o: [["> 80", 0], ["60–79", 1], ["40–59", 2], ["20–39", 3], ["< 19", 4]] }
+      ],
+      tramos: [[0, 2, "info"], [2, 3, "warn"], [3, 4, "crit"]], marcas: [0, 2, 3, 4],
+      zona: function (t) { return t >= 3 ? ["crit", "Indicación"] : t >= 2 ? ["warn", "Considerar"] : ["zero", "Por debajo del umbral"]; },
+      cap: "Total ÷ 4. Indicación con 3–4; considerar con 2–3. CESAR usa ≥ 3,0 y ≥ 2,5."
+    },
+    apss: {
+      nombre: "APSS", div: 1, dec: 0, min: 3, max: 9,
+      filas: [
+        { l: "Edad (años)", o: [["< 47", 1], ["47–66", 2], ["> 66", 3]] },
+        { l: "PaO₂/FiO₂", o: [["> 158", 1], ["105–158", 2], ["< 105", 3]] },
+        { l: "Presión meseta (cmH₂O)", o: [["< 27", 1], ["27–30", 2], ["> 30", 3]] }
+      ],
+      tramos: [[3, 8, "warn"], [8, 9, "crit"]], marcas: [3, 8, 9],
+      zona: function (t) { return t >= 8 ? ["crit", "Indicación"] : ["warn", "Considerar"]; },
+      cap: "Indicación con 8; considerar con 3."
+    }
+  };
+  function fmtScore(def, t) { return def.dec ? t.toFixed(def.dec).replace(".", ",") : String(t); }
+  function pintarScore(box) {
+    var def = ESCALAS_PUNT[box.dataset.score];
+    if (!def) return;
+    var sel = (box._sel = box._sel || def.filas.map(function () { return null; }));
+    var pos = function (v) { return ((v - def.min) / (def.max - def.min) * 100) + "%"; };
+    var faltan = sel.filter(function (x) { return x === null; }).length;
+    var tot = faltan ? null : sel.reduce(function (a, i, fi) { return a + def.filas[fi].o[i][1]; }, 0) / def.div;
+    var z = tot === null ? ["zero", faltan === def.filas.length ? "Toca una casilla por fila" : "Faltan " + faltan + (faltan === 1 ? " fila" : " filas")] : def.zona(tot);
+    box.innerHTML =
+      '<div class="sc-head"><div class="sc-tot"><span class="sc-k">' + esc(def.nombre) + '</span><span class="sc-n">' + (tot === null ? "—" : fmtScore(def, tot)) + '</span></div>' +
+      '<span class="badge ' + z[0] + '" aria-live="polite">' + esc(z[1]) + '</span><span class="sp"></span>' +
+      (faltan < def.filas.length ? '<button type="button" class="sc-reset">Borrar</button>' : "") + '</div>' +
+      def.filas.map(function (f, fi) {
+        return '<div class="sc-row"><div class="sc-l"><span>' + esc(f.l) + '</span><span class="sc-p">' + (sel[fi] === null ? "" : f.o[sel[fi]][1] + " pt") + '</span></div>' +
+          '<div class="sc-opts" role="radiogroup" aria-label="' + esc(f.l) + '" style="grid-template-columns:repeat(' + f.o.length + ',minmax(0,1fr))">' +
+          f.o.map(function (o, oi) {
+            var on = sel[fi] === oi;
+            return '<button type="button" role="radio" aria-checked="' + on + '" data-f="' + fi + '" data-o="' + oi + '"' + (on ? ' class="on"' : "") + '><span class="o">' + esc(o[0]) + '</span><span class="pp">' + o[1] + ' pt</span></button>';
+          }).join("") + '</div></div>';
+      }).join("") +
+      '<div class="sc-band" aria-hidden="true"><div class="sc-tr">' + def.tramos.map(function (t) {
+        return '<i style="left:' + pos(t[0]) + ';width:calc(' + pos(t[1]) + ' - ' + pos(t[0]) + ')" class="' + t[2] + '"></i>';
+      }).join("") + (tot === null ? "" : '<b class="sc-mk" style="left:' + pos(tot) + '"></b>') + '</div>' +
+      '<div class="sc-ms">' + def.marcas.map(function (m) { return '<span style="left:' + pos(m) + '">' + m + '</span>'; }).join("") + '</div></div>' +
+      '<p class="sc-cap">' + esc(def.cap) + '</p>';
+  }
+  $$(".score[data-score]").forEach(pintarScore);
+  document.addEventListener("click", function (e) {
+    var box = e.target.closest(".score[data-score]");
+    if (!box) return;
+    var b = e.target.closest("button[data-f]");
+    if (b) {
+      box._sel[+b.dataset.f] = +b.dataset.o;
+      pintarScore(box);
+      var nb = box.querySelector('button[data-f="' + b.dataset.f + '"][data-o="' + b.dataset.o + '"]');
+      if (nb) nb.focus({ preventScroll: true });
+    } else if (e.target.closest(".sc-reset")) {
+      box._sel = null;
+      pintarScore(box);
+    }
+  });
+
   var PERLAS = null, perlaCat = "";
   var SVG_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
   var SVG_FILM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.2 9.4v5.2l4.4-2.6z" fill="currentColor"/></svg>';
@@ -2023,12 +2095,12 @@
   function estadoPerla(pl) {
     var m = pl.media;
     if (!m) return '<span class="pst pend">Vídeo pendiente' + (/propuesta/i.test(pl.fuente || "") ? " · propuesta" : "") + '</span>';
-    return '<span class="pst ok">' + (m.tipo === "video" ? "Vídeo" : m.tipo === "gif" ? "GIF" : "Esquema animado") + '</span>';
+    return '<span class="pst ok">' + (m.tipo === "video" ? "Vídeo" : m.tipo === "gif" ? "GIF" : m.tipo === "interactivo" ? "Interactiva" : "Esquema animado") + '</span>';
   }
   function miniaturaPerla(pl) {
     var m = pl.media;
     if (!m) return '<span class="pthumb pend">' + SVG_FILM + '</span>';
-    var src = m.tipo === "video" ? m.poster : m.src;
+    var src = m.tipo === "video" || m.tipo === "interactivo" ? m.poster : m.src;
     return '<span class="pthumb">' + (src ? '<img src="' + esc(src) + '" alt="" loading="lazy">' : SVG_FILM) + '<span class="pl">' + SVG_PLAY + '</span></span>';
   }
   function renderPerlas() {
@@ -2054,12 +2126,15 @@
     var m = pl.media, fig;
     if (!m) fig = '<div class="pend-media">' + SVG_FILM + '<p>Vídeo pendiente de grabar.</p></div>';
     else if (m.tipo === "video") fig = '<video src="' + esc(m.src) + '"' + (m.poster ? ' poster="' + esc(m.poster) + '"' : "") + ' controls autoplay muted loop playsinline preload="metadata"></video>';
+    else if (m.tipo === "interactivo") fig = '<div class="pix" data-pix="' + esc(m.componente) + '"></div>';
     else fig = '<img src="' + esc(m.src) + '" alt="' + esc(pl.titulo) + '">';
     viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Perla · ' + esc(pl.cat || "") + '</div><div class="t" id="viewer-t">' + esc(pl.titulo) + '</div></div></div>' +
-      '<div class="vb"><div class="fig' + (m && m.tipo === "video" ? " vid" : "") + (m ? "" : " pend") + '">' + fig + '</div>' +
+      '<div class="vb"><div class="fig' + (m && m.tipo === "video" ? " vid" : "") + (m && m.tipo === "interactivo" ? " ix" : "") + (m ? "" : " pend") + '">' + fig + '</div>' +
       '<div class="vpts"><h4>Puntos clave</h4><ul class="lst">' + (pl.puntos || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul>' +
       (pl.fuente ? '<p class="vsrc">' + esc(pl.fuente) + '</p>' : "") + '</div></div>';
     viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    var pix = viewerEl.querySelector("[data-pix]"), comp = pix && window.ECMO_PIX && window.ECMO_PIX[pix.dataset.pix];
+    if (pix) pararPix = comp ? comp(pix) : (pix.innerHTML = '<p class="cap">Esta perla no se ha podido cargar.</p>', null);
     capaAbierta("esquema", cerrarEsquema);
   }
   document.addEventListener("click", function (e) {
