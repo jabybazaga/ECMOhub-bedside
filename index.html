@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=16">
+<link rel="manifest" href="manifest.json?v=19">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -465,38 +465,38 @@
         <div class="dl-row"><span class="dl-k">ECMONET <span class="pill elso">EXTERNO</span></span><span class="dl-v">IO &gt; 30 · P/F &lt; 70 con PEEP≥15 · pH &lt; 7,25 &gt; 2h · inestabilidad hemodinámica</span></div>
       </div>
       <a href="#" class="linkcard" data-go="calc" data-calc-tab="criterios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg><span>Calcular qué criterio cumple tu paciente</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a>
-      <p class="rp" style="font-size:12px;color:var(--ink-3)">Premisa común: manejo optimizado, ventilación protectora y al menos un ciclo de prono. AOI 60 → 50% mortalidad; AOI 80 → 80%. Otras indicaciones: fuga aérea, intubación en lista de trasplante pulmonar, parada respiratoria inminente.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Premisa común</span><span class="dl-v">Manejo optimizado · ventilación protectora · ≥ 1 ciclo de prono</span></div><div class="dl-row"><span class="dl-k">Otras indicaciones</span><span class="dl-v">Fuga aérea · intubación en lista de trasplante pulmonar · parada respiratoria inminente</span></div></div>
 
       <h3 class="rh">Contraindicaciones — todas relativas<span class="pill chub">CHUB</span></h3>
-      <p class="rp">No hay contraindicaciones absolutas (posición ELSO). Relativas: hemorragia de SNC reciente o no controlada, enfermedad terminal, lesión severa del SNC no recuperable, <b>inmunodepresión (neutrófilos &lt; 400/mm³)</b>, edad (sin corte, a más edad más mortalidad) y <b>VM &gt; 7 días con parámetros agresivos</b> (FiO₂ &gt; 90% con Pplat &gt; 30).</p>
+      <p class="rp">Ninguna absoluta (posición ELSO). Relativas:</p><ul class="lst"><li>Hemorragia del SNC reciente o no controlada</li><li>Lesión del SNC severa no recuperable</li><li>Enfermedad terminal</li><li><b>Inmunodepresión</b>: neutrófilos &lt; 400/mm³</li><li><b>VM &gt; 7 días</b> con FiO₂ &gt; 90 % y Pplat &gt; 30</li><li>Edad: sin corte; a más edad, más mortalidad</li></ul>
 
       <h3 class="rh">Configuración<span class="pill chub">CHUB</span></h3>
       <p class="rp">Las dos de uso habitual: <b>fémoro-yugular</b> y <b>fémoro-femoral</b>. Mayor calibre posible, siempre menor que el vaso, con ecoguía.</p>
       <div class="deflist">
-        <div class="dl-row hl"><span class="dl-k">Fémoro-yugular</span><span class="dl-v">Drenaje femoral, retorno yugular derecho. Bajo grado de recirculación basal y flujo estable. Cánula de drenaje multiperforada en entrada de AD; retorno hacia la tricúspide.</span></div>
-        <div class="dl-row hl"><span class="dl-k">Fémoro-femoral</span><span class="dl-v">Drenaje femoral izquierdo, retorno femoral derecho. Inserción más segura y ventajas en transporte; puede oscilar con el volumen abdominal. Permite deambulación.</span></div>
+        <div class="dl-row hl"><span class="dl-k">Fémoro-yugular <button type="button" class="esq-btn" data-esquema="vv-femoro-yugular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Ver esquema</button></span><span class="dl-v">Drenaje femoral, retorno yugular derecho. Poca recirculación basal y flujo estable. Drenaje multiperforado en la VCI intrahepática; retorno dentro de la AD, hacia la tricúspide.</span></div>
+        <div class="dl-row hl"><span class="dl-k">Fémoro-femoral <button type="button" class="esq-btn" data-esquema="vv-femoro-femoral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Ver esquema</button></span><span class="dl-v">Drenaje femoral izquierdo, retorno femoral derecho. Inserción más segura, útil en transporte y permite deambular; puede oscilar con el volumen abdominal.</span></div>
         <div class="dl-row"><span class="dl-k">Yúgulo-femoral</span><span class="dl-v">Drenaje yugular derecho, retorno femoral. Flujo muy estable pero recirculación elevada y riesgo de decanulación al movilizar.</span></div>
         <div class="dl-row"><span class="dl-k">Doble luz</span><span class="dl-v">Una cánula en yugular derecha. Un solo punto de entrada, pero riesgo de recirculación si rota y diámetro elevado.</span></div>
         <div class="dl-row"><span class="dl-k">Atrio-pulmonar</span><span class="dl-v">Drenaje en AD, retorno a arteria pulmonar. Recirculación casi nula y soporte al VD, pero técnica compleja.</span></div>
         <div class="deflist-cap">Calibres: drenaje 23–25 Fr y retorno 17–21 Fr en periférica; 28–36 y 18–22 Fr en central.</div>
       </div>
-      <div class="note"><b>Punta de drenaje.</b> Con dos cánulas, a la altura de las <b>venas renales</b>; acercarla a la AD aumenta la recirculación. Separación &lt; 10 cm entre puntas = riesgo alto. <span class="pill elso">EXTERNO</span></div>
+      <div class="note"><b>Punta de drenaje</b> en la <b>VCI intrahepática</b>; acercarla a la AD aumenta la recirculación. Separación &lt; 10 cm entre puntas = riesgo alto. <span class="pill chub">CHUB</span></div>
 
       <h3 class="rh">Ventilación ultraprotectora de reposo</h3>
-      <p class="rp">Objetivo: meseta <b>&lt; 25</b> (aceptable hasta 30) · <b>PEEP ≥ 10</b> (10–24) · FR <b>4–15</b> · FiO₂ mínima (30–50%) · Vt <b>≤ 6 mL/kg</b> peso ideal · <b>driving pressure &lt; 15</b>.</p>
-      <div class="note"><b>La regla del 10.</b> Arranque estándar: <b>PEEP 10 · FR 10 · presión control 10 sobre PEEP</b> — pico de 20 cmH₂O. Desde ahí se titula, sin subir el ventilador para corregir una hipoxemia tolerada.</div>
-      <div class="note amber">Objetivo de driving pressure <b>&lt; 15</b>. Si no se alcanzan los parámetros de reposo, el problema es que <b>el soporte extracorpóreo es insuficiente</b> — se optimiza el ECMO, no el ventilador.</div>
+      <div class="deflist tight"><div class="dl-row"><span class="dl-k">Meseta</span><span class="dl-v">&lt; 25 (aceptable ≤ 30)</span></div><div class="dl-row"><span class="dl-k">PEEP</span><span class="dl-v">≥ 10 (10–24)</span></div><div class="dl-row"><span class="dl-k">FR</span><span class="dl-v">4–15</span></div><div class="dl-row"><span class="dl-k">FiO₂</span><span class="dl-v">mínima, 30–50 %</span></div><div class="dl-row"><span class="dl-k">Vt</span><span class="dl-v">≤ 6 mL/kg peso ideal</span></div><div class="dl-row"><span class="dl-k">Driving pressure</span><span class="dl-v">&lt; 15</span></div></div>
+      <div class="note"><b>Regla del 10.</b> Arranque: <b>PEEP 10 · FR 10 · PC 10 sobre PEEP</b> (pico 20). Titular desde ahí; no subir el ventilador por una hipoxemia tolerada.</div>
+      <div class="note amber">Si no se alcanzan estos parámetros, <b>el soporte extracorpóreo es insuficiente</b>: se optimiza el ECMO, no el ventilador.</div>
 
       <h3 class="rh">Hipoxemia refractaria</h3>
-      <p class="rp">Diagnóstico diferencial en orden: <b>1)</b> descenso del flujo efectivo (flujo − recirculación) · <b>2)</b> descenso de SvO₂ por consumo o anemia (Hb &gt; 8, transfundir hasta ~10 si cae flujo o hay hemólisis) · <b>3)</b> gasto cardiaco nativo alto (sedar, controlar taquicardia, retirar inotrópicos) · <b>4)</b> fallo del oxigenador · <b>5)</b> pérdida de función pulmonar residual (neumotórax, atelectasia, derrame — reclutar, prono).</p>
-      <div class="note">El algoritmo del Clínic en dos preguntas: PaO₂ postmembrana <b>baja</b> → disfunción de membrana, recambio. <b>Normal</b> con SvO₂ premembrana alta → recirculación. Normal con SvO₂ normal → flujo inadecuado (subir rpm, revisar Hb/sedación/temperatura). <span class="pill elso">EXTERNO</span></div>
+      <div class="steps"><div class="st-h">Diagnóstico diferencial, en orden</div><ol><li><b>Flujo efectivo bajo</b> (flujo − recirculación)</li><li><b>SvO₂ baja</b> por consumo o anemia: Hb &gt; 8; transfundir hasta ~10 si cae el flujo o hay hemólisis</li><li><b>Gasto cardiaco nativo alto</b>: sedar, controlar taquicardia, retirar inotrópicos</li><li><b>Fallo del oxigenador</b></li><li><b>Pérdida de pulmón residual</b> (neumotórax, atelectasia, derrame): reclutar, prono</li></ol></div>
+      <h4 class="rh4">Algoritmo del Clínic <span class="pill elso">EXTERNO</span></h4><div class="deflist tbl"><div class="dl-row"><span class="dl-k">PaO₂ postmembrana baja</span><span class="dl-v">Disfunción de membrana → recambio</span></div><div class="dl-row"><span class="dl-k">Normal + SvO₂ pre alta</span><span class="dl-v">Recirculación</span></div><div class="dl-row"><span class="dl-k">Normal + SvO₂ normal</span><span class="dl-v">Flujo inadecuado: subir rpm; revisar Hb, sedación y temperatura</span></div></div>
 
       <h3 class="rh">Recirculación</h3>
-      <p class="rp">Se sospecha con <b>SpO₂ que baja y SvO₂ premembrana que sube a la vez</b> — el patrón importa más que el número; ninguna fuente fija un umbral. Fórmula y calculadora en <a href="#" data-go="calc">Calculadoras</a>.</p>
-      <div class="note">Manejo: 1) optimizar flujo de bomba · 2) reevaluar posición de catéteres con Rx/eco · 3) aumentar gasto cardiaco si procede. Repetir Rx siempre que se sospeche.</div>
+      <p class="rp">Sospecharla si <b>baja la SpO₂ y sube la SvO₂ premembrana a la vez</b>. Importa el patrón: no hay umbral validado. <a href="#" data-go="calc" data-calc-tab="recirc">Calculadora</a>.</p>
+      <div class="note"><b>Manejo:</b> optimizar flujo · revisar posición de cánulas con Rx/eco (repetir si se sospecha) · aumentar gasto cardiaco si procede.</div>
 
       <h3 class="rh">Destete</h3>
-      <p class="rp">Con el <b>gas</b>, nunca bajando el flujo de sangre. Requisitos: estabilidad hemodinámica, ventilación espontánea favorable, <b>FiO₂ &lt; 50%</b> sin acidosis, y prueba de FiO₂ 100% 15 min con PO₂ &gt; 200.</p>
+      <p class="rp">Con el <b>gas</b>, nunca bajando el flujo de sangre. Requisitos:</p><ul class="lst"><li>Estabilidad hemodinámica</li><li>Ventilación espontánea favorable</li><li><b>FiO₂ &lt; 50 %</b> sin acidosis</li><li>FiO₂ 100 % 15 min con PO₂ &gt; 200</li></ul>
       <div class="steps">
         <div class="st-h">Dos pruebas encadenadas</div>
         <ol>
@@ -517,7 +517,7 @@
       <p class="ref-lede">Shock cardiogénico refractario INTERMACS I–II: puente a recuperación, decisión, asistencia de larga duración o trasplante.</p>
 
       <h3 class="rh">Shock refractario<span class="pill chub">CHUB</span></h3>
-      <p class="rp">Hipotensión/hipoperfusión con <b>IC &lt; 2,2 L/min/m²</b> pese a volemia óptima e inotrópicos/vasopresores a dosis altas (dopamina/dobutamina &gt; 10, milrinona &gt; 0,5, noradrenalina &gt; 0,5, adrenalina &gt; 0,1 µg/kg/min). Hipoperfusión: oliguria &lt; 0,5 mL/kg/h, frialdad, alteración mental o lactato &gt; 2.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Definición</span><span class="dl-v"><b>IC &lt; 2,2 L/min/m²</b> con hipotensión o hipoperfusión pese a volemia óptima y fármacos a dosis altas</span></div><div class="dl-row"><span class="dl-k">Dosis altas (µg/kg/min)</span><span class="dl-v">Dopamina/dobutamina &gt; 10 · milrinona &gt; 0,5 · noradrenalina &gt; 0,5 · adrenalina &gt; 0,1</span></div><div class="dl-row"><span class="dl-k">Hipoperfusión</span><span class="dl-v">Diuresis &lt; 0,5 mL/kg/h · frialdad · alteración mental · lactato &gt; 2</span></div></div>
 
       <h3 class="rh">SCAI SHOCK</h3>
       <p class="rp">El CHUB indica VA en <b>SCAI D–E</b> e INTERMACS 1–2:</p>
@@ -531,7 +531,7 @@
       </div>
 
       <h3 class="rh">Patologías que lo indican<span class="pill chub">CHUB</span></h3>
-      <p class="rp">IAM, tormenta arrítmica refractaria, miocarditis aguda/fulminante, Takotsubo, miocardiopatía periparto, descompensación INTERMACS I–II, postcardiotomía, disfunción primaria del injerto, ECPR, TEP, HTP. Otras: PCI de alto riesgo, miocardiopatía séptica, cardiotóxicos, anafilaxia grave, hipotermia accidental, soporte de VD durante implante de asistencia izquierda.</p>
+      <div class="tags"><span>IAM</span><span>Tormenta arrítmica refractaria</span><span>Miocarditis aguda/fulminante</span><span>Takotsubo</span><span>Miocardiopatía periparto</span><span>Descompensación INTERMACS I–II</span><span>Postcardiotomía</span><span>Disfunción primaria del injerto</span><span>ECPR</span><span>TEP</span><span>HTP</span></div><h4 class="rh4">Otras</h4><div class="tags light"><span>PCI de alto riesgo</span><span>Miocardiopatía séptica</span><span>Cardiotóxicos</span><span>Anafilaxia grave</span><span>Hipotermia accidental</span><span>Soporte de VD en implante de asistencia izquierda</span></div>
 
       <h3 class="rh">Contraindicaciones<span class="pill chub">CHUB</span></h3>
       <div class="deflist">
@@ -540,15 +540,15 @@
       </div>
 
       <h3 class="rh">Canulación<span class="pill chub">CHUB</span></h3>
-      <p class="rp">Fémoro-femoral la más frecuente: drenaje en AD, retorno femoral común (23–25 / 17–21 Fr). Sin acceso o si hace falta flujo anterógrado: retorno a <b>axilar izquierda</b>. Central (28–36 / 18–22 Fr) en vasculopatía grave, ECMO periférica insuficiente o síndrome de Arlequín.</p>
-      <div class="note red"><b>Perfusión distal del miembro desde el inicio.</b> Cánula en femoral superficial (o tibial posterior/dorsal). Vigilar con <b>palpación del pulso pedio</b>, sin medias de compresión. Si hiperperfusión: reposicionar o <i>banding</i>.</div>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Fémoro-femoral <button type="button" class="esq-btn" data-esquema="va-femoro-femoral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Ver esquema</button></span><span class="dl-v">La más frecuente. Drenaje en AD, retorno femoral común · 23–25 / 17–21 Fr</span></div><div class="dl-row"><span class="dl-k">Retorno axilar izq. <button type="button" class="esq-btn" data-esquema="va-femoro-axilar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>Ver esquema</button></span><span class="dl-v">Sin acceso femoral o si hace falta flujo anterógrado</span></div><div class="dl-row"><span class="dl-k">Central</span><span class="dl-v">Vasculopatía grave, periférica insuficiente o Arlequín · 28–36 / 18–22 Fr</span></div></div>
+      <div class="note red"><b>Perfusión distal desde el inicio:</b> cánula en femoral superficial (o tibial posterior/dorsal). Vigilar <b>pulso pedio</b>; sin medias de compresión. Si hiperperfusión: reposicionar o <i>banding</i>.</div>
 
       <h3 class="rh">Distensión del VI</h3>
-      <p class="rp">Sospecha: <b>presión de pulso &lt; 15 mmHg</b> y pérdida de onda dícrota. La <b>descarga mecánica es necesaria en la mayoría de los casos</b> (Impella; balón si hay trombo). Antes: dobutamina &lt; 10, reducir poscarga.</p>
-      <div class="note">Con <b>PAM &gt; 90</b>, el aumento de resistencias empeora el flujo de la bomba y favorece la distensión — tratar con nitroprusiato/urapidilo, no bajando el flujo. <span class="pill elso">EXTERNO</span></div>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Sospecha</span><span class="dl-v"><b>Presión de pulso &lt; 15 mmHg</b> · pérdida de onda dícrota</span></div><div class="dl-row"><span class="dl-k">Primero</span><span class="dl-v">Dobutamina &lt; 10 · reducir poscarga</span></div><div class="dl-row"><span class="dl-k">Descarga mecánica</span><span class="dl-v">Necesaria en la mayoría: Impella; balón si hay trombo</span></div></div>
+      <div class="note"><b>PAM &gt; 90</b> empeora el flujo y favorece la distensión: nitroprusiato o urapidilo, no bajar el flujo. <span class="pill elso">EXTERNO</span></div>
 
       <h3 class="rh">Síndrome de Arlequín</h3>
-      <p class="rp">La sangre mal oxigenada del VD perfunde la mitad superior mientras el ECMO perfunde la inferior. Detección: <b>gasometría en radial derecha</b> + NIRS de mitad superior — la pulsioximetría de la pierna puede engañar.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Qué es</span><span class="dl-v">Sangre mal oxigenada del VD a la mitad superior; el ECMO perfunde la inferior</span></div><div class="dl-row"><span class="dl-k">Detección</span><span class="dl-v"><b>Gasometría en radial derecha</b> + NIRS de la mitad superior. La pulsioximetría de la pierna engaña</span></div></div>
       <div class="steps">
         <div class="st-h">Escalado del tratamiento</div>
         <p class="st-sig">Cada escalón solo si el anterior no basta.</p>
@@ -570,7 +570,7 @@
       <div class="note amber">El protocolo se contradice: el «paciente ideal» (PRAGUE-OHCA) admite parada extrahospitalaria y edad &lt; 70, pero las indicaciones exigen intrahospitalaria y ≤ 65. No dice cuál manda.</div>
 
       <h3 class="rh">Destete<span class="pill chub">CHUB</span></h3>
-      <p class="rp">Esperar <b>≥ 72 h</b>, causa tratada y signos de recuperación. Requisitos: aminas &lt; 0,5 (dobutamina &lt; 5), presión de pulso &gt; 30, IC &gt; 2,2, PCP &lt; 15.</p>
+      <p class="rp">Esperar <b>≥ 72 h</b>, con la causa tratada y signos de recuperación.</p><div class="deflist tight"><div class="dl-row"><span class="dl-k">Aminas</span><span class="dl-v">&lt; 0,5 (dobutamina &lt; 5)</span></div><div class="dl-row"><span class="dl-k">Presión de pulso</span><span class="dl-v">&gt; 30</span></div><div class="dl-row"><span class="dl-k">IC</span><span class="dl-v">&gt; 2,2</span></div><div class="dl-row"><span class="dl-k">PCP</span><span class="dl-v">&lt; 15</span></div></div>
       <div class="steps">
         <ol>
           <li>Reducir flujo <b>0,5 L/min cada 10–15 min hasta 1,5 L/min</b>, valorando eco y hemodinámica en cada escalón.</li>
@@ -596,7 +596,7 @@
         <div class="dl-row hl"><span class="dl-k">ACT diana</span><span class="dl-v">160–180 s (flujo &gt; 1,5 L/min)</span></div>
         <div class="dl-row hl"><span class="dl-k">TTPa diana</span><span class="dl-v">46–70 s</span></div>
       </div>
-      <p class="rp">Bolo extra de <b>50 UI/kg</b> si la canulación tarda &gt; 15 min. Controles: ACT/TTPa cada 15–30 min tras el bolo, luego ACT las primeras 6–12 h, y <b>TTPa cada 8 h</b> pasadas las primeras 12.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Bolo extra</span><span class="dl-v"><b>50 UI/kg</b> si la canulación tarda &gt; 15 min</span></div><div class="dl-row"><span class="dl-k">Tras el bolo</span><span class="dl-v">ACT/TTPa cada 15–30 min</span></div><div class="dl-row"><span class="dl-k">Primeras 6–12 h</span><span class="dl-v">ACT</span></div><div class="dl-row"><span class="dl-k">Después de 12 h</span><span class="dl-v"><b>TTPa cada 8 h</b></span></div></div>
 
       <h3 class="rh">Ajuste de la perfusión<span class="pill chub">CHUB</span></h3>
       <div class="deflist tight">
@@ -609,11 +609,11 @@
       </div>
 
       <h3 class="rh">Situaciones especiales<span class="pill chub">CHUB</span></h3>
-      <p class="rp"><b>Hemorragia leve:</b> mantener perfusión, TTPa objetivo 40. <b>Grave:</b> suspender y reevaluar a las 12 h. <b>Flujo &lt; 1,5 L/min:</b> ACT 200 / TTPa 80. Destete VA a flujo mínimo: ACT 180–200.</p>
-      <p class="rp"><b>HIT</b> (caída de plaquetas 50%): escala 4Ts, anti-PF4, parar perfusión (incidencia 0,3–0,6%). <b>Resistencia a heparina:</b> reponer antitrombina &gt; 60–70%. <b>Von Willebrand adquirido:</b> retirar perfusión, reducir rpm, desmopresina si procede.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Hemorragia leve</span><span class="dl-v">Mantener perfusión · TTPa 40</span></div><div class="dl-row"><span class="dl-k">Hemorragia grave</span><span class="dl-v">Suspender y reevaluar a las 12 h</span></div><div class="dl-row"><span class="dl-k">Flujo &lt; 1,5 L/min</span><span class="dl-v">ACT 200 · TTPa 80</span></div><div class="dl-row"><span class="dl-k">Destete VA a flujo mínimo</span><span class="dl-v">ACT 180–200</span></div></div>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">HIT (plaquetas −50 %)</span><span class="dl-v">4Ts · anti-PF4 · parar perfusión. Incidencia 0,3–0,6 %</span></div><div class="dl-row"><span class="dl-k">Resistencia a heparina</span><span class="dl-v">Reponer antitrombina &gt; 60–70 %</span></div><div class="dl-row"><span class="dl-k">Von Willebrand adquirido</span><span class="dl-v">Retirar perfusión · reducir rpm · desmopresina si procede</span></div></div>
 
       <h3 class="rh">Bivalirudina<span class="pill chub">CHUB</span></h3>
-      <p class="rp">Inhibidor directo de trombina, vida media 25 min, sin antídoto. Pauta: <b>sin bolo, perfusión continua 0,2 mg/kg/h</b>, ajustada a función renal, titulada por ACT/TTPa cada 2–4 h.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Fármaco</span><span class="dl-v">Inhibidor directo de trombina · vida media 25 min · sin antídoto</span></div><div class="dl-row"><span class="dl-k">Pauta</span><span class="dl-v"><b>Sin bolo · 0,2 mg/kg/h</b> ajustada a función renal</span></div><div class="dl-row"><span class="dl-k">Control</span><span class="dl-v">ACT/TTPa cada 2–4 h</span></div></div>
       <div class="note amber">Esta dosis se sale de lo publicado: 0,2 está por encima de las revisiones (0,025–0,15) y de ELSO 2014 (0,03–0,1). Puede ser deliberada, pero contrástala. <span class="pill elso">EXTERNO</span></div>
 
       <h3 class="rh">Umbrales de hemoderivados</h3>
@@ -693,16 +693,14 @@
         <div class="dl-row"><span class="dl-k">Intercambio de gas</span><span class="dl-v">PO₂ postmembrana &lt; 200 (normal &gt; 400)</span></div>
         <div class="dl-row"><span class="dl-k">Coágulos en el cabezal</span><span class="dl-v">LDH &gt; 1000 · Hb libre &gt; 300 mg/L · vibración/ruido anormal</span></div>
       </div>
-      <p class="rp">Cambiar membrana si: coágulos/fibrina groseros, hipoxia severa con FiO₂ 1, trombocitopenia severa, hemólisis masiva, rotura o fallo de bomba. <b>PaFi del oxigenador &lt; 150 obliga al cambio.</b> Trombosis de membrana: 10–13%.</p>
-      <p class="rp"><b>Membrana húmeda</b> (condensación, normal): subir flujo de barrido, calentar gas a 37°C y hacer un <b>flush de 10 L/min 30 s</b>. Espuma amarillenta (plasma) obliga a cambiar el sistema.</p>
+      <p class="rp"><b>Cambiar la membrana si:</b></p><ul class="lst"><li>Coágulos o fibrina groseros</li><li>Hipoxia severa con FiO₂ 1</li><li>Trombocitopenia severa o hemólisis masiva</li><li>Rotura o fallo de bomba</li><li><b>PaFi del oxigenador &lt; 150</b> (obliga al cambio)</li></ul><p class="rp" style="font-size:12.5px;color:var(--ink-3)">Trombosis de membrana: 10–13 %.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Membrana húmeda</span><span class="dl-v">Normal (condensación): subir barrido, gas a 37 °C, <b>flush 10 L/min 30 s</b></span></div><div class="dl-row"><span class="dl-k">Espuma amarillenta</span><span class="dl-v">Plasma: cambiar el sistema</span></div></div>
 
       <h3 class="rh">Hemólisis</h3>
-      <p class="rp">Por succión excesiva, <b>rpm &gt; 3500</b>, gradiente de membrana alto o pérdida de integridad del oxigenador. Vigilar LDH, <b>Hb libre &gt; 50 mg/dL</b> y color de la orina; pedir bilirrubina y haptoglobina.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Causas</span><span class="dl-v">Succión excesiva · <b>rpm &gt; 3500</b> · gradiente de membrana alto · oxigenador dañado</span></div><div class="dl-row"><span class="dl-k">Vigilar</span><span class="dl-v">LDH · <b>Hb libre &gt; 50 mg/dL</b> · color de la orina · bilirrubina · haptoglobina</span></div></div>
 
       <h3 class="rh">Complicaciones del paciente<span class="pill chub">CHUB</span></h3>
-      <p class="rp"><b>Neurológicas:</b> hemorragia cerebral 3–8% en VA; corregir la pCO₂ a <b>10–20 mmHg/hora</b>, no más rápido. Isquemia/daño cerebral hasta 50%.</p>
-      <p class="rp"><b>Infección:</b> sepsis hasta 30%; umbral de sospecha bajo. Profilaxis: <b>vancomicina 10 mg/kg + cefazolina 1 g</b> (linezolid si IRC, aztreonam si alergia a betalactámicos).</p>
-      <p class="rp"><b>Hematológicas:</b> trombocitopenia muy frecuente, por consumo; si es aislada puede indicar trombosis de la membrana.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Neurológicas</span><span class="dl-v">Hemorragia cerebral 3–8 % en VA · isquemia/daño hasta 50 %. Corregir pCO₂ a <b>10–20 mmHg/h</b>, no más rápido</span></div><div class="dl-row"><span class="dl-k">Infección</span><span class="dl-v">Sepsis hasta 30 %, sospecha precoz. Profilaxis: <b>vancomicina 10 mg/kg + cefazolina 1 g</b> (linezolid si IRC; aztreonam si alergia a betalactámicos)</span></div><div class="dl-row"><span class="dl-k">Hematológicas</span><span class="dl-v">Trombocitopenia por consumo, muy frecuente; aislada puede indicar trombosis de la membrana</span></div></div>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -732,7 +730,7 @@
       </div>
 
       <h3 class="rh">AOI — índice de oxigenación adaptado<span class="pill chub">CHUB</span></h3>
-      <p class="rp">Tercer criterio de indicación: <b>AOI 60 = 50% mortalidad</b>, <b>AOI 80 = 80%</b>. La fórmula aparece corrupta en el PDF del protocolo y no se reproduce aquí — pendiente de recuperar en la próxima revisión.</p>
+      <div class="deflist tight"><div class="dl-row"><span class="dl-k">AOI 60</span><span class="dl-v">Mortalidad 50 %</span></div><div class="dl-row"><span class="dl-k">AOI 80</span><span class="dl-v">Mortalidad 80 %</span></div><div class="deflist-cap">Tercer criterio de indicación. La fórmula está corrupta en el PDF del protocolo: pendiente de recuperar.</div></div>
 
       <h3 class="rh">SCAI SHOCK<span class="pill elso">EXTERNO</span></h3>
       <p class="rp">El CHUB indica VA en SCAI D–E. Tabla completa del <i>SCAI SHOCK Bedside Checklist</i> 2022:</p>
@@ -756,7 +754,7 @@
       </div>
 
       <h3 class="rh">RESP y SAVE<span class="pill elso">EXTERNO</span></h3>
-      <p class="rp">El protocolo cita el <b>SAVE score</b> para decidir el inicio y valorar futilidad, sin tabla: <b>clase V no tributaria</b>, clase IV valorar riesgo-beneficio. El <b>RESP score</b> no aparece en el protocolo. Calculadoras en <a href="#" data-go="calc">Calculadoras</a>.</p>
+      <div class="deflist tbl"><div class="dl-row"><span class="dl-k">SAVE (citado, sin tabla)</span><span class="dl-v"><b>Clase V</b>: no tributaria · clase IV: valorar riesgo-beneficio</span></div><div class="dl-row"><span class="dl-k">RESP</span><span class="dl-v">No aparece en el protocolo</span></div></div><a href="#" class="linkcard" data-go="calc" data-calc-tab="save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg><span>Calcular RESP y SAVE</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></a>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -875,7 +873,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 16 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 19 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
@@ -884,6 +882,9 @@
 <!-- hoja para escribir un valor -->
 <div class="scrim" id="sheet-scrim" hidden></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title" hidden></div>
+
+<!-- visor de esquemas -->
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-t" hidden></div>
 
 <!-- modo crisis -->
 <div class="crisis" id="crisis" role="dialog" aria-modal="true" hidden></div>

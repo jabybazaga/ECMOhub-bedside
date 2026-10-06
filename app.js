@@ -1922,6 +1922,43 @@
   });
   document.addEventListener("click", function (e) { if (e.target.closest("[data-find]")) go("buscar"); });
 
+  // ---- visor de esquemas de canulación ----
+  var ESQUEMAS = {
+    "vv-femoro-femoral": { t: "Fémoro-femoral", k: "ECMO VV · esquema de canulación",
+      cap: "<b>Retorno</b> por femoral derecha, con la punta dentro de la aurícula derecha y orientada hacia la tricúspide. <b>Drenaje</b> multiperforado por femoral izquierda, con la punta en la VCI intrahepática. Confirmar la posición con ecografía y Rx." },
+    "vv-femoro-yugular": { t: "Fémoro-yugular", k: "ECMO VV · esquema de canulación",
+      cap: "<b>Retorno</b> por yugular interna derecha, con la punta dentro de la aurícula derecha y orientada hacia la tricúspide. <b>Drenaje</b> multiperforado por femoral derecha, con la punta en la VCI intrahepática. Confirmar la posición con ecografía y Rx." },
+    "va-femoro-femoral": { t: "Fémoro-femoral", k: "ECMO VA · esquema de canulación",
+      cap: "<b>Drenaje</b> multiperforado por femoral izquierda, con la punta en la aurícula derecha. <b>Retorno</b> corto en la femoral común derecha: flujo retrógrado por la aorta. <b>Perfusión distal</b> en la femoral superficial desde el inicio." },
+    "va-femoro-axilar": { t: "Fémoro-axilar", k: "ECMO VA · esquema de canulación",
+      cap: "<b>Drenaje</b> multiperforado por femoral, con la punta en la aurícula derecha. <b>Retorno</b> en la arteria axilar izquierda, directo o con injerto, hacia el arco aórtico: flujo anterógrado en la aorta. Sin acceso femoral o si hace falta flujo anterógrado." }
+  };
+  var viewerEl = document.getElementById("viewer");
+  function abrirEsquema(k) {
+    var e = ESQUEMAS[k];
+    if (!e || !viewerEl) return;
+    viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">' + e.k + '</div><div class="t" id="viewer-t">' + e.t + '</div></div></div>' +
+      '<div class="vb"><div class="fig" id="viewer-fig" aria-busy="true"></div><p class="cap">' + e.cap + '</p></div>';
+    viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    var f = document.getElementById("viewer-fig"), img = new Image();
+    img.alt = "Esquema de canulación " + e.t.toLowerCase();
+    img.onload = function () { f.removeAttribute("aria-busy"); };
+    img.onerror = function () { f.innerHTML = '<p class="cap">No se ha podido cargar el esquema sin conexión.</p>'; };
+    img.src = "img/" + k + ".svg";
+    f.appendChild(img);
+  }
+  function cerrarEsquema() {
+    if (!viewerEl || viewerEl.hidden) return;
+    viewerEl.classList.remove("on");
+    setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-esquema]");
+    if (b) { abrirEsquema(b.dataset.esquema); return; }
+    if (e.target.closest("[data-vclose]")) cerrarEsquema();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
+
   // ---- emergencias y modo crisis ----
   var EM_ICONS = [
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>',
@@ -2117,15 +2154,15 @@
   // Cifras agregadas del registro de llamadas del programa (solo recuentos,
   // medianas y tasas; ninguna fila de paciente). Actualizar a mano en cada corte.
   var PROGRAMA = {
-    corte: "05/09/2026",
-    activaciones: 87,
-    porAnio: [["2024", 18], ["2025", 35], ["2026", 34, true]],
+    corte: "02/10/2026",
+    activaciones: 89,
+    porAnio: [["2024", 18], ["2025", 35], ["2026", 36, true]],
     canulados: 47,
-    tipos: [["VV", 47], ["VA", 27], ["DAC (donación)", 10], ["VAV híbrida", 3]],
-    superv: { fav: 23, n: 29, ic: [61.6, 90.2] },
-    supervTipo: [["VV", 17, 20, [64.0, 94.8]], ["VA", 6, 9, [35.4, 87.9]]],
+    tipos: [["VV", 47], ["VA", 29], ["DAC (donación)", 10], ["VAV híbrida", 3]],
+    superv: { fav: 30, n: 37, ic: [65.8, 90.5] },
+    supervTipo: [["VV", 22, 26, [66.5, 93.9]], ["VA", 8, 11, [43.4, 90.3]]],
     diasEcmo: { med: 8, p25: 2, p75: 18 },
-    salidas: 56
+    salidas: 57
   };
   function renderPrograma() {
     var host = document.getElementById("prog-host");
