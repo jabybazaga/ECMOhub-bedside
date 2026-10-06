@@ -1922,6 +1922,39 @@
   });
   document.addEventListener("click", function (e) { if (e.target.closest("[data-find]")) go("buscar"); });
 
+  // ---- visor de esquemas de canulación ----
+  var ESQUEMAS = {
+    "vv-femoro-femoral": { t: "Fémoro-femoral", k: "ECMO VV · esquema de canulación",
+      cap: "<b>Retorno</b> por femoral derecha, con la punta en la entrada de la aurícula derecha. <b>Drenaje</b> multiperforado por femoral izquierda, alojado a la altura de las venas suprahepáticas. Confirmar la posición con ecografía y Rx." },
+    "vv-femoro-yugular": { t: "Fémoro-yugular", k: "ECMO VV · esquema de canulación",
+      cap: "<b>Drenaje</b> multiperforado por femoral derecha, con la punta en la entrada de la aurícula derecha. <b>Retorno</b> por yugular interna derecha, dirigido hacia la tricúspide. Confirmar la posición con ecografía y Rx." }
+  };
+  var viewerEl = document.getElementById("viewer");
+  function abrirEsquema(k) {
+    var e = ESQUEMAS[k];
+    if (!e || !viewerEl) return;
+    viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">' + e.k + '</div><div class="t" id="viewer-t">' + e.t + '</div></div></div>' +
+      '<div class="vb"><div class="fig" id="viewer-fig" aria-busy="true"></div><p class="cap">' + e.cap + '</p></div>';
+    viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
+    var f = document.getElementById("viewer-fig"), img = new Image();
+    img.alt = "Esquema de canulación " + e.t.toLowerCase();
+    img.onload = function () { f.removeAttribute("aria-busy"); };
+    img.onerror = function () { f.innerHTML = '<p class="cap">No se ha podido cargar el esquema sin conexión.</p>'; };
+    img.src = "img/" + k + ".svg";
+    f.appendChild(img);
+  }
+  function cerrarEsquema() {
+    if (!viewerEl || viewerEl.hidden) return;
+    viewerEl.classList.remove("on");
+    setTimeout(function () { if (!viewerEl.classList.contains("on")) viewerEl.hidden = true; }, 220);
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-esquema]");
+    if (b) { abrirEsquema(b.dataset.esquema); return; }
+    if (e.target.closest("[data-vclose]")) cerrarEsquema();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
+
   // ---- emergencias y modo crisis ----
   var EM_ICONS = [
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>',
