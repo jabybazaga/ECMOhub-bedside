@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=24">
+<link rel="manifest" href="manifest.json?v=25">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -153,8 +153,8 @@
           <div class="field"><label>Sweep (gas)</label><div class="stepper"><button data-step="sweep" data-delta="-0.5">–</button><div class="val"><span data-val="sweep">4</span><span class="unit">L/min</span></div><button data-step="sweep" data-delta="0.5">+</button></div></div>
           <div class="field"><label>rpm</label><div class="stepper"><button data-step="rpm" data-delta="-50">–</button><div class="val"><span data-val="rpm">3100</span><span class="unit">rpm</span></div><button data-step="rpm" data-delta="50">+</button></div></div>
           <div class="field"><label>P1 · succión</label><div class="stepper"><button data-step="p1" data-delta="-5">–</button><div class="val"><span data-val="p1">-70</span><span class="unit">mmHg</span></div><button data-step="p1" data-delta="5">+</button></div></div>
-          <div class="field"><label>P2 · retorno</label><div class="stepper"><button data-step="p2" data-delta="-5">–</button><div class="val"><span data-val="p2">180</span><span class="unit">mmHg</span></div><button data-step="p2" data-delta="5">+</button></div></div>
-          <div class="field"><label>P3 · transmembrana</label><div class="stepper"><button data-step="p3" data-delta="-1">–</button><div class="val"><span data-val="p3">28</span><span class="unit">mmHg</span></div><button data-step="p3" data-delta="1">+</button></div></div>
+          <div class="field"><label>P2 · premembrana</label><div class="stepper"><button data-step="p2" data-delta="-5">–</button><div class="val"><span data-val="p2">180</span><span class="unit">mmHg</span></div><button data-step="p2" data-delta="5">+</button></div></div>
+          <div class="field"><label>P3 · postmembrana</label><div class="stepper"><button data-step="p3m" data-delta="-5">–</button><div class="val"><span data-val="p3m">152</span><span class="unit">mmHg</span></div><button data-step="p3m" data-delta="5">+</button></div></div>
           <div class="field"><label>PO₂ postmembrana</label><div class="stepper"><button data-step="po2post" data-delta="-10">–</button><div class="val"><span data-val="po2post">380</span><span class="unit">mmHg</span></div><button data-step="po2post" data-delta="10">+</button></div></div>
           <div class="field"><label>Días de soporte</label><div class="stepper"><button data-step="dias" data-delta="-1">–</button><div class="val"><span data-val="dias">4</span><span class="unit">d</span></div><button data-step="dias" data-delta="1">+</button></div></div>
         </div>
@@ -692,7 +692,7 @@
       <h2 class="h2" id="vigilancia">Vigilancia diaria</h2>
       <h3 class="rh">Detección precoz de fallo del circuito<span class="pill chub">CHUB</span></h3>
       <div class="deflist">
-        <div class="dl-row"><span class="dl-k">Trombosis de membrana</span><span class="dl-v">P3 &gt; 50 (ascenso 30–50%) · dímero D &gt; 25–30 mg/L · coágulos visibles</span></div>
+        <div class="dl-row"><span class="dl-k">Trombosis de membrana</span><span class="dl-v">ΔP (P2 − P3) &gt; 50 (ascenso 30–50%) · dímero D &gt; 25–30 mg/L · coágulos visibles</span></div>
         <div class="dl-row"><span class="dl-k">Coagulación</span><span class="dl-v">Plaquetas en descenso continuo · fibrinógeno &lt; 200 mg/dL</span></div>
         <div class="dl-row"><span class="dl-k">Intercambio de gas</span><span class="dl-v">PO₂ postmembrana &lt; 200 (normal &gt; 400)</span></div>
         <div class="dl-row"><span class="dl-k">Coágulos en el cabezal</span><span class="dl-v">LDH &gt; 1000 · Hb libre &gt; 300 mg/L · vibración/ruido anormal</span></div>
@@ -780,7 +780,6 @@
       <p class="ref-lede">Píldoras cortas para el día a día con el circuito. Toca una para verla.</p>
       <div class="chips pchips" id="perlas-chips"></div>
       <div id="perlas-host"><p class="ref-lede">Cargando…</p></div>
-      <p class="note" style="margin-top:14px">Las marcadas como <b>propuesta</b> son sugerencias pendientes de validar por el equipo y de grabar en vídeo.</p>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -889,7 +888,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 24 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 25 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
