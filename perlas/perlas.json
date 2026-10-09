@@ -40,15 +40,16 @@
       "id": "destete",
       "titulo": "Destete de ECMO VV y VA",
       "cat": "Cuidados",
-      "resumen": "VV con el gas, nunca con el flujo; VA con la prueba de bajada de flujo y la eco.",
+      "resumen": "VV clampando el sweep gas con la FiO₂ del ECMO al 100 %; VA con la prueba de bajada de flujo y la eco.",
       "media": {
         "tipo": "interactivo",
         "componente": "destete",
         "poster": "perlas/destete.svg"
       },
       "puntos": [
-        "<b>VV</b>: el destete se hace con el gas, <b>nunca bajando el flujo de sangre</b>.",
-        "<b>VV</b>: test de oxigenación (respirador al 60 %; FiO₂ del ECMO 100 → 60 → 30 → 21 % cada 5 min) y después test de descarboxilación (barrido −30 % cada 5–10 min hasta 0; a cero 12–24 h antes de decanular).",
+        "<b>VV</b>: el destete se hace con el gas, <b>nunca bajando el flujo de sangre</b>. La FiO₂ del ECMO se mantiene al 100 %.",
+        "<b>VV</b>: con el sweep gas &lt; 1 L/min, el paciente despierto (RASS 0) y en presión soporte &lt; 12, se <b>clampa el sweep gas</b>.",
+        "<b>VV</b>: durante la prueba se vigila el esfuerzo y se <b>aborta si FR &gt; 25–30 rpm, P0.1 &gt; 5 o SatO₂ &lt; 92 %</b>.",
         "<b>VA</b>: tras ≥ 72 h y con criterios de recuperación, <b>prueba de bajada de flujo</b> de 0,5 en 0,5 L/min cada 10–15 min hasta 1,5 L/min, con eco y hemodinámica en cada escalón.",
         "<b>VA</b>: si la ecocardiografía cumple los criterios (IVT &gt; 10–12 cm/s, FEVI 20–25 %, TDSa &gt; 6 cm/s, sin estasis ni humo en el VI), <b>subir a 2–2,5 L/min</b> hasta la decanulación en quirófano."
       ],

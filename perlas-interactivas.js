@@ -211,18 +211,30 @@
       '</div>';
     var body = el.querySelector(".dst-body");
     var VV =
-      '<section class="dst-card"><h5>Antes de empezar</h5><ul class="dst-req">' +
-        '<li>Estabilidad hemodinámica</li><li>Ventilación espontánea favorable</li><li><b>FiO₂ &lt; 50 %</b> sin acidosis</li><li>FiO₂ 100 % 15 min con <b>PO₂ &gt; 200</b></li></ul></section>' +
-      '<section class="dst-card"><h5><span class="n vv">1</span>Test de oxigenación</h5>' +
-        '<p>FiO₂ del respirador al 60 %. Bajar la <b>FiO₂ del ECMO</b> cada 5 min:</p>' +
-        '<div class="fio2" aria-label="FiO₂ del ECMO: 100, 60, 30 y 21 %, un escalón cada 5 minutos">' +
-          [[100, "0"], [60, "5"], [30, "10"], [21, "15"]].map(function (x, i) {
-            return '<div class="col" style="--d:' + i + '"><span class="bar" style="--h:' + x[0] + '%"></span><b>' + x[0] + ' %</b><span>' + x[1] + ' min</span></div>';
-          }).join("") +
+      '<section class="dst-card"><h5>Antes de la prueba</h5>' +
+        '<div class="dst-kpi">' +
+          '<div><span>Sweep gas</span><b>&lt; 1</b><span>L/min</span></div>' +
+          '<div><span>Paciente</span><b>RASS 0</b><span>despierto</span></div>' +
+          '<div><span>Presión soporte</span><b>&lt; 12</b></div>' +
+          '<div><span>FiO₂ del ECMO</span><b>100 %</b><span>se mantiene</span></div>' +
         '</div></section>' +
-      '<section class="dst-card"><h5><span class="n vv">2</span>Test de descarboxilación</h5>' +
-        '<p>Reducir el <b>barrido un 30 %</b> cada 5–10 min hasta 0. Si lo tolera, <b>mantener a cero 12–24 h</b> antes de decanular.</p></section>' +
-      '<div class="note red"><b>Abortar si:</b> desaturación &lt; 88 % &gt; 5 min · FR &gt; 35 · trabajo respiratorio (P0.1 &gt; 10) · PCO₂ +20 % · inestabilidad hemodinámica.</div>' +
+      '<section class="dst-card"><h5><span class="n vv">1</span>Clampar el sweep gas</h5>' +
+        '<p>Con la <b>FiO₂ del ECMO al 100 %</b>, se clampa el sweep gas.</p>' +
+        '<svg class="sweep" viewBox="0 0 330 92" role="img" aria-label="Línea de gas del oxigenador: el caudalímetro marca menos de 1 litro por minuto y una pinza cierra la línea hasta 0">' +
+          '<rect class="cm" x="10" y="14" width="44" height="64" rx="8"/>' +
+          '<path class="cm-tubo" d="M32 24 V68"/><circle class="cm-bola" cx="32" cy="60" r="6"/>' +
+          '<text x="32" y="90" text-anchor="middle">sweep</text>' +
+          '<path class="gas" d="M54 46 H232"/><path class="gas-on" d="M54 46 H232"/>' +
+          '<rect class="oxi" x="232" y="20" width="92" height="52" rx="10"/><text x="278" y="50" text-anchor="middle" class="b">Oxigenador</text>' +
+          '<g class="pinza"><path d="M136 26 L150 46 L136 66"/><path d="M164 26 L150 46 L164 66"/></g>' +
+          '<text x="150" y="16" text-anchor="middle" class="b">&lt; 1 → 0 L/min</text>lt; 1 → 0 L/min</text>' +
+        '</svg></section>' +
+      '<section class="dst-card aborta"><h5><span class="n vv">2</span>Vigilar el esfuerzo · abortar si</h5>' +
+        '<div class="dst-kpi tres">' +
+          '<div><span>FR</span><b>&gt; 25–30</b><span>rpm</span></div>' +
+          '<div><span>P0.1</span><b>&gt; 5</b><span>cmH₂O</span></div>' +
+          '<div><span>SatO₂</span><b>&lt; 92</b><span>%</span></div>' +
+        '</div></section>' +
       '<p class="dst-pie">Siempre con el gas: <b>nunca bajando el flujo de sangre</b>.</p>';
     var VA =
       '<section class="dst-card"><h5>Antes de empezar · ≥ 72 h</h5><p>Causa tratada y signos de recuperación.</p>' +
