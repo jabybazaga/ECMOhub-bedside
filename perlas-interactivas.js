@@ -33,7 +33,7 @@
     { id: "fr", n: "FR", v: "10", u: "rpm", t: "Frecuencia respiratoria", obj: "4–15",
       d: "Arranque en 10 respiraciones por minuto y titular desde ahí, dentro del rango 4–15." },
     { id: "pc", n: "PC", v: "10", u: "sobre PEEP", t: "Presión control", obj: "pico 20",
-      d: "Mantener la misma PC de 10 y <b>monitorizar el VTe</b> (volumen tidal espiratorio): si con la misma presión el VTe aumenta, el pulmón está mejorando. Meseta &lt; 25 (aceptable ≤ 30) y driving pressure &lt; 15." },
+      d: "La PC <b>se mantiene en 10</b> durante todo el soporte. Al principio la compliance es muy baja y el VTe también. Con el paso de <b>días y semanas</b>, si se va resolviendo la causa, la compliance mejora y el <b>VTe</b> (volumen tidal espiratorio) aumenta sin necesidad de subir la PC. Meseta &lt; 25 (aceptable ≤ 30) y driving pressure &lt; 15." },
     { id: "fio2", n: "FiO₂", v: "30–50", u: "%", t: "FiO₂", obj: "mínima",
       d: "La mínima posible, entre 30 y 50 %. No subir el ventilador por una hipoxemia tolerada." }
   ];
@@ -51,6 +51,11 @@
             '<div class="vm"><span class="k">C<sub>dyn</sub></span><span class="v sm"><span data-cd>—</span></span><span class="u">mL/cmH₂O</span></div>' +
           '</div>' +
         '</div>' +
+        '<div class="vent-tl">' +
+          '<div class="tl-h"><span>Misma <b>PC 10</b> todo el soporte</span><b data-dia>Semana 1 · día 1</b></div>' +
+          '<div class="tl-bar" aria-hidden="true"><i data-tlp></i></div>' +
+          '<div class="tl-sem">' + [1, 2, 3, 4].map(function (w) { return '<span data-sem="' + w + '"><span class="k">Sem ' + w + '</span><span class="v">—</span></span>'; }).join("") + '</div>' +
+        '</div>' +
         '<div class="vent-knobs" role="radiogroup" aria-label="Parámetros programados">' +
           PARAMS.map(function (p) {
             return boton('<span class="k">' + p.n + '</span><span class="v">' + p.v + '</span><span class="u">' + p.u + '</span>',
@@ -58,7 +63,7 @@
           }).join("") +
         '</div>' +
       '</div>' +
-      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación ilustrativa: varios días de soporte comprimidos en un minuto.</span></div>' +
+      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación ilustrativa: la mejoría real tarda <b>semanas</b>; aquí se comprimen 4 semanas en minuto y medio.</span></div>' +
       '<div class="vent-card" aria-live="polite"></div>';
 
     var card = el.querySelector(".vent-card");
@@ -79,15 +84,18 @@
 
     // Modelo RC en presión control: PEEP 10, PC 10, FR 10 (ciclo 6 s), Ti 2 s.
     var PEEP = 10, PC = 10, T = 6, TI = 2, R = 15; // R en cmH₂O·s/L
-    var CMIN = 0.015, CMAX = 0.040, CICLOS = 10;   // compliance (L/cmH₂O) que mejora en 10 ciclos
+    var CMIN = 0.015, CMAX = 0.040, CICLOS = 16;   // compliance (L/cmH₂O): 16 ciclos = 4 semanas ilustrativas
+    var DIAS = 28;
     var VENTANA = 12;                              // segundos visibles en pantalla
     var cv = el.querySelector(".vent-cv"), ctx = cv.getContext("2d");
     var vteEl = el.querySelector("[data-vte]"), cdEl = el.querySelector("[data-cd]"), trEl = el.querySelector("[data-tr]");
+    var diaEl = el.querySelector("[data-dia]"), tlpEl = el.querySelector("[data-tlp]");
     var W = 0, H = 0, dpr = 1, raf = 0, t0 = 0, pausado = false, tPausa = 0, ultimo = null, vtePrev = null;
 
+    function progreso(ciclo) { return Math.min(1, (ciclo % (CICLOS + 3)) / CICLOS); }
     function compliance(ciclo) {
-      var k = Math.min(1, (ciclo % (CICLOS + 3)) / CICLOS);
-      return CMIN + (CMAX - CMIN) * (1 - Math.pow(1 - k, 2));
+      var k = progreso(ciclo);
+      return CMIN + (CMAX - CMIN) * k * k * (3 - 2 * k); // mejora lenta al principio, más clara después
     }
     function estado(t) {
       var ciclo = Math.floor(t / T), tc = t - ciclo * T, C = compliance(ciclo), tau = R * C;
@@ -158,6 +166,16 @@
       // el VTe se actualiza al terminar cada espiración, como en un respirador
       var prev = estado(Math.max(0, (ciclo) * T - 0.01));
       var vte = Math.round((ciclo ? prev.vi : e.vi) * 1000);
+      // día y semana de soporte que representa el ciclo mostrado
+      var cMostrado = ciclo ? ciclo - 1 : 0, k = progreso(cMostrado), dia = 1 + Math.round(k * (DIAS - 1)), sem = Math.min(4, Math.ceil(dia / 7));
+      diaEl.textContent = "Semana " + sem + " · día " + dia;
+      tlpEl.style.width = (k * 100).toFixed(1) + "%";
+      Array.prototype.forEach.call(el.querySelectorAll("[data-sem]"), function (s) {
+        var w = +s.getAttribute("data-sem");
+        s.classList.toggle("on", w === sem);
+        if (w < sem || (w === sem && dia === DIAS)) { if (!s.classList.contains("hecho")) { s.classList.add("hecho"); s.querySelector(".v").textContent = vte + " mL"; } }
+        else if (w > sem || dia === 1) { s.classList.remove("hecho"); s.querySelector(".v").textContent = "—"; }
+      });
       if (vte !== vtePrev) {
         vteEl.textContent = vte;
         cdEl.textContent = Math.round(vte / PC);
@@ -178,7 +196,7 @@
     medir();
     if (REDUCIR) {
       // sin movimiento: una ventana completa con la compliance ya mejorada
-      var base = (CICLOS) * T;
+      var base = (CICLOS + 1) * T;
       trazar(base, base + VENTANA - 0.01);
       pintarCifras(base + T + 0.1);
     } else {
