@@ -232,6 +232,13 @@
           '<div><span>Índice cardiaco</span><b>&gt; 2,2</b></div>' +
           '<div><span>PCP</span><b>&lt; 15</b></div>' +
         '</div></section>' +
+      '<section class="dst-card"><h5>Criterios ecográficos</h5>' +
+        '<div class="dst-kpi">' +
+          '<div><span>IVT</span><b>&gt; 10–12</b><span>cm/s</span></div>' +
+          '<div><span>FEVI</span><b>20–25 %</b></div>' +
+          '<div><span>TDSa</span><b>&gt; 6</b><span>cm/s</span></div>' +
+          '<div><span>Ventrículo izquierdo</span><b>sin estasis</b><span>ni humo</span></div>' +
+        '</div><p class="dst-src">Anexo «Destete ECMO» del protocolo CHUB.</p></section>' +
       '<section class="dst-card"><h5><span class="n va">1</span>Prueba de bajada de flujo</h5>' +
         '<p><b>−0,5 L/min cada 10–15 min hasta 1,5 L/min</b>, valorando eco y hemodinámica en cada escalón.</p>' +
         '<svg class="flujo" viewBox="0 0 330 124" role="img" aria-label="El flujo baja en escalones de 0,5 hasta 1,5 litros por minuto; si la eco confirma el destete, sube a 2 a 2,5 litros por minuto hasta el quirófano">' +
@@ -245,7 +252,7 @@
           '<text x="212" y="72">hasta quirófano</text>' +
         '</svg></section>' +
       '<section class="dst-card"><h5><span class="n va">2</span>Eco y subida hasta el quirófano</h5>' +
-        '<p>Si la <b>ecocardiografía</b> confirma los criterios de destete exitoso, <b>subir a 2–2,5 L/min</b> y mantener hasta la <b>decanulación en quirófano</b>, con ACT 180–200 durante ese periodo.</p></section>' +
+        '<p>Si la <b>ecocardiografía</b> cumple los criterios ecográficos, <b>subir a 2–2,5 L/min</b> y mantener hasta la <b>decanulación en quirófano</b>, con ACT 180–200 durante ese periodo.</p></section>' +
       '<div class="note red"><b>Fracaso:</b> caída de PAM &gt; 10–20 o PAM &lt; 65 · aumento de presiones de llenado · arritmias · caída del gasto. Repetir la prueba a las 24 h.</div>';
     function ver(m) {
       body.innerHTML = m === "va" ? VA : VV;

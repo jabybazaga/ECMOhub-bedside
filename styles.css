@@ -1037,3 +1037,4 @@ html[data-theme="oscuro"] .sc-opts button.on,html[data-theme="noche"] .sc-opts b
 .cav-card.warn{background:var(--warn-soft);border-color:var(--warn-line)}.cav-card.warn b{color:var(--warn)}
 .cav-card.crit{background:var(--crit-soft);border-color:var(--crit-line)}.cav-card.crit b{color:var(--crit)}
 @media (prefers-reduced-motion:reduce){.fio2 .bar,.flujo .esc,.flujo .eco{animation:none}.flujo .esc{stroke-dashoffset:0}.flujo .eco{opacity:1}}
+.dst-src{font-size:12px !important;color:var(--ink-3) !important;margin-top:8px !important}

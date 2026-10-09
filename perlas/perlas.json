@@ -50,9 +50,9 @@
         "<b>VV</b>: el destete se hace con el gas, <b>nunca bajando el flujo de sangre</b>.",
         "<b>VV</b>: test de oxigenación (respirador al 60 %; FiO₂ del ECMO 100 → 60 → 30 → 21 % cada 5 min) y después test de descarboxilación (barrido −30 % cada 5–10 min hasta 0; a cero 12–24 h antes de decanular).",
         "<b>VA</b>: tras ≥ 72 h y con criterios de recuperación, <b>prueba de bajada de flujo</b> de 0,5 en 0,5 L/min cada 10–15 min hasta 1,5 L/min, con eco y hemodinámica en cada escalón.",
-        "<b>VA</b>: si la ecocardiografía confirma los criterios de destete exitoso, <b>subir a 2–2,5 L/min</b> hasta la decanulación en quirófano."
+        "<b>VA</b>: si la ecocardiografía cumple los criterios (IVT &gt; 10–12 cm/s, FEVI 20–25 %, TDSa &gt; 6 cm/s, sin estasis ni humo en el VI), <b>subir a 2–2,5 L/min</b> hasta la decanulación en quirófano."
       ],
-      "fuente": "Protocolo CHUB · equipo ECMO CHUB"
+      "fuente": "Protocolo CHUB y anexo «Destete ECMO» · equipo ECMO CHUB"
     },
     {
       "id": "cavitacion",
