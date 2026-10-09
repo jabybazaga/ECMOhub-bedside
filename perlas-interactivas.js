@@ -33,7 +33,7 @@
     { id: "fr", n: "FR", v: "10", u: "rpm", t: "Frecuencia respiratoria", obj: "4–15",
       d: "Arranque en 10 respiraciones por minuto y titular desde ahí, dentro del rango 4–15." },
     { id: "pc", n: "PC", v: "10", u: "sobre PEEP", t: "Presión control", obj: "pico 20",
-      d: "Mantener la misma PC de 10 y <b>monitorizar el VTe</b> (volumen tidal espiratorio): si con la misma presión el VTe aumenta, el pulmón está mejorando. Meseta &lt; 25 (aceptable ≤ 30) y driving pressure &lt; 15." },
+      d: "La PC <b>se mantiene en 10</b> durante todo el soporte. Al principio la compliance es muy baja y el VTe también. Con el paso de <b>días y semanas</b>, si se va resolviendo la causa, la compliance mejora y el <b>VTe</b> (volumen tidal espiratorio) aumenta sin necesidad de subir la PC.<br><b>Compliance estática</b> = VTe ÷ (Pmeseta − PEEP), con pausa inspiratoria. Con PC 10 y flujo cero al final de la inspiración, Pmeseta − PEEP ≈ 10, así que Crs ≈ VTe ÷ 10. Meseta &lt; 25 (aceptable ≤ 30) y driving pressure &lt; 15." },
     { id: "fio2", n: "FiO₂", v: "30–50", u: "%", t: "FiO₂", obj: "mínima",
       d: "La mínima posible, entre 30 y 50 %. No subir el ventilador por una hipoxemia tolerada." }
   ];
@@ -45,11 +45,16 @@
         '<div class="vent-main">' +
           '<canvas class="vent-cv" aria-label="Curvas de presión, flujo y volumen"></canvas>' +
           '<div class="vent-side">' +
-            '<div class="vm"><span class="k">Ppico</span><span class="v">20</span></div>' +
-            '<div class="vm"><span class="k">PEEP</span><span class="v">10</span></div>' +
-            '<div class="vm vte"><span class="k">VTe</span><span class="v"><span data-vte>—</span></span><span class="u">mL</span><span class="tr" data-tr aria-hidden="true"></span></div>' +
-            '<div class="vm"><span class="k">C<sub>dyn</sub></span><span class="v sm"><span data-cd>—</span></span><span class="u">mL/cmH₂O</span></div>' +
+            '<div class="vm"><span class="k">Pmeseta</span><span class="v sm"><span data-pm>—</span></span><span class="u">PEEP 10</span></div>' +
+            '<div class="vm vte"><span class="k">VTe</span><span class="v"><span data-vte>—</span></span><span class="u"><span data-vkg>—</span> mL/kg</span><span class="tr" data-tr aria-hidden="true"></span></div>' +
+            '<div class="vm"><span class="k">Crs</span><span class="v sm"><span data-cd>—</span></span><span class="u">mL/cmH₂O</span></div>' +
           '</div>' +
+        '</div>' +
+        '<div class="vent-fx" aria-live="off"><span>Crs = VTe ÷ (Pmeseta − PEEP)</span><b data-fx>—</b></div>' +
+        '<div class="vent-tl">' +
+          '<div class="tl-h"><span>Misma <b>PC 10</b> todo el soporte</span><b data-dia>Semana 1 · día 1</b></div>' +
+          '<div class="tl-bar" aria-hidden="true"><i data-tlp></i></div>' +
+          '<div class="tl-sem">' + [1, 2, 3, 4].map(function (w) { return '<span data-sem="' + w + '"><span class="k">Sem ' + w + '</span><span class="v">—</span></span>'; }).join("") + '</div>' +
         '</div>' +
         '<div class="vent-knobs" role="radiogroup" aria-label="Parámetros programados">' +
           PARAMS.map(function (p) {
@@ -58,7 +63,7 @@
           }).join("") +
         '</div>' +
       '</div>' +
-      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación ilustrativa: varios días de soporte comprimidos en un minuto.</span></div>' +
+      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Paciente de ejemplo: varón de 1,70 m, peso ideal 66 kg. Crs de 15 a 30 mL/cmH₂O en 4 semanas (rangos publicados en ECMO VV). Aquí se comprimen en minuto y medio.</span></div>' +
       '<div class="vent-card" aria-live="polite"></div>';
 
     var card = el.querySelector(".vent-card");
@@ -78,16 +83,22 @@
     verParam("pc");
 
     // Modelo RC en presión control: PEEP 10, PC 10, FR 10 (ciclo 6 s), Ti 2 s.
-    var PEEP = 10, PC = 10, T = 6, TI = 2, R = 15; // R en cmH₂O·s/L
-    var CMIN = 0.015, CMAX = 0.040, CICLOS = 10;   // compliance (L/cmH₂O) que mejora en 10 ciclos
+    // R 15 cmH₂O·s/L y Ti 2 s: con τ = R·C ≤ 0,45 s la inspiración llega a flujo cero (Ti ≥ 4,4 τ),
+    // así que la presión alveolar al final de la inspiración (la Pmeseta con pausa) es casi PEEP + PC.
+    var PEEP = 10, PC = 10, T = 6, TI = 2, R = 15, PESO_IDEAL = 66; // varón de 170 cm: 50 + 0,91·(170 − 152,4)
+    var CMIN = 0.015, CMAX = 0.030, CICLOS = 16;   // Crs 15 → 30 mL/cmH₂O en 16 ciclos = 4 semanas
+    var DIAS = 28;
     var VENTANA = 12;                              // segundos visibles en pantalla
     var cv = el.querySelector(".vent-cv"), ctx = cv.getContext("2d");
     var vteEl = el.querySelector("[data-vte]"), cdEl = el.querySelector("[data-cd]"), trEl = el.querySelector("[data-tr]");
+    var pmEl = el.querySelector("[data-pm]"), vkgEl = el.querySelector("[data-vkg]"), fxEl = el.querySelector("[data-fx]");
+    var diaEl = el.querySelector("[data-dia]"), tlpEl = el.querySelector("[data-tlp]");
     var W = 0, H = 0, dpr = 1, raf = 0, t0 = 0, pausado = false, tPausa = 0, ultimo = null, vtePrev = null;
 
+    function progreso(ciclo) { return Math.min(1, (ciclo % (CICLOS + 3)) / CICLOS); }
     function compliance(ciclo) {
-      var k = Math.min(1, (ciclo % (CICLOS + 3)) / CICLOS);
-      return CMIN + (CMAX - CMIN) * (1 - Math.pow(1 - k, 2));
+      var k = progreso(ciclo);
+      return CMIN + (CMAX - CMIN) * k * k * (3 - 2 * k); // mejora lenta al principio, más clara después
     }
     function estado(t) {
       var ciclo = Math.floor(t / T), tc = t - ciclo * T, C = compliance(ciclo), tau = R * C;
@@ -156,11 +167,26 @@
     function pintarCifras(t) {
       var e = estado(t), ciclo = e.ciclo;
       // el VTe se actualiza al terminar cada espiración, como en un respirador
-      var prev = estado(Math.max(0, (ciclo) * T - 0.01));
-      var vte = Math.round((ciclo ? prev.vi : e.vi) * 1000);
+      var prev = estado(Math.max(0, (ciclo) * T - 0.01)), cic = ciclo ? prev : e;
+      var vte = Math.round(cic.vi * 1000);
+      // Pmeseta = presión alveolar al final de la inspiración (pausa): PEEP + VT / C
+      var pmes = PEEP + cic.vi / cic.C, crs = vte / (pmes - PEEP);
+      // día y semana de soporte que representa el ciclo mostrado
+      var cMostrado = ciclo ? ciclo - 1 : 0, k = progreso(cMostrado), dia = 1 + Math.round(k * (DIAS - 1)), sem = Math.min(4, Math.ceil(dia / 7));
+      diaEl.textContent = "Semana " + sem + " · día " + dia;
+      tlpEl.style.width = (k * 100).toFixed(1) + "%";
+      Array.prototype.forEach.call(el.querySelectorAll("[data-sem]"), function (s) {
+        var w = +s.getAttribute("data-sem");
+        s.classList.toggle("on", w === sem);
+        if (w < sem || (w === sem && dia === DIAS)) { if (!s.classList.contains("hecho")) { s.classList.add("hecho"); s.querySelector(".v").textContent = vte + " mL"; } }
+        else if (w > sem || dia === 1) { s.classList.remove("hecho"); s.querySelector(".v").textContent = "—"; }
+      });
       if (vte !== vtePrev) {
         vteEl.textContent = vte;
-        cdEl.textContent = Math.round(vte / PC);
+        vkgEl.textContent = (vte / PESO_IDEAL).toFixed(1).replace(".", ",");
+        pmEl.textContent = pmes.toFixed(1).replace(".", ",");
+        cdEl.textContent = Math.round(crs);
+        fxEl.textContent = vte + " ÷ (" + pmes.toFixed(1).replace(".", ",") + " − 10) = " + Math.round(crs);
         trEl.textContent = vtePrev === null || vte === vtePrev ? "" : vte > vtePrev ? "▲" : "▼";
         trEl.className = "tr " + (vtePrev !== null && vte > vtePrev ? "up" : "");
         vtePrev = vte;
@@ -178,7 +204,7 @@
     medir();
     if (REDUCIR) {
       // sin movimiento: una ventana completa con la compliance ya mejorada
-      var base = (CICLOS) * T;
+      var base = (CICLOS + 1) * T;
       trazar(base, base + VENTANA - 0.01);
       pintarCifras(base + T + 0.1);
     } else {

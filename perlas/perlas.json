@@ -22,7 +22,7 @@
       "id": "respirador-vv",
       "titulo": "Programar el respirador en ECMO VV",
       "cat": "Monitorización",
-      "resumen": "Regla del 10 para arrancar y el VTe como señal de que el pulmón mejora.",
+      "resumen": "Regla del 10 para arrancar y, con la misma PC, el VTe que mejora a lo largo de las semanas.",
       "media": {
         "tipo": "interactivo",
         "componente": "respirador",
@@ -31,10 +31,11 @@
       "puntos": [
         "<b>Regla del 10</b> para arrancar: PEEP 10 · FR 10 · PC 10 sobre la PEEP (pico 20). Titular desde ahí.",
         "Objetivos de reposo: <b>meseta &lt; 25</b> (aceptable ≤ 30), driving pressure &lt; 15, FiO₂ mínima (30–50 %).",
-        "<b>Monitorizar el VTe</b> (volumen tidal espiratorio): con la misma PC de 10, su aumento progresivo indica que la compliance mejora.",
+        "<b>Monitorizar el VTe</b> (volumen tidal espiratorio). Al inicio la compliance es muy baja y el VTe también; con el paso de <b>días y semanas</b>, si se resuelve la causa, el VTe aumenta <b>manteniendo la misma PC de 10</b>. No es un cambio de horas.",
+        "<b>Compliance estática</b> = VTe ÷ (Pmeseta − PEEP), midiendo la meseta con pausa inspiratoria. En una serie de SDRA COVID-19 en ECMO VV partía de una mediana de <b>18 mL/cmH₂O</b> (IQR 12–25) en los supervivientes y de 12 en los no supervivientes; en los supervivientes subió a 20 en los primeros 10 días.",
         "No subir el ventilador por una hipoxemia tolerada. Si no se alcanzan estos parámetros, el soporte extracorpóreo es insuficiente: <b>se optimiza el ECMO, no el ventilador</b>."
       ],
-      "fuente": "Protocolo CHUB · curvas y cifras de la animación ilustrativas"
+      "fuente": "Protocolo CHUB · Crs en ECMO VV: Ann Intensive Care 2023 (doi 10.1186/s13613-023-01152-7) · animación con valores de ejemplo"
     },
     {
       "id": "destete",
