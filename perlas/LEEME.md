@@ -26,6 +26,7 @@ Tipos admitidos:
 | `video` | MP4 o WebM; se reproduce en bucle, sin sonido, con controles |
 | `gif`   | GIF animado o imagen                                    |
 | `svg`   | Esquema (animado o no)                                  |
+| `interactivo` | Animación programada en `perlas-interactivas.js` (`componente`: `respirador`, `destete` o `cavitacion`); `poster` es la miniatura |
 | `null`  | Aún sin vídeo: la tarjeta muestra «Vídeo pendiente»     |
 
 3. Para una perla nueva, copia un bloque entero, cambia el `id` (sin espacios ni tildes), el `titulo`, la `cat` (Circuito, Urgencias, Monitorización o Cuidados), el `resumen` y los `puntos`.

@@ -17,6 +17,62 @@
         "Purgar las líneas antes de conectar, roscas Luer-lock bien apretadas y revisar las conexiones en cada turno."
       ],
       "fuente": "Equipo ECMO CHUB"
+    },
+    {
+      "id": "respirador-vv",
+      "titulo": "Programar el respirador en ECMO VV",
+      "cat": "Monitorización",
+      "resumen": "Regla del 10 para arrancar y el VTe como señal de que el pulmón mejora.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "respirador",
+        "poster": "perlas/respirador.svg"
+      },
+      "puntos": [
+        "<b>Regla del 10</b> para arrancar: PEEP 10 · FR 10 · PC 10 sobre la PEEP (pico 20). Titular desde ahí.",
+        "Objetivos de reposo: <b>meseta &lt; 25</b> (aceptable ≤ 30), driving pressure &lt; 15, FiO₂ mínima (30–50 %).",
+        "<b>Monitorizar el VTe</b> (volumen tidal espiratorio): con la misma PC de 10, su aumento progresivo indica que la compliance mejora.",
+        "No subir el ventilador por una hipoxemia tolerada. Si no se alcanzan estos parámetros, el soporte extracorpóreo es insuficiente: <b>se optimiza el ECMO, no el ventilador</b>."
+      ],
+      "fuente": "Protocolo CHUB · curvas y cifras de la animación ilustrativas"
+    },
+    {
+      "id": "destete",
+      "titulo": "Destete de ECMO VV y VA",
+      "cat": "Cuidados",
+      "resumen": "VV clampando el sweep gas con la FiO₂ del ECMO al 100 %; VA con la prueba de bajada de flujo y la eco.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "destete",
+        "poster": "perlas/destete.svg"
+      },
+      "puntos": [
+        "<b>VV</b>: el destete se hace con el gas, <b>nunca bajando el flujo de sangre</b>. La FiO₂ del ECMO se mantiene al 100 %.",
+        "<b>VV</b>: con el sweep gas &lt; 1 L/min, el paciente despierto (RASS 0) y en presión soporte &lt; 12, se <b>clampa el sweep gas</b>.",
+        "<b>VV</b>: durante la prueba se vigila el esfuerzo y se <b>aborta si FR &gt; 25–30 rpm, P0.1 &gt; 5 o SatO₂ &lt; 92 %</b>.",
+        "<b>VA</b>: tras ≥ 72 h y con criterios de recuperación, <b>prueba de bajada de flujo</b> de 0,5 en 0,5 L/min cada 10–15 min hasta 1,5 L/min, con eco y hemodinámica en cada escalón.",
+        "<b>VA</b>: si la ecocardiografía cumple los criterios (IVT &gt; 10–12 cm/s, FEVI 20–25 %, TDSa &gt; 6 cm/s, sin estasis ni humo en el VI), <b>subir a 2–2,5 L/min</b> hasta la decanulación en quirófano."
+      ],
+      "fuente": "Protocolo CHUB y anexo «Destete ECMO» · equipo ECMO CHUB"
+    },
+    {
+      "id": "cavitacion",
+      "titulo": "Cavitación y presión de drenaje",
+      "cat": "Circuito",
+      "resumen": "Qué pasa en la bomba cuando la P1 es demasiado negativa y qué hacer.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "cavitacion",
+        "poster": "perlas/cavitacion.svg"
+      },
+      "puntos": [
+        "<b>Cavitación</b>: con una presión de drenaje (P1) muy negativa, el gas disuelto en la sangre sale formando <b>microburbujas</b> a la entrada de la bomba, que después colapsan.",
+        "Consecuencias: <b>hemólisis</b> y riesgo de <b>embolia gaseosa</b>.",
+        "Signos: las líneas tiemblan (<i>chattering</i>), el flujo oscila o cae aunque se suban las rpm, y suben LDH y hemoglobina libre.",
+        "Umbrales del protocolo: por debajo de −50 mmHg ya son posibles microembolias; <b>no pasar de −80</b>; <b>−100 es succión excesiva</b>.",
+        "Qué hacer: <b>bajar rpm</b> de inmediato y buscar la causa (hipovolemia, cánula acodada o mal posicionada, taponamiento, neumotórax, presión intraabdominal alta). No subir rpm."
+      ],
+      "fuente": "Protocolo CHUB (umbrales de P1) · concepto general de cavitación"
     }
   ]
 }
