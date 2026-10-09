@@ -697,95 +697,153 @@
 
   // ---------- Checklists ----------
   var CHECKLISTS = [
-    { id: "maleta", title: "Maleta ECMO", groups: [
+    { id: "maleta", title: "Maleta ECMO", bolsa: "ecmo", color: "#1E2C6E", unidad: "bolsillos", groups: [
       { g: "Circuito y consola", items: ["2 circuitos completos", "Consola con bomba de back-up", "Intercambiador de temperatura", "Mezclador de gases y adaptadores de pared", "Balas de O2 y de aire", "3 sistemas de bomba", "4 clamps metálicos"] },
       { g: "Fluidos y fármacos", items: ["Bomba de infusión de heparina", "Plasmalyte 500 cc x3", "Gelaspam 500 cc x2", "Heparina 5% x5", "6 llaves de tres pasos de alta presión", "4 conectores luer 3/8 x 3/8"] },
       { g: "Punto de cuidado", items: ["Máquina de ACT y cubetas", "Gasómetro portátil y cubetas"] },
     ] },
-    { id: "canulacion", title: "Maleta de canulación", groups: [
+    { id: "canulacion", title: "Maleta de canulación", bolsa: "canulacion", color: "#24348A", unidad: "bolsillos", groups: [
       { g: "Cánulas", items: ["2-3 cánulas venosas de drenaje ajustadas a talla y peso", "2-3 cánulas de retorno ajustadas a talla y peso", "Introductores arteriales 7 Fr y 8 Fr x2", "Cánulas de perfusión distal 7 Fr x2 y 8 Fr x2"] },
       { g: "Tubos y conexiones", items: ["Tubos 3/8, 1/4 y 3/16", "Conexiones 3/8 x 3/8 con luer", "Conexiones 3/8 x 3/8, 3/8 x 1/4, 1/4 x 1/4 y 1/4 x 3/16", "Sets de punción x4"] },
       { g: "Quirúrgico", items: ["4 prolene 5/0", "4 seda 3/0", "6 seda del nº 1", "Surgicel", "2 separadores Faraboeuf", "Catéter de micropunción", "Guía larga de 100 cm", "Clorhexidina acuosa 250 cc", "Ecógrafo portátil si el centro receptor no dispone"] },
     ] },
-    { id: "uci", title: "Maleta UCI y medicación", groups: [
+    { id: "uci", title: "Maleta UCI y medicación", bolsa: "uci", color: "#B0291F", unidad: "bolsillos", groups: [
       { g: "Vía aérea", items: ["TET 6,5 / 7 / 7,5 / 8 con guías", "Videolaringoscopio o Airtraq", "Guía tipo Frova"] },
       { g: "Catéteres", items: ["CVC de 3 luces x2", "Arterial radial x2", "Arterial femoral x2"] },
       { g: "Sedación y relajación", items: ["Propofol x5", "Midazolam x5", "Fentanilo x3", "Cisatracurio x3", "Diazepam 10 mg x3"] },
       { g: "Vasoactivos y antiarrítmicos", items: ["Noradrenalina 10 mg x5", "Fenilefrina x2", "Adrenalina 1 mg x10", "Atropina x5", "Dobutamina x2", "Isoproterenol x5", "Labetalol x3", "Amiodarona x3"] },
     ] },
-    { id: "traslado", title: "Preparación del traslado", groups: [
+    { id: "traslado", title: "Preparación del traslado", bolsa: "traslado", color: "#2E419A", unidad: "apartados", groups: [
       { g: "Coordinación", items: ["Hospital emisor y receptor confirmados, con distancia en km", "Teléfonos de ambas UCI anotados", "Roles asignados: intensivista, cirujano cardiaco, perfusionista, coordinador ECMO", "Cama en UCI confirmada en el centro receptor", "Aviso al hospital de referencia con tiempo estimado de llegada"] },
       { g: "Información del centro emisor", items: ["Datos demográficos e historia clínica básica", "Tratamiento actual: sedación, inotrópicos, antibióticos y antifúngicos", "Signos vitales y configuración del ventilador", "Laboratorio reciente con las últimas gasometrías", "Pruebas de imagen relevantes", "Accesos vasculares con fecha de inserción"] },
-      { g: "Antes de mover al paciente", items: ["Gasometría arterial del paciente y postmembrana", "Parámetros del ECMO monitorizados y anotados", "Rx de tórax que confirma la posición de las cánulas", "Anticoagulación sistemática iniciada", "Cánulas fijadas, aseguradas y lo más cortas posible", "Perfusiones preparadas minimizando el número de bombas", "Material del ECMO montado y fijado frente a aceleración y vibración"] },
+      { g: "Antes de mover al paciente", items: ["Gasometría arterial del paciente y postmembrana", "Parámetros del ECMO monitorizados y anotados", "Rx de tórax que confirma la posición de las cánulas", "Anticoagulación sistemática iniciada", "Cánulas fijadas y aseguradas", "Perfusiones preparadas minimizando el número de bombas", "Material del ECMO montado y fijado frente a aceleración y vibración"] },
       { g: "En el SVA", items: ["Monitor con ECG, SpO2, TA y NIBP", "Desfibrilador con parches ya colocados", "Respirador portátil y bombas de infusión", "Caudalímetro y bala de O2 comprobados, más bala de repuesto", "Autonomía eléctrica y de gas calculada para el trayecto", "Fluidoterapia para reposición enérgica", "Medicación no disponible en el vehículo", "Hemoderivados previsibles"] },
     ] },
   ];
 
+  var BOLSA_SVG = {
+    "ecmo": "<svg viewBox=\"0 0 160 150\" aria-hidden=\"true\"><ellipse cx=\"82\" cy=\"144\" rx=\"62\" ry=\"5\" fill=\"rgba(19,26,32,.13)\"></ellipse><path d=\"M130 106 L150 88 V116 L130 134 Z\" fill=\"#0F1215\"></path><rect x=\"18\" y=\"106\" width=\"112\" height=\"28\" rx=\"5\" fill=\"#1B1F24\"></rect><circle cx=\"32\" cy=\"116\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"50\" cy=\"124\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"68\" cy=\"116\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"86\" cy=\"124\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"104\" cy=\"116\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"120\" cy=\"124\" r=\"2.6\" fill=\"#3A4149\"></circle><circle cx=\"30\" cy=\"138\" r=\"7\" fill=\"#1B1F24\"></circle><circle cx=\"30\" cy=\"138\" r=\"3\" fill=\"#8D969E\"></circle><circle cx=\"122\" cy=\"138\" r=\"7\" fill=\"#1B1F24\"></circle><circle cx=\"122\" cy=\"138\" r=\"3\" fill=\"#8D969E\"></circle><path d=\"M130 48 L150 30 V92 L130 110 Z\" fill=\"#16225A\"></path><path d=\"M18 48 L38 30 H150 L130 48 Z\" fill=\"#2E419A\"></path><rect x=\"18\" y=\"48\" width=\"112\" height=\"62\" rx=\"4\" fill=\"#1E2C6E\"></rect><path d=\"M54 42 C64 30, 104 30, 116 40\" fill=\"none\" stroke=\"#1B1F24\" stroke-width=\"4\" stroke-linecap=\"round\"></path><rect x=\"104\" y=\"53\" width=\"20\" height=\"8\" rx=\"1.5\" fill=\"#E2EC3F\"></rect><rect x=\"18\" y=\"98\" width=\"112\" height=\"5\" fill=\"#C9D0D6\"></rect><text x=\"27\" y=\"74\" fill=\"#FFFFFF\" font-family=\"IBM Plex Sans Condensed, sans-serif\" font-weight=\"700\" font-size=\"17\">ECMO</text><text x=\"27\" y=\"89\" fill=\"#FFFFFF\" font-family=\"IBM Plex Sans, sans-serif\" font-weight=\"500\" font-size=\"9.5\">Soporte vital</text></svg>",
+    "canulacion": "<svg viewBox=\"0 0 160 150\" aria-hidden=\"true\"><ellipse cx=\"80\" cy=\"144\" rx=\"62\" ry=\"5\" fill=\"rgba(19,26,32,.13)\"></ellipse><path d=\"M42 64 C40 16, 120 16, 118 64\" fill=\"none\" stroke=\"#1B1F24\" stroke-width=\"5\" stroke-linecap=\"round\"></path><rect x=\"36\" y=\"52\" width=\"12\" height=\"14\" rx=\"2\" fill=\"#5B636B\"></rect><rect x=\"112\" y=\"52\" width=\"12\" height=\"14\" rx=\"2\" fill=\"#5B636B\"></rect><rect x=\"18\" y=\"58\" width=\"124\" height=\"80\" rx=\"16\" fill=\"#24348A\"></rect><path d=\"M18 74 V122 A16 16 0 0 0 34 138 H34 V58 A16 16 0 0 0 18 74 Z\" fill=\"#1A2766\"></path><path d=\"M142 74 V122 A16 16 0 0 1 126 138 V58 A16 16 0 0 1 142 74 Z\" fill=\"#1A2766\"></path><path d=\"M30 68 H130\" stroke=\"#0F1745\" stroke-width=\"2.5\" stroke-dasharray=\"3 2\"></path><rect x=\"44\" y=\"64\" width=\"8\" height=\"12\" rx=\"2\" fill=\"#E2EC3F\"></rect><rect x=\"84\" y=\"80\" width=\"40\" height=\"7\" rx=\"2\" fill=\"#3A4EAE\"></rect><rect x=\"84\" y=\"92\" width=\"40\" height=\"7\" rx=\"2\" fill=\"#3A4EAE\"></rect><text x=\"40\" y=\"118\" fill=\"#FFFFFF\" font-family=\"IBM Plex Sans Condensed, sans-serif\" font-weight=\"700\" font-size=\"14\">CANULACIÓN</text><rect x=\"34\" y=\"126\" width=\"92\" height=\"5\" fill=\"#DCE84A\"></rect></svg>",
+    "uci": "<svg viewBox=\"0 0 160 150\" aria-hidden=\"true\"><ellipse cx=\"80\" cy=\"144\" rx=\"56\" ry=\"5\" fill=\"rgba(19,26,32,.13)\"></ellipse><rect x=\"64\" y=\"6\" width=\"32\" height=\"8\" rx=\"4\" fill=\"#1B1F24\"></rect><rect x=\"67\" y=\"12\" width=\"4\" height=\"20\" fill=\"#9AA3AB\"></rect><rect x=\"89\" y=\"12\" width=\"4\" height=\"20\" fill=\"#9AA3AB\"></rect><rect x=\"34\" y=\"26\" width=\"92\" height=\"108\" rx=\"14\" fill=\"#C62E26\"></rect><path d=\"M112 26 H112 A14 14 0 0 1 126 40 V120 A14 14 0 0 1 112 134 Z\" fill=\"#A3241E\"></path><rect x=\"58\" y=\"26\" width=\"44\" height=\"9\" rx=\"3\" fill=\"#1B1F24\"></rect><rect x=\"41\" y=\"38\" width=\"78\" height=\"88\" rx=\"10\" fill=\"none\" stroke=\"#1B1F24\" stroke-width=\"2.5\"></rect><rect x=\"52\" y=\"26\" width=\"7\" height=\"108\" fill=\"#1B1F24\"></rect><rect x=\"101\" y=\"26\" width=\"7\" height=\"108\" fill=\"#1B1F24\"></rect><rect x=\"34\" y=\"56\" width=\"92\" height=\"9\" fill=\"#DCE84A\"></rect><rect x=\"34\" y=\"59.5\" width=\"92\" height=\"2\" fill=\"#C9D0D6\"></rect><rect x=\"34\" y=\"108\" width=\"92\" height=\"9\" fill=\"#DCE84A\"></rect><rect x=\"34\" y=\"111.5\" width=\"92\" height=\"2\" fill=\"#C9D0D6\"></rect><rect x=\"66\" y=\"74\" width=\"28\" height=\"22\" rx=\"2\" fill=\"#EEF2F5\" stroke=\"#1B1F24\" stroke-width=\"2.5\"></rect><text x=\"80\" y=\"89\" text-anchor=\"middle\" fill=\"#A3241E\" font-family=\"IBM Plex Sans Condensed, sans-serif\" font-weight=\"700\" font-size=\"10\">UCI</text><rect x=\"44\" y=\"44\" width=\"5\" height=\"11\" rx=\"1.5\" fill=\"#E2EC3F\" stroke=\"#1B1F24\" stroke-width=\"1\"></rect><rect x=\"111\" y=\"44\" width=\"5\" height=\"11\" rx=\"1.5\" fill=\"#E2EC3F\" stroke=\"#1B1F24\" stroke-width=\"1\"></rect><circle cx=\"46\" cy=\"136\" r=\"8\" fill=\"#1B1F24\"></circle><circle cx=\"46\" cy=\"136\" r=\"3.5\" fill=\"#B8C0C7\"></circle><circle cx=\"114\" cy=\"136\" r=\"8\" fill=\"#1B1F24\"></circle><circle cx=\"114\" cy=\"136\" r=\"3.5\" fill=\"#B8C0C7\"></circle></svg>",
+    "traslado": "<svg viewBox=\"0 0 160 150\" aria-hidden=\"true\"><ellipse cx=\"80\" cy=\"144\" rx=\"50\" ry=\"5\" fill=\"rgba(19,26,32,.13)\"></ellipse><rect x=\"36\" y=\"20\" width=\"88\" height=\"118\" rx=\"9\" fill=\"#2E419A\"></rect><rect x=\"44\" y=\"32\" width=\"72\" height=\"98\" rx=\"3\" fill=\"#FFFFFF\"></rect><rect x=\"60\" y=\"13\" width=\"40\" height=\"15\" rx=\"4\" fill=\"#9AA3AB\"></rect><rect x=\"71\" y=\"17\" width=\"18\" height=\"5\" rx=\"2.5\" fill=\"#2E419A\"></rect><rect x=\"51\" y=\"44\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#1E7A4C\"></rect><path d=\"M53 48.5 l2 2 l3.5 -4\" stroke=\"#FFFFFF\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><rect x=\"65\" y=\"47\" width=\"42\" height=\"3\" rx=\"1.5\" fill=\"#C9D0D6\"></rect><rect x=\"51\" y=\"62\" width=\"9\" height=\"9\" rx=\"2\" fill=\"#1E7A4C\"></rect><path d=\"M53 66.5 l2 2 l3.5 -4\" stroke=\"#FFFFFF\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path><rect x=\"65\" y=\"65\" width=\"36\" height=\"3\" rx=\"1.5\" fill=\"#C9D0D6\"></rect><rect x=\"51\" y=\"80\" width=\"9\" height=\"9\" rx=\"2\" fill=\"none\" stroke=\"#7A8791\" stroke-width=\"1.5\"></rect><rect x=\"65\" y=\"83\" width=\"42\" height=\"3\" rx=\"1.5\" fill=\"#C9D0D6\"></rect><rect x=\"51\" y=\"98\" width=\"9\" height=\"9\" rx=\"2\" fill=\"none\" stroke=\"#7A8791\" stroke-width=\"1.5\"></rect><rect x=\"65\" y=\"101\" width=\"30\" height=\"3\" rx=\"1.5\" fill=\"#C9D0D6\"></rect><rect x=\"51\" y=\"116\" width=\"9\" height=\"9\" rx=\"2\" fill=\"none\" stroke=\"#7A8791\" stroke-width=\"1.5\"></rect><rect x=\"65\" y=\"119\" width=\"38\" height=\"3\" rx=\"1.5\" fill=\"#C9D0D6\"></rect></svg>"
+  };
+  // Cada checklist es una maleta dibujada; al tocarla se abre a pantalla completa con sus bolsillos.
+  var BOL_COL = ["#C62E26", "#1F6FB2", "#6B4FA0", "#B5651D"];
+  var SVG_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
+  var SVG_BOL = '<svg class="bi" viewBox="0 0 30 30" aria-hidden="true"><rect x="3" y="6" width="24" height="20" rx="5" fill="currentColor"/><path d="M7 11H23" stroke="#fff" stroke-width="1.6" stroke-dasharray="2 1.5"/><rect x="20" y="9" width="3" height="6" rx="1" fill="#DCE84A"/></svg>';
+  var SVG_CHEV_D = '<svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  function clKey(id, gi, ii) { return "ecmo_cl_" + id + "_" + gi + "_" + ii; }
+  function clTotal(cl) { var t = 0; cl.groups.forEach(function (g) { t += g.items.length; }); return t; }
+  function clHechos(cl, gi) {
+    var n = 0;
+    cl.groups.forEach(function (g, j) {
+      if (gi !== undefined && gi !== j) return;
+      g.items.forEach(function (it, ii) { if (ls(clKey(cl.id, j, ii)) === "1") n++; });
+    });
+    return n;
+  }
+  function clPorId(id) { return CHECKLISTS.filter(function (c) { return c.id === id; })[0]; }
+
   function renderChecklists() {
     var host = document.getElementById("checklists-host");
     if (!host) return;
-    CHECKLISTS.forEach(function (cl) {
-      var total = 0;
-      cl.groups.forEach(function (g) { total += g.items.length; });
-      var card = document.createElement("div");
-      card.className = "cl-card";
-      var head = document.createElement("div");
-      head.className = "cl-head";
-      head.innerHTML = '<h3>' + cl.title + '</h3><span class="cl-prog" id="prog-' + cl.id + '">0/' + total + '</span>';
-      card.appendChild(head);
-      var bar = document.createElement("div");
-      bar.className = "cl-bar";
-      bar.innerHTML = '<i id="bar-' + cl.id + '"></i>';
-      card.appendChild(bar);
-      cl.groups.forEach(function (g, gi) {
-        var h = document.createElement("div");
-        h.className = "cl-grp";
-        h.textContent = g.g;
-        card.appendChild(h);
-        g.items.forEach(function (it, ii) {
-          var key = "ecmo_cl_" + cl.id + "_" + gi + "_" + ii;
-          var lab = document.createElement("label");
-          lab.className = "cl-item";
-          var bx = document.createElement("span");
-          bx.className = "bx";
-          var sp = document.createElement("span");
-          sp.textContent = it;
-          if (ls(key) === "1") lab.classList.add("done");
-          lab.appendChild(bx);
-          lab.appendChild(sp);
-          lab.addEventListener("click", function () {
-            var done = lab.classList.toggle("done");
-            ls(key, done ? "1" : "0");
-            updateProg(cl.id, total);
-          });
-          card.appendChild(lab);
-        });
-      });
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "cl-reset";
-      btn.textContent = "Reiniciar";
-      btn.style.cssText = "font-family:inherit;font-size:12px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:0 16px;min-height:44px;color:var(--ink-2)";
-      btn.addEventListener("click", function () {
-        $$('.cl-item', card).forEach(function (lab2) { lab2.classList.remove("done"); });
-        cl.groups.forEach(function (g, gi) { g.items.forEach(function (it, ii) { ls("ecmo_cl_" + cl.id + "_" + gi + "_" + ii, "0"); }); });
-        updateProg(cl.id, total);
-      });
-      card.appendChild(btn);
-      host.appendChild(card);
-      updateProg(cl.id, total);
+    host.innerHTML = '<div class="mal-grid">' + CHECKLISTS.map(function (cl) {
+      var total = clTotal(cl), n = clHechos(cl), lista = n === total;
+      return '<button type="button" class="mal' + (lista ? " lista" : "") + '" data-maleta="' + cl.id + '">' +
+        (lista ? '<span class="ok">' + SVG_OK + 'Lista</span>' : "") + BOLSA_SVG[cl.bolsa] +
+        '<span class="mt">' + esc(cl.title) + '</span>' +
+        '<span class="mm">' + cl.groups.length + " " + cl.unidad + " · " + total + ' elementos</span>' +
+        '<span class="mp"><span class="tr"><i style="width:' + (n / total * 100) + '%"></i></span><b>' + n + "/" + total + '</b></span></button>';
+    }).join("") + '</div>';
+  }
+  var clHost = document.getElementById("checklists-host");
+  if (clHost) clHost.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-maleta]");
+    if (b) abrirMaleta(b.dataset.maleta);
+  });
+
+  // La maleta abierta usa la misma capa a pantalla completa que los esquemas y las perlas.
+  var mzEl = document.getElementById("viewer");
+  var MZ = { id: null, abiertos: {} };
+  function abrirMaleta(id, foco) {
+    var cl = clPorId(id);
+    if (!cl || !mzEl) return;
+    MZ.id = id; MZ.abiertos = {};
+    mzEl.innerHTML = '<div class="vh mal-h" style="background:' + cl.color + '"><button type="button" class="back" data-vclose aria-label="Cerrar la maleta">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Checklists</div><div class="t" id="viewer-t">' + esc(cl.title) + '</div></div></div>' +
+      '<div class="vb mz">' +
+      '<section class="mz-hero" aria-live="polite">' + BOLSA_SVG[cl.bolsa] + '<div class="mz-txt"><div id="mz-cuenta"></div><div class="zip"><i class="zc" id="mz-zc"></i><i class="zp" id="mz-zp"></i></div></div></section>' +
+      cl.groups.map(function (g, gi) {
+        return '<section class="bol" data-bol="' + gi + '" style="--bc:' + BOL_COL[gi % BOL_COL.length] + '">' +
+          '<button type="button" class="bol-h" aria-expanded="true" aria-controls="bol-' + gi + '">' + SVG_BOL + '<span class="bn">' + esc(g.g) + '</span><span class="bc"></span>' + SVG_CHEV_D + '</button>' +
+          '<div class="bol-b" id="bol-' + gi + '">' + g.items.map(function (it, ii) {
+            return '<button type="button" class="it" data-it="' + gi + "_" + ii + '" aria-pressed="' + (ls(clKey(cl.id, gi, ii)) === "1") + '"><span class="bx">' + SVG_OK + '</span><span class="tx">' + esc(it) + '</span></button>';
+          }).join("") + '</div></section>';
+      }).join("") +
+      '<button type="button" class="mz-vaciar" data-vaciar>Vaciar ' + (cl.bolsa === "traslado" ? "la lista" : "la maleta") + '</button>' +
+      '<p class="mz-pie">Protocolo CHUB · el estado se guarda en este móvil.</p></div>';
+    mzEl.hidden = false; void mzEl.offsetWidth; mzEl.classList.add("on");
+    capaAbierta("esquema", cerrarEsquema);
+    pintarMaleta(true);
+    if (foco) {
+      var gi = +foco.split("_")[0];
+      MZ.abiertos[gi] = true; pintarMaleta();
+      var it = mzEl.querySelector('[data-it="' + foco + '"]');
+      if (it) setTimeout(function () { it.scrollIntoView({ block: "center" }); it.classList.remove("flash"); void it.offsetWidth; it.classList.add("flash"); }, 80);
+    }
+  }
+  // Los bolsillos completos se pliegan; el resto queda abierto salvo que se toquen.
+  function pintarMaleta(inicio) {
+    var cl = clPorId(MZ.id);
+    if (!cl) return;
+    var total = clTotal(cl), n = clHechos(cl), frac = n / total;
+    cl.groups.forEach(function (g, gi) {
+      var sec = mzEl.querySelector('[data-bol="' + gi + '"]');
+      if (!sec) return;
+      var h = clHechos(cl, gi), ok = h === g.items.length;
+      var abierto = MZ.abiertos[gi] !== undefined ? MZ.abiertos[gi] : !ok;
+      sec.classList.toggle("ok", ok);
+      sec.querySelector(".bc").textContent = ok ? "Completo" : h + "/" + g.items.length;
+      sec.querySelector(".bol-h").setAttribute("aria-expanded", abierto);
+      sec.querySelector(".bol-b").hidden = !abierto;
     });
+    var c = document.getElementById("mz-cuenta");
+    c.innerHTML = n === total ? '<div class="mz-lista">' + (cl.bolsa === "traslado" ? "Todo comprobado" : "Maleta lista") + '</div><div class="mz-sub">' + total + " de " + total + " revisados</div>"
+      : '<div class="mz-n"><b>' + n + '</b> de ' + total + '</div><div class="mz-sub">Faltan ' + (total - n) + " · la cremallera se cierra al tachar</div>";
+    document.getElementById("mz-zc").style.width = (frac * 100) + "%";
+    document.getElementById("mz-zp").style.left = "calc(" + (frac * 100) + "% - " + (frac * 16) + "px)";
+    if (!inicio) renderChecklists();
   }
-  function updateProg(id, total) {
-    var done = 0;
-    var card = document.getElementById("prog-" + id);
-    if (!card) return;
-    var host = card.closest(".cl-card");
-    done = $$(".cl-item.done", host).length;
-    card.textContent = done + "/" + total;
-    var b = document.getElementById("bar-" + id);
-    if (b) b.style.width = (total ? (done / total * 100) : 0) + "%";
-  }
+  if (mzEl) mzEl.addEventListener("click", function (e) {
+    if (!MZ.id || !mzEl.querySelector(".mz")) return;
+    var cl = clPorId(MZ.id);
+    var it = e.target.closest("[data-it]");
+    if (it) {
+      var p = it.dataset.it.split("_"), gi = +p[0], hecho = it.getAttribute("aria-pressed") !== "true";
+      it.setAttribute("aria-pressed", hecho);
+      ls(clKey(cl.id, gi, +p[1]), hecho ? "1" : "0");
+      var completo = clHechos(cl, gi) === cl.groups[gi].items.length;
+      if (completo) {
+        // Se deja ver la última marca antes de plegar el bolsillo.
+        MZ.abiertos[gi] = true; pintarMaleta();
+        setTimeout(function () { if (MZ.id === cl.id) { delete MZ.abiertos[gi]; pintarMaleta(); } }, 450);
+        vibrar();
+      } else pintarMaleta();
+      return;
+    }
+    var h = e.target.closest(".bol-h");
+    if (h) {
+      var gi2 = +h.closest("[data-bol]").dataset.bol;
+      MZ.abiertos[gi2] = h.getAttribute("aria-expanded") !== "true";
+      pintarMaleta();
+      return;
+    }
+    if (e.target.closest("[data-vaciar]")) {
+      cl.groups.forEach(function (g, gi3) { g.items.forEach(function (x, ii) { ls(clKey(cl.id, gi3, ii), "0"); }); });
+      $$("[data-it]", mzEl).forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+      MZ.abiertos = {};
+      pintarMaleta();
+    }
+  });
 
   // ---------- Supervivencia ELSO / scores ----------
   var ELSO = [
@@ -1858,9 +1916,10 @@
         IDX.push(e);
       });
     });
-    $$("#screen-checklists .cl-card").forEach(function (card) {
-      var title = card.querySelector("h3").textContent;
-      $$(".cl-item", card).forEach(function (it) { IDX.push({ s: "checklists", p: "Checklists › " + title, t: it.textContent, x: "", el: it }); });
+    CHECKLISTS.forEach(function (cl) {
+      cl.groups.forEach(function (g, gi) {
+        g.items.forEach(function (it, ii) { IDX.push({ s: "checklists", p: "Checklists › " + cl.title + " › " + g.g, t: it, x: "", maleta: cl.id, item: gi + "_" + ii }); });
+      });
     });
     [["criterios", "Indicación de ECMO VV", "Murray, APSS, PaFiO₂, índice de oxigenación y criterios ELSO, CESAR, ECMOnet, EOLIA"],
       ["recirc", "Recirculación", "Fórmula del protocolo para VV con SpreO₂, SpostO₂ y SvO₂"],
@@ -1943,6 +2002,7 @@
     if (e.tab) selectCalcTab(e.tab);
     if (e.crisis !== undefined && e.crisis > -1) { openCrisis(e.crisis); return; }
     if (e.perla) { abrirPerla(e.perla); return; }
+    if (e.maleta) { abrirMaleta(e.maleta, e.item); return; }
     if (e.el) setTimeout(function () {
       scrollA(e.el);
       e.el.classList.remove("flash"); void e.el.offsetWidth; e.el.classList.add("flash");
@@ -2295,7 +2355,7 @@
     setTimeout(function () { if (!crisisEl.classList.contains("on")) crisisEl.hidden = true; }, 220);
     capaCerrada("crisis");
   }
-  function irA(id) { CR.hist.push(CR.cur); if (id) CR.cur = id; else CR.fin = true; renderCrisis(); }
+  function crIr(id) { CR.hist.push(CR.cur); if (id) CR.cur = id; else CR.fin = true; renderCrisis(); }
   if (crisisEl) crisisEl.addEventListener("click", function (e) {
     var b = e.target.closest("[data-cr]");
     if (!b) return;
@@ -2303,9 +2363,9 @@
     var a = b.dataset.cr, nodo = CR.def && CR.def.n[CR.cur];
     if (a === "x") closeCrisis();
     else if (a === "bk") { if (CR.fin) { CR.fin = false; CR.cur = CR.hist.pop(); } else if (CR.hist.length) CR.cur = CR.hist.pop(); renderCrisis(); }
-    else if (a === "ok") irA(nodo.tipo === "fin" ? null : nodo.next || null);
-    else if (a === "si") irA(nodo.si);
-    else if (a === "no") irA(nodo.no);
+    else if (a === "ok") crIr(nodo.tipo === "fin" ? null : nodo.next || null);
+    else if (a === "si") crIr(nodo.si);
+    else if (a === "no") crIr(nodo.no);
     var foco = crisisEl.querySelector(".cr-acts .ok, .cr-acts .si");
     if (foco && a !== "x") foco.focus({ preventScroll: true });
   });
