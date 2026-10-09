@@ -63,7 +63,7 @@
           }).join("") +
         '</div>' +
       '</div>' +
-      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Paciente de ejemplo: varón de 1,70 m, peso ideal 66 kg. Crs de 15 a 30 mL/cmH₂O en 4 semanas (rangos publicados en ECMO VV). Aquí se comprimen en minuto y medio.</span></div>' +
+      '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Paciente de ejemplo: varón de 1,70 m, peso ideal 66 kg. Crs de 15 a 30 mL/cmH₂O en 4 semanas (rangos publicados en ECMO VV). Aquí se comprimen en menos de un minuto.</span></div>' +
       '<div class="vent-card" aria-live="polite"></div>';
 
     var card = el.querySelector(".vent-card");
@@ -88,6 +88,7 @@
     var PEEP = 10, PC = 10, T = 6, TI = 2, R = 15, PESO_IDEAL = 66; // varón de 170 cm: 50 + 0,91·(170 − 152,4)
     var CMIN = 0.015, CMAX = 0.030, CICLOS = 16;   // Crs 15 → 30 mL/cmH₂O en 16 ciclos = 4 semanas
     var DIAS = 28;
+    var VEL = 2;                                   // la animación corre al doble del tiempo real del modelo
     var VENTANA = 12;                              // segundos visibles en pantalla
     var cv = el.querySelector(".vent-cv"), ctx = cv.getContext("2d");
     var vteEl = el.querySelector("[data-vte]"), cdEl = el.querySelector("[data-cd]"), trEl = el.querySelector("[data-tr]");
@@ -194,7 +195,7 @@
     }
     function frame(ts) {
       if (!t0) t0 = ts;
-      var t = (ts - t0) / 1000;
+      var t = (ts - t0) / 1000 * VEL;
       if (ultimo === null) ultimo = Math.max(0, t - 0.05);
       if (t > ultimo) trazar(ultimo, t);
       ultimo = t;
