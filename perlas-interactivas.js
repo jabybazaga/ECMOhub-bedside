@@ -499,30 +499,47 @@
           '<p class="mb-ref">ΔP &gt; 50 mmHg o un ascenso del 30–50 % sobre el basal sugiere trombosis. Ahora: <b>ΔP ' + dp + ' mmHg</b>.</p></section>';
     }
 
-    function fila(prueba, val, uni, ref, sev) {
-      return '<tr class="' + (sev || "") + '"><th scope="row">' + prueba + '</th><td class="v">' + val + (sev === "crit" || sev === "warn" ? ' <span class="fl" aria-label="fuera de rango">' + (sev === "crit" ? "!!" : "!") + '</span>' : "") + '</td><td class="u">' + uni + '</td><td class="r">' + ref + '</td></tr>';
+    // Folio de laboratorio: resultado, indicador H/L, unidades y umbral del protocolo.
+    // Los valores alterados llevan rotulador; los puntos 3 y 4, anotación a mano en el margen.
+    function fila(prueba, val, flag, uni, ref, sev) {
+      return '<tr class="' + (sev || "") + '"><th scope="row">' + prueba + '</th>' +
+        '<td class="v"><span class="tinta">' + val + '</span></td>' +
+        '<td class="f">' + (flag ? '<b aria-label="' + (flag.charAt(0) === "H" ? "alto" : "bajo") + '">' + flag + '</b>' : '') + '</td>' +
+        '<td class="u">' + uni + '</td><td class="r">' + ref + '</td></tr>';
     }
     function analitica(d) {
       var L = d.lab, mal = esc === "mal";
+      var hem = [
+        fila("Hemoglobina libre", L.hbl, L.hbl > 50 ? "H*" : "", "mg/dL", "&gt; 50: hemólisis", L.hbl > 50 ? "crit" : ""),
+        fila("LDH", L.ldh, L.ldh > 350 ? (L.ldh > 1000 ? "H*" : "H") : "", "UI/L", "&gt; 350 · &gt; 1000 cabezal", L.ldh > 1000 ? "crit" : L.ldh > 350 ? "warn" : ""),
+        fila("Haptoglobina", L.hapto, mal ? "L" : "", "g/L", "baja si hemólisis", mal ? "warn" : ""),
+        fila("Bilirrubina total", L.bili, mal ? "H" : "", "mg/dL", "sube si hemólisis", mal ? "warn" : "")
+      ].join("");
+      var coa = [
+        fila("Plaquetas", L.plaq, L.plaq < 100 ? "L" : "", "×10⁹/L", "&gt; 50–100 · descenso", L.plaq < 100 ? "warn" : ""),
+        fila("Fibrinógeno (Clauss)", L.fib, L.fib < 200 ? "L*" : "", "mg/dL", "&lt; 200: consumo", L.fib < 200 ? "crit" : ""),
+        fila("Dímero D", L.dd, L.dd > 25 ? "H*" : "", "mg/L", "&gt; 25–30: trombosis", L.dd > 25 ? "crit" : ""),
+        fila("INR (TP)", L.inr, mal ? "H" : "", "", "alargado: coagulopatía", mal ? "warn" : "")
+      ].join("");
       return '' +
-        '<div class="mb-hoja" role="group" aria-label="Hoja de analítica">' +
-          '<div class="hj-h"><b>Hoja de analítica</b><span>Paciente en ECMO · ejemplo</span></div>' +
-          '<table class="hj"><thead><tr><th>Prueba</th><th>Resultado</th><th>Unid.</th><th>Referencia</th></tr></thead>' +
-          '<tbody><tr class="gr"><td colspan="4"><span class="n">3</span>Hemólisis</td></tr>' +
-          fila("Hb libre", L.hbl, "mg/dL", "&gt; 50: hemólisis", L.hbl > 50 ? "crit" : "") +
-          fila("LDH", L.ldh, "UI/L", "&gt; 350 elevada · &gt; 1000: coágulos en el cabezal", L.ldh > 1000 ? "crit" : L.ldh > 350 ? "warn" : "") +
-          fila("Haptoglobina", L.hapto, "g/L", "Baja si hay hemólisis", mal ? "warn" : "") +
-          fila("Bilirrubina", L.bili, "mg/dL", "Sube si hay hemólisis", mal ? "warn" : "") +
-          '<tr class="gr"><td colspan="4"><span class="n">4</span>Coagulopatía de consumo</td></tr>' +
-          fila("Fibrinógeno", L.fib, "mg/dL", "&lt; 200: consumo", L.fib < 200 ? "crit" : "") +
-          fila("Plaquetas", L.plaq, "×10⁹/L", "Descenso continuo · &gt; 50–100", L.plaq < 100 ? "warn" : "") +
-          fila("Dímero D", L.dd, "mg/L", "&gt; 25–30: trombosis de membrana", L.dd > 25 ? "crit" : "") +
-          fila("INR", L.inr, "", "Alargamiento: coagulopatía", mal ? "warn" : "") +
+        '<figure class="folio" aria-label="Hoja de resultados de laboratorio de ejemplo">' +
+          '<div class="fo-hd">' +
+            '<div class="fo-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></svg></div>' +
+            '<div class="fo-tit"><b>Laboratorio de análisis clínicos</b><span>Informe de resultados</span></div>' +
+            '<div class="fo-meta"><span>Sangre · 07:30</span><span>UCI · ECMO</span></div>' +
+          '</div>' +
+          '<div class="fo-pac"><span>Paciente: <i>— (ejemplo)</i></span><span>Peticionario: Medicina Intensiva</span></div>' +
+          '<table class="fo-t"><thead><tr><th>Determinación</th><th>Resultado</th><th></th><th>Unid.</th><th>Umbral ECMO</th></tr></thead><tbody>' +
+            '<tr class="sec"><td colspan="5"><span class="fo-s">Bioquímica</span><span class="pluma">③ Hemólisis</span></td></tr>' + hem +
+            '<tr class="sec"><td colspan="5"><span class="fo-s">Hemostasia · hematimetría</span><span class="pluma">④ Consumo</span></td></tr>' + coa +
           '</tbody></table>' +
-        '</div>' +
+          '<div class="fo-pie"><span>* Valor crítico · H alto · L bajo</span><span>Página 1 de 1</span></div>' +
+          '<svg class="fo-firma" viewBox="0 0 120 30" aria-hidden="true"><path d="M4 22 C14 6 20 26 28 14 S40 4 44 18 S58 26 64 12 S80 8 86 18 S104 24 116 10"/></svg>' +
+          '<span class="fo-sello" aria-hidden="true">EJEMPLO</span>' +
+        '</figure>' +
         '<section class="mb-card"><h5><span class="n">3</span>Hemólisis</h5><p>El dato directo es la <b>hemoglobina libre</b>. Indirectos: <b>LDH</b>, <b>haptoglobina</b> y <b>bilirrubina</b>.</p></section>' +
         '<section class="mb-card"><h5><span class="n">4</span>Coagulopatía de consumo</h5><p>Buscar <b>consumo de fibrinógeno</b>, <b>plaquetopenia</b> o <b>coagulopatía</b>.</p>' +
-          '<p class="mb-ref">Haptoglobina, bilirrubina e INR no tienen umbral en el protocolo: vigilar la tendencia.</p></section>';
+          '<p class="mb-ref">La columna «Umbral ECMO» recoge los del protocolo CHUB. Haptoglobina, bilirrubina e INR no tienen umbral en el protocolo: vigilar la tendencia.</p></section>';
     }
     function pintar() {
       var d = MEMB[esc];
