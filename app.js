@@ -2156,34 +2156,122 @@
     var host = document.getElementById("em-grid");
     if (!host) return;
     host.innerHTML = $$("#screen-complicaciones .em-src").map(function (st, i) {
-      var t = st.querySelector(".st-h").textContent, n = $$("li", st).length;
-      return '<button type="button" class="em" data-crisis="' + i + '"><span class="ic">' + (EM_ICONS[i] || EM_ICONS[2]) + '</span><span><span class="t">' + esc(t) + '</span><span class="n">' + n + ' pasos</span></span></button>';
+      var t = st.querySelector(".st-h").textContent, def = crisisDef(st);
+      var nodos = Object.keys(def.n).map(function (k) { return def.n[k]; });
+      var preg = nodos.filter(function (x) { return x.tipo === "pregunta"; }).length;
+      var info = preg ? (preg === 1 ? "1 decisión Sí/No" : preg + " decisiones Sí/No") : nodos.length + " pasos";
+      return '<button type="button" class="em" data-crisis="' + i + '"><span class="ic">' + (EM_ICONS[i] || EM_ICONS[2]) + '</span><span><span class="t">' + esc(t) + '</span><span class="n">' + info + '</span></span></button>';
     }).join("");
   }
   var crisisEl = document.getElementById("crisis");
-  var CR = { steps: [], i: 0, t0: 0, timer: null, lock: null, title: "", sig: "" };
+  // ---- modo emergencia: una acción por pantalla y decisiones Sí/No como botones ----
+  // Cada emergencia se describe como nodos: "paso" (acción), "pregunta" (Sí/No) o "fin".
+  // El texto clínico es el de la pantalla de Complicaciones, separado en pasos.
+  var CR_IC = {
+    ayuda: '<path d="M12 3a6 6 0 0 1 6 6v3l2 3H4l2-3V9a6 6 0 0 1 6-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/>',
+    pinza: '<path d="M6 4l6 8 6-8"/><path d="M12 12v8"/><path d="M8 20h8"/>',
+    stop: '<circle cx="12" cy="12" r="9"/><rect x="8.5" y="8.5" width="7" height="7" rx="1"/>',
+    comprimir: '<path d="M12 3v9"/><path d="M8 8l4 4 4-4"/><path d="M4 16h16"/><path d="M6 20h12"/>',
+    gota: '<path d="M12 3s6 6.6 6 10.7a6 6 0 0 1-12 0C6 9.6 12 3 12 3Z"/>',
+    bajar: '<circle cx="12" cy="12" r="9"/><path d="M12 7v9"/><path d="M8 12l4 4 4-4"/>',
+    buscar: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+    llave: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4Z"/>',
+    sensor: '<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+    tapon: '<circle cx="12" cy="12" r="8"/><path d="M9 9l6 6M15 9l-6 6"/>',
+    reset: '<path d="M4 4v6h6"/><path d="M20 12a8 8 0 1 1-2.3-5.7L20 9"/>',
+    resp: '<path d="M12 3v7"/><path d="M9.5 10c-1.9 0-4 1.7-4.3 4.4-.3 2.6-.5 5.3 1.3 6.4 1.6 1 2.9.1 3-1.4l.5-6.5"/><path d="M14.5 10c1.9 0 4 1.7 4.3 4.4.3 2.6.5 5.3-1.3 6.4-1.6 1-2.9.1-3-1.4l-.5-6.5"/>',
+    aire: '<circle cx="8" cy="9" r="3"/><circle cx="16" cy="15" r="4"/><circle cx="17" cy="6" r="1.5"/>',
+    paciente: '<path d="M12 20.5s-7.5-4.6-9.8-9.4C.8 7.7 2.5 4 6.2 4c2.1 0 3.9 1.3 4.5 2.9C11.3 5.3 13.1 4 15.2 4c3.7 0 5.4 3.7 4 7.1-2.3 4.8-9.8 9.4-9.8 9.4z"/>',
+    manivela: '<circle cx="12" cy="12" r="8"/><path d="M12 12l5-3"/><circle cx="17" cy="9" r="1.6"/>',
+    enchufe: '<path d="M9 3v5M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0Z"/><path d="M12 17v4"/>',
+    canula: '<path d="M4 20l9-9"/><path d="M11 9l4 4"/><path d="M14 6l4 4-3 3-4-4Z"/><path d="M18 2l4 4"/>',
+    duda: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5h.01"/>'
+  };
+  var CRISIS_DEF = {
+    "Insuficiencia de drenaje": { ini: "q", n: {
+      q: { tipo: "pregunta", t: "¿Cánula o línea acodada o trombosada?", si: "mec", no: "p1", siTxt: "Problema mecánico", noTxt: "Precarga / hipovolemia" },
+      mec: { tipo: "fin", ic: "llave", t: "Problema mecánico: reposicionar" },
+      p1: { ic: "bajar", t: "Disminuir rpm", d: "Precarga inadecuada / hipovolemia: bajar rpm para evitar succión excesiva. Nunca subirlas.", next: "p2", clave: true },
+      p2: { ic: "buscar", t: "Identificar la causa de la hipovolemia", next: "p3" },
+      p3: { ic: "gota", t: "Reponer volumen y normalizar rpm" } } },
+    "Alarma de aire": { ini: "q1", n: {
+      q1: { tipo: "pregunta", t: "¿Se visualiza aire en el circuito?", si: "q2", no: "falsa", siTxt: "Ver cuánto y dónde", noTxt: "Falsa alarma" },
+      falsa: { tipo: "fin", ic: "sensor", t: "Falsa alarma", d: "Revisar sensores y resetear." },
+      q2: { tipo: "pregunta", t: "¿Poca cantidad y en el lado venoso?", si: "v1", no: "e1", siTxt: "Burbuja venosa", noTxt: "Gran cantidad: embolismo" },
+      v1: { ic: "buscar", t: "Identificar el origen", d: "Burbuja venosa.", next: "v2" },
+      v2: { ic: "tapon", t: "Retirar el tapón amarillo de la membrana", next: "v3" },
+      v3: { ic: "reset", t: "Resetear" },
+      e1: { ic: "ayuda", t: "¡Pedir ayuda!", d: "Embolismo moderado-severo.", next: "e2", clave: true },
+      e2: { ic: "pinza", t: "Clampar la línea arterial y detener el ECMO", next: "e3", clave: true },
+      e3: { ic: "resp", t: "Optimizar respirador y vasoactivos", next: "e4" },
+      e4: { ic: "aire", t: "Aspirar el aire" } } },
+    "Fallo de bomba": { ini: "a", n: {
+      a: { ic: "paciente", t: "Optimizar al paciente", d: "Respirador, vasoactivos, RCP si procede.", next: "b" },
+      b: { ic: "ayuda", t: "¡Pedir ayuda!", next: "c" },
+      c: { ic: "pinza", t: "Clampar líneas arterial y venosa", next: "d", clave: true },
+      d: { ic: "manivela", t: "Rotor manual de emergencia", d: "≈1500 rpm, desclampar y mantener las rpm previas.", next: "e", clave: true },
+      e: { ic: "enchufe", t: "Resolver la causa", d: "Reiniciar, conectar a la red o cambiar el ECMO.", next: "f" },
+      f: { ic: "reset", t: "Volver al rotor eléctrico", d: "Clampar, cabezal, ≈1500 rpm, desclampar y normalizar." } } },
+    "Decanulación accidental": { ini: "a", n: {
+      a: { ic: "paciente", t: "Optimizar al paciente", next: "b" },
+      b: { ic: "ayuda", t: "¡Pedir ayuda!", next: "c" },
+      c: { ic: "pinza", t: "Clampar líneas arterial y venosa", next: "d" },
+      d: { ic: "stop", t: "Detener el ECMO", next: "e" },
+      e: { ic: "comprimir", t: "Comprimir la zona de canulación", next: "f", clave: true },
+      f: { ic: "gota", t: "Reponer volumen", d: "Sueroterapia o hemoderivados.", next: "g" },
+      g: { ic: "canula", t: "Valorar recanulación de rescate" } } }
+  };
+  // Emergencias sin definición: cada <li> pasa a ser un paso, en orden.
+  function crisisLineal(src) {
+    var n = {}, lis = $$("li", src);
+    lis.forEach(function (li, k) { n["s" + k] = { ic: "duda", t: plano(li.innerHTML), next: k + 1 < lis.length ? "s" + (k + 1) : null }; });
+    return { ini: "s0", n: n };
+  }
+  function crisisDef(src) { return CRISIS_DEF[src.querySelector(".st-h").textContent.trim()] || crisisLineal(src); }
+  function pasosRestantes(def, id) {
+    // pasos por delante siguiendo la rama principal (en una pregunta cuenta 1 y se para)
+    var k = 0, nodo = def.n[id], vistos = {};
+    while (nodo && !vistos[id]) { vistos[id] = 1; k++; if (nodo.tipo === "pregunta" || nodo.tipo === "fin") break; id = nodo.next; nodo = id && def.n[id]; }
+    return k;
+  }
+  var CR = { def: null, cur: null, hist: [], t0: 0, timer: null, lock: null, title: "", sig: "", fin: false };
   function reloj() {
     var s = Math.floor((Date.now() - CR.t0) / 1000);
     return ("0" + Math.floor(s / 60)).slice(-2) + ":" + ("0" + (s % 60)).slice(-2);
   }
   function plano(html) { var d = document.createElement("div"); d.innerHTML = html; return d.textContent; }
+  function icono(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (CR_IC[k] || CR_IC.duda) + '</svg>'; }
   function renderCrisis() {
-    var n = CR.steps.length, i = CR.i, fin = i >= n;
-    var prog = CR.steps.map(function (s, k) { return '<i class="' + (k < i ? "d" : k === i ? "c" : "") + '"></i>'; }).join("");
-    var hechos = CR.steps.slice(0, i).map(function (s) { return '<div><i>' + SVG_OK + '</i>' + esc(plano(s)) + '</div>'; }).join("");
-    var main = fin
-      ? '<div class="cr-n">Secuencia completada</div><div class="cr-step">Todos los pasos hechos en ' + reloj() + '.</div>'
-      : '<div class="cr-n">Paso ' + (i + 1) + ' de ' + n + '</div><div class="cr-step">' + CR.steps[i] + '</div>' +
-        (i + 1 < n ? '<div class="cr-next"><span class="k">Después</span><span class="v">' + (i + 2) + ' · ' + esc(plano(CR.steps[i + 1])) + '</span></div>' : "");
+    var def = CR.def, nodo = def.n[CR.cur], hechos = CR.hist.length;
+    var resto = CR.fin ? 0 : pasosRestantes(def, CR.cur);
+    var total = hechos + resto;
+    var prog = "";
+    for (var k = 0; k < total; k++) prog += '<i class="' + (k < hechos ? "d" : k === hechos ? "c" : "") + '"></i>';
+    var main, acts;
+    if (CR.fin) {
+      main = '<div class="cr-ic ok">' + SVG_OK + '</div><div class="cr-step">Secuencia completada</div><div class="cr-det">' + hechos + ' pasos en ' + reloj() + '.</div>';
+      acts = '<button type="button" class="bk" data-cr="bk">Atrás</button><button type="button" class="ok" data-cr="x">' + SVG_OK + 'Cerrar</button>';
+    } else if (nodo.tipo === "pregunta") {
+      main = '<div class="cr-n">Decisión</div><div class="cr-ic q">' + icono("duda") + '</div><div class="cr-step">' + esc(nodo.t) + '</div>';
+      acts = '<button type="button" class="bk" data-cr="bk"' + (hechos ? "" : " disabled") + '>Atrás</button>' +
+        '<div class="cr-sino"><button type="button" class="si" data-cr="si"><b>Sí</b><span>' + esc(nodo.siTxt || "") + '</span></button>' +
+        '<button type="button" class="no" data-cr="no"><b>No</b><span>' + esc(nodo.noTxt || "") + '</span></button></div>';
+    } else {
+      var ultimo = nodo.tipo === "fin" || !nodo.next;
+      main = '<div class="cr-n">Paso ' + (hechos + 1) + (nodo.clave ? ' · <span class="cr-clave">clave</span>' : "") + '</div>' +
+        '<div class="cr-ic' + (nodo.clave ? " clave" : "") + '">' + icono(nodo.ic) + '</div>' +
+        '<div class="cr-step">' + esc(nodo.t) + '</div>' + (nodo.d ? '<div class="cr-det">' + esc(nodo.d) + '</div>' : "");
+      var sig = !ultimo && def.n[nodo.next];
+      if (sig) main += '<div class="cr-next"><span class="k">Después</span><span class="v">' + esc(sig.t) + '</span></div>';
+      acts = '<button type="button" class="bk" data-cr="bk"' + (hechos ? "" : " disabled") + '>Atrás</button>' +
+        '<button type="button" class="ok" data-cr="ok">' + SVG_OK + (ultimo ? "Hecho · terminar" : "Hecho · siguiente") + '</button>';
+    }
     crisisEl.innerHTML = '<div class="cr-top"><button type="button" class="cr-x" data-cr="x" aria-label="Salir del modo crisis">' + SVG_X + '</button>' +
       '<div class="tx"><div class="cr-k">Emergencia</div><div class="cr-t">' + esc(CR.title) + '</div></div>' +
       '<div class="cr-clock"><b id="cr-clock">' + reloj() + '</b><span>desde el inicio</span></div></div>' +
-      '<div class="cr-prog">' + prog + '</div>' + (CR.sig ? '<div class="cr-sig">' + esc(CR.sig) + '</div>' : "") +
-      (hechos ? '<div class="cr-done">' + hechos + '</div>' : "") +
-      '<div class="cr-main">' + main + '</div>' +
-      '<div class="cr-acts"><button type="button" class="bk" data-cr="bk"' + (i === 0 ? " disabled" : "") + '>Atrás</button>' +
-      (fin ? '<button type="button" class="ok" data-cr="x">' + SVG_OK + 'Cerrar</button>'
-        : '<button type="button" class="ok" data-cr="ok">' + SVG_OK + (i + 1 < n ? "Hecho · siguiente" : "Hecho · terminar") + '</button>') + '</div>';
+      '<div class="cr-prog" aria-hidden="true">' + prog + '</div>' + (CR.sig ? '<div class="cr-sig">' + esc(CR.sig) + '</div>' : "") +
+      '<div class="cr-main" aria-live="polite">' + main + '</div>' +
+      '<div class="cr-acts">' + acts + '</div>';
   }
   function openCrisis(idx) {
     var src = $$("#screen-complicaciones .em-src")[idx];
@@ -2191,8 +2279,8 @@
     CR.title = src.querySelector(".st-h").textContent;
     var sig = src.querySelector(".st-sig");
     CR.sig = sig ? sig.textContent : "";
-    CR.steps = $$("li", src).map(function (li) { return li.innerHTML; });
-    CR.i = 0; CR.t0 = Date.now();
+    CR.def = crisisDef(src);
+    CR.cur = CR.def.ini; CR.hist = []; CR.fin = false; CR.t0 = Date.now();
     renderCrisis();
     crisisEl.hidden = false; void crisisEl.offsetWidth; crisisEl.classList.add("on");
     capaAbierta("crisis", closeCrisis);
@@ -2208,13 +2296,19 @@
     setTimeout(function () { if (!crisisEl.classList.contains("on")) crisisEl.hidden = true; }, 220);
     capaCerrada("crisis");
   }
+  function irA(id) { CR.hist.push(CR.cur); if (id) CR.cur = id; else CR.fin = true; renderCrisis(); }
   if (crisisEl) crisisEl.addEventListener("click", function (e) {
     var b = e.target.closest("[data-cr]");
     if (!b) return;
     vibrar();
-    if (b.dataset.cr === "x") closeCrisis();
-    else if (b.dataset.cr === "bk") { CR.i = Math.max(0, CR.i - 1); renderCrisis(); }
-    else if (b.dataset.cr === "ok") { CR.i++; renderCrisis(); }
+    var a = b.dataset.cr, nodo = CR.def && CR.def.n[CR.cur];
+    if (a === "x") closeCrisis();
+    else if (a === "bk") { if (CR.fin) { CR.fin = false; CR.cur = CR.hist.pop(); } else if (CR.hist.length) CR.cur = CR.hist.pop(); renderCrisis(); }
+    else if (a === "ok") irA(nodo.tipo === "fin" ? null : nodo.next || null);
+    else if (a === "si") irA(nodo.si);
+    else if (a === "no") irA(nodo.no);
+    var foco = crisisEl.querySelector(".cr-acts .ok, .cr-acts .si");
+    if (foco && a !== "x") foco.focus({ preventScroll: true });
   });
   document.addEventListener("click", function (e) { var b = e.target.closest("[data-crisis]"); if (b) openCrisis(+b.dataset.crisis); });
 
