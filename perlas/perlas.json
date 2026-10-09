@@ -19,6 +19,24 @@
       "fuente": "Equipo ECMO CHUB"
     },
     {
+      "id": "membrana",
+      "titulo": "Revisión diaria de la membrana",
+      "cat": "Circuito",
+      "resumen": "Gases pre y post, coágulos y ΔP, hemólisis y coagulopatía de consumo.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "membrana",
+        "poster": "perlas/membrana.svg"
+      },
+      "puntos": [
+        "<b>1 · Eficiencia de oxigenación y lavado de CO₂</b>: comparar los gases premembrana y postmembrana.",
+        "<b>2 · Presencia de coágulos</b>: inspeccionar las conexiones, porque el flujo turbulento acumula coágulos. Monitorizar el <b>ΔP</b> para detectar coágulos no visibles dentro de la membrana.",
+        "<b>3 · Hemólisis</b>: hemoglobina libre. Datos indirectos: LDH, haptoglobina y bilirrubina.",
+        "<b>4 · Coagulopatía de consumo</b>: consumo de fibrinógeno, plaquetopenia o coagulopatía."
+      ],
+      "fuente": "Equipo ECMO CHUB · umbrales del protocolo CHUB · cifras de la animación de ejemplo"
+    },
+    {
       "id": "respirador-vv",
       "titulo": "Programar el respirador en ECMO VV",
       "cat": "Monitorización",
