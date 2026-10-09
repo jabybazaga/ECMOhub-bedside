@@ -239,7 +239,7 @@
     var VA =
       '<section class="dst-card"><h5>Antes de empezar · ≥ 72 h</h5><p>Causa tratada y signos de recuperación.</p>' +
         '<div class="dst-kpi">' +
-          '<div><span>Aminas</span><b>&lt; 0,5</b><span>dobutamina &lt; 5</span></div>' +
+          '<div><span>Noradrenalina</span><b>&lt; 0,05</b><span>o dobutamina &lt; 5 mcg/kg/min</span></div>' +
           '<div><span>Presión de pulso</span><b>&gt; 30</b></div>' +
           '<div><span>Índice cardiaco</span><b>&gt; 2,2</b></div>' +
           '<div><span>PCP</span><b>&lt; 15</b></div>' +
