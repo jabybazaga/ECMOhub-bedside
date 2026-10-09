@@ -423,5 +423,132 @@
     return function () { cancelAnimationFrame(raf); };
   }
 
-  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion };
+  // ------------------------------------------------------------------
+  // 4. Revisión diaria de la membrana: consola (puntos 1–2) y analítica (3–4)
+  //    Cifras de ejemplo; umbrales del protocolo CHUB tal como los recoge la app.
+  // ------------------------------------------------------------------
+  var MEMB = {
+    ok: {
+      rpm: 3200, flujo: "4,2", p1: -40, p2: 180, p3: 160,
+      gas: [["PO₂", "mmHg", 40, 420], ["PCO₂", "mmHg", 46, 32], ["SatO₂", "%", 70, 100]],
+      lab: { hbl: 8, ldh: 280, hapto: "1,2", bili: "0,8", fib: 320, plaq: 180, dd: 4, inr: "1,1" }
+    },
+    mal: {
+      rpm: 3200, flujo: "3,8", p1: -45, p2: 260, p3: 190,
+      gas: [["PO₂", "mmHg", 41, 130], ["PCO₂", "mmHg", 47, 44], ["SatO₂", "%", 71, 98]],
+      lab: { hbl: 85, ldh: 1250, hapto: "&lt; 0,1", bili: "3,4", fib: 140, plaq: 65, dd: 32, inr: "1,6" }
+    }
+  };
+  function membrana(el) {
+    el.innerHTML =
+      '<div class="mb">' +
+        '<div class="segc mb-vista" role="radiogroup" aria-label="Qué revisar">' +
+          boton("1–2 · Consola", ' role="radio" aria-checked="true" data-v="consola" class="on"') +
+          boton("3–4 · Analítica", ' role="radio" aria-checked="false" data-v="lab"') +
+        '</div>' +
+        '<div class="segc mini mb-esc" role="radiogroup" aria-label="Escenario de la membrana">' +
+          boton("Normal", ' role="radio" aria-checked="true" data-e="ok" class="on"') +
+          boton("Con problemas", ' role="radio" aria-checked="false" data-e="mal"') +
+        '</div>' +
+        '<div class="mb-body" aria-live="polite"></div>' +
+        '<p class="pix-nota">Cifras de ejemplo. Umbrales del protocolo CHUB.</p>' +
+      '</div>';
+    var body = el.querySelector(".mb-body"), vista = "consola", esc = "ok";
+    function chip(sev, txt) { return '<span class="mb-flag ' + sev + '">' + txt + '</span>'; }
+
+    function consola(d) {
+      var dp = d.p2 - d.p3, mal = esc === "mal";
+      var gases = d.gas.map(function (g) {
+        var post = g[3], flag = "";
+        if (g[0] === "PO₂") flag = post < 150 ? chip("crit", "&lt; 150") : post < 300 ? chip("warn", "&lt; 300") : chip("ok", "&gt; 300");
+        if (g[0] === "PCO₂") flag = (g[2] - post) < 5 ? chip("warn", "apenas baja") : chip("ok", "−" + (g[2] - post));
+        return '<tr><th scope="row">' + g[0] + ' <small>' + g[1] + '</small></th><td>' + g[2] + '</td><td class="post">' + post + '</td><td>' + flag + '</td></tr>';
+      }).join("");
+      return '' +
+        '<div class="mb-cons" role="group" aria-label="Pantalla de consola de ECMO">' +
+          '<div class="mc-top"><span class="mc-tag">CONSOLA</span><span class="mc-big"><b>' + d.rpm + '</b> rpm</span><span class="mc-big"><b>' + d.flujo + '</b> L/min</span></div>' +
+          '<svg class="mc-circ" viewBox="0 0 340 160" role="img" aria-label="Circuito: drenaje, bomba, oxigenador con tomas de gases pre y post, y retorno; conectores marcados">' +
+            '<path class="ln ven" d="M10 130 H66 Q82 130 82 114 V94"/><path class="ln ven fl" d="M10 130 H66 Q82 130 82 114 V94"/>' +
+            '<circle class="bomba" cx="82" cy="76" r="18"/><path class="rotor" d="M82 63 V89 M69 76 H95"/>' +
+            '<path class="ln ven" d="M100 76 H160"/><path class="ln ven fl" d="M100 76 H160"/>' +
+            '<rect class="oxi" x="160" y="44" width="60" height="64" rx="10"/>' +
+            '<path class="fibras" d="M168 56 H212 M168 66 H212 M168 76 H212 M168 86 H212 M168 96 H212"/>' +
+            (mal ? '<g class="trombo"><circle cx="167" cy="58" r="5"/><circle cx="171" cy="95" r="4"/><circle cx="165" cy="78" r="3"/></g>' : '') +
+            '<path class="ln art" d="M220 76 H292 Q308 76 308 92 V130 H334"/><path class="ln art fl" d="M220 76 H292 Q308 76 308 92 V130 H334"/>' +
+            '<g class="conector' + (mal ? ' mal' : '') + '"><rect x="34" y="123" width="12" height="14" rx="3"/><rect x="106" y="69" width="12" height="14" rx="3"/><rect x="270" y="69" width="12" height="14" rx="3"/>' +
+            (mal ? '<circle class="coag" cx="40" cy="130" r="3.5"/><circle class="coag" cx="276" cy="76" r="3.5"/>' : '') + '</g>' +
+            '<g class="toma pre"><circle cx="138" cy="76" r="6"/><text x="144" y="104" text-anchor="end">gas pre</text></g>' +
+            '<g class="toma post"><circle cx="246" cy="76" r="6"/><text x="240" y="104" text-anchor="start">gas post</text></g>' +
+            '<text x="190" y="126" text-anchor="middle" class="lb">Oxigenador</text>' +
+            '<text x="82" y="46" text-anchor="middle" class="lb">bomba</text>' +
+            '<text x="40" y="154" text-anchor="middle" class="lb">conector</text>' +
+          '</svg>' +
+          '<div class="mc-p">' +
+            '<div><span>P1</span><b>' + String(d.p1).replace("-", "−") + '</b></div>' +
+            '<div' + (d.p2 > 200 ? ' class="warn"' : '') + '><span>P2 pre</span><b>' + d.p2 + '</b></div>' +
+            '<div><span>P3 post</span><b>' + d.p3 + '</b></div>' +
+            '<div class="dp ' + (dp > 50 ? "crit" : dp > 35 ? "warn" : "ok") + '"><span>ΔP</span><b>' + dp + '</b></div>' +
+          '</div>' +
+        '</div>' +
+        '<section class="mb-card"><h5><span class="n">1</span>Oxigenación y lavado de CO₂</h5>' +
+          '<p>Comparar los <b>gases premembrana y postmembrana</b>.</p>' +
+          '<table class="mb-gas"><thead><tr><th></th><th>Pre</th><th>Post</th><th></th></tr></thead><tbody>' + gases + '</tbody></table>' +
+          '<p class="mb-ref">PO₂ postmembrana: objetivo &gt; 300 mmHg; por debajo de 150, el protocolo obliga al cambio.</p></section>' +
+        '<section class="mb-card"><h5><span class="n">2</span>Coágulos</h5>' +
+          '<p><b>Inspeccionar las conexiones</b>: el flujo turbulento acumula coágulos. Monitorizar el <b>ΔP = P2 − P3</b> para detectar los que no se ven dentro de la membrana.</p>' +
+          '<p class="mb-ref">ΔP &gt; 50 mmHg o un ascenso del 30–50 % sobre el basal sugiere trombosis. Ahora: <b>ΔP ' + dp + ' mmHg</b>.</p></section>';
+    }
+
+    function fila(prueba, val, uni, ref, sev) {
+      return '<tr class="' + (sev || "") + '"><th scope="row">' + prueba + '</th><td class="v">' + val + (sev === "crit" || sev === "warn" ? ' <span class="fl" aria-label="fuera de rango">' + (sev === "crit" ? "!!" : "!") + '</span>' : "") + '</td><td class="u">' + uni + '</td><td class="r">' + ref + '</td></tr>';
+    }
+    function analitica(d) {
+      var L = d.lab, mal = esc === "mal";
+      return '' +
+        '<div class="mb-hoja" role="group" aria-label="Hoja de analítica">' +
+          '<div class="hj-h"><b>Hoja de analítica</b><span>Paciente en ECMO · ejemplo</span></div>' +
+          '<table class="hj"><thead><tr><th>Prueba</th><th>Resultado</th><th>Unid.</th><th>Referencia</th></tr></thead>' +
+          '<tbody><tr class="gr"><td colspan="4"><span class="n">3</span>Hemólisis</td></tr>' +
+          fila("Hb libre", L.hbl, "mg/dL", "&gt; 50: hemólisis", L.hbl > 50 ? "crit" : "") +
+          fila("LDH", L.ldh, "UI/L", "&gt; 350 elevada · &gt; 1000: coágulos en el cabezal", L.ldh > 1000 ? "crit" : L.ldh > 350 ? "warn" : "") +
+          fila("Haptoglobina", L.hapto, "g/L", "Baja si hay hemólisis", mal ? "warn" : "") +
+          fila("Bilirrubina", L.bili, "mg/dL", "Sube si hay hemólisis", mal ? "warn" : "") +
+          '<tr class="gr"><td colspan="4"><span class="n">4</span>Coagulopatía de consumo</td></tr>' +
+          fila("Fibrinógeno", L.fib, "mg/dL", "&lt; 200: consumo", L.fib < 200 ? "crit" : "") +
+          fila("Plaquetas", L.plaq, "×10⁹/L", "Descenso continuo · &gt; 50–100", L.plaq < 100 ? "warn" : "") +
+          fila("Dímero D", L.dd, "mg/L", "&gt; 25–30: trombosis de membrana", L.dd > 25 ? "crit" : "") +
+          fila("INR", L.inr, "", "Alargamiento: coagulopatía", mal ? "warn" : "") +
+          '</tbody></table>' +
+        '</div>' +
+        '<section class="mb-card"><h5><span class="n">3</span>Hemólisis</h5><p>El dato directo es la <b>hemoglobina libre</b>. Indirectos: <b>LDH</b>, <b>haptoglobina</b> y <b>bilirrubina</b>.</p></section>' +
+        '<section class="mb-card"><h5><span class="n">4</span>Coagulopatía de consumo</h5><p>Buscar <b>consumo de fibrinógeno</b>, <b>plaquetopenia</b> o <b>coagulopatía</b>.</p>' +
+          '<p class="mb-ref">Haptoglobina, bilirrubina e INR no tienen umbral en el protocolo: vigilar la tendencia.</p></section>';
+    }
+    function pintar() {
+      var d = MEMB[esc];
+      body.innerHTML = vista === "consola" ? consola(d) : analitica(d);
+      el.querySelector(".mb").setAttribute("data-esc", esc);
+    }
+    function marcar(sel, attr, val) {
+      Array.prototype.forEach.call(el.querySelectorAll(sel + " button"), function (b) {
+        var on = b.getAttribute(attr) === val;
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-checked", String(on));
+      });
+    }
+    el.querySelector(".mb-vista").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-v]");
+      if (!b) return;
+      vista = b.getAttribute("data-v"); marcar(".mb-vista", "data-v", vista); pintar();
+    });
+    el.querySelector(".mb-esc").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-e]");
+      if (!b) return;
+      esc = b.getAttribute("data-e"); marcar(".mb-esc", "data-e", esc); pintar();
+    });
+    pintar();
+    return function () {};
+  }
+
+  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion, membrana: membrana };
 })();
