@@ -531,11 +531,11 @@
     var dosisMgH = ritmo * (peso * 2 / 250);
     var dosisUiH = dosisMgH * UI_POR_MG;
     var dosisUiKgH = peso > 0 ? dosisUiH / peso : 0;
-    hepBolo.textContent = bolo.toFixed(0) + " mg";
-    if (hepBoloSub) hepBoloSub.textContent = "= " + (bolo * UI_POR_MG).toFixed(0) + " UI (1 mg/kg). Bolo extra de " + (peso * 50).toFixed(0) + " UI si la canulación pasa de 15 min.";
-    hepDosis.textContent = n1(dosisUiKgH) + " UI/kg/h";
+    hepBolo.innerHTML = bolo.toFixed(0) + "<small>mg</small>";
+    if (hepBoloSub) hepBoloSub.textContent = "= " + (bolo * UI_POR_MG).toFixed(0) + " UI · extra " + (peso * 50).toFixed(0) + " UI si > 15 min";
+    hepDosis.innerHTML = n1(dosisUiKgH) + "<small>UI/kg/h</small>";
     if (hepDosisSub) hepDosisSub.textContent = n1(dosisMgH) + " mg/h · " + dosisUiH.toFixed(0) + " UI/h";
-    if (biva) biva.textContent = (0.2 * peso).toFixed(1) + " mg/h";
+    if (biva) biva.innerHTML = n1(0.2 * peso) + "<small>mg/h</small>";
   }
   [hpeso, hritmo].forEach(function (el) { el.addEventListener("input", updateHep); });
   updateHep();

@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=36">
+<link rel="manifest" href="manifest.json?v=37">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -340,27 +340,21 @@
       <div class="pane" id="pane-hep">
         <div class="card">
           <h3>Heparina según protocolo<span class="pill chub">CHUB</span></h3>
-          <p class="hint">Bolo 1 mg/kg. Perfusión de 2 mg/kg en 250 mL de SSF.</p>
-          <div class="hep-eq"><b>1 mg = 100 UI</b> de heparina sódica<span>Vial al 1 %: 1 mL = 10 mg = 1000 UI</span></div>
+          <p class="hint">Bolo 1 mg/kg · perfusión 2 mg/kg en 250 mL SSF.</p>
+          <div class="hep-eq"><b>1 mg = 100 UI</b><span>Vial 1 %: 1 mL = 1000 UI</span></div>
           <div class="slider">
             <div class="lbl"><span>Peso</span><b><span id="peso-v">75</span> kg</b></div>
-            <input type="range" id="hpeso" min="40" max="130" step="1" value="75">
+            <input type="range" id="hpeso" min="40" max="130" step="1" value="75" aria-label="Peso en kg">
           </div>
           <div class="slider">
             <div class="lbl"><span>Ritmo actual</span><b><span id="ritmo-v">11</span> mL/h</b></div>
-            <input type="range" id="hritmo" min="0" max="30" step="0.5" value="11">
+            <input type="range" id="hritmo" min="0" max="30" step="0.5" value="11" aria-label="Ritmo actual en mL/h">
           </div>
-          <div class="out">
-            <div class="lbl2">Bolo de canulación</div>
-            <div class="big" id="hep-bolo">—</div>
-            <div class="sub" id="hep-bolo-sub"></div>
+          <div class="hep-out">
+            <div class="outbox"><div class="lbl2">Bolo de canulación</div><div class="big" id="hep-bolo">—</div><div class="sub" id="hep-bolo-sub"></div></div>
+            <div class="outbox"><div class="lbl2">Dosis actual</div><div class="big" id="hep-dosis">—</div><div class="sub" id="hep-dosis-sub"></div></div>
           </div>
-          <div class="out" style="margin-top:10px">
-            <div class="lbl2">Dosis actual</div>
-            <div class="big" id="hep-dosis">—</div>
-            <div class="sub" id="hep-dosis-sub"></div>
-          </div>
-          <div class="out" style="margin-top:10px"><div class="lbl2">Bivalirudina · 0,2 mg/kg/h</div><div class="big" id="biva">—</div><div class="sub">Sin bolo. Titular por ACT/TTPa en los mismos rangos.</div></div>
+          <div class="hep-biva"><div class="bt"><div class="lbl2">Bivalirudina · 0,2 mg/kg/h</div><div class="sub">Sin bolo. Titular por ACT/TTPa en los mismos rangos.</div></div><div class="big" id="biva">—</div></div>
         </div>
       </div>
 
@@ -882,7 +876,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 36 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 37 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
