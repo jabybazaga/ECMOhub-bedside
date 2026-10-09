@@ -660,6 +660,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .outbox{flex:1 1 0;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);text-align:center}
 .outbox .big{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
 #pane-resp .outrow,#pane-save .outrow{display:none}
+.hep-eq{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin:4px 0 12px;padding:10px 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:15px;color:var(--ink)}
+.hep-eq b{font-family:var(--mono);font-size:17px;font-weight:600}
+.hep-eq span{flex-basis:100%;font-size:13px;color:var(--ink-2)}
 .card h3 .reset{margin-left:auto;border:0;background:none;font:600 14px var(--serif);color:var(--accent);padding:0 4px;min-height:44px}
 #r-tally{display:none}
 #save-msg{font-size:13px;color:var(--ink-2);line-height:1.45}

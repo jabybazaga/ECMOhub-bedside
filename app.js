@@ -519,23 +519,22 @@
   var hpeso = document.getElementById("hpeso"), hritmo = document.getElementById("hritmo");
   var pesoV = document.getElementById("peso-v"), ritmoV = document.getElementById("ritmo-v");
   var hepBolo = document.getElementById("hep-bolo"), hepBoloSub = document.getElementById("hep-bolo-sub");
-  var hepConc = document.getElementById("hep-conc"), hepDosis = document.getElementById("hep-dosis");
+  var hepDosis = document.getElementById("hep-dosis"), hepDosisSub = document.getElementById("hep-dosis-sub");
   var biva = document.getElementById("biva");
+  var UI_POR_MG = 100;
 
   function updateHep() {
     pesoV.textContent = hpeso.value;
     ritmoV.textContent = hritmo.value;
     var peso = Number(hpeso.value), ritmo = Number(hritmo.value);
     var bolo = peso * 1;
-    var totalPrepMg = peso * 2;
-    var concMgMl = totalPrepMg / 250;
-    var dosisMgH = ritmo * concMgMl;
-    var dosisMgKgH = peso > 0 ? dosisMgH / peso : 0;
+    var dosisMgH = ritmo * (peso * 2 / 250);
+    var dosisUiH = dosisMgH * UI_POR_MG;
+    var dosisUiKgH = peso > 0 ? dosisUiH / peso : 0;
     hepBolo.textContent = bolo.toFixed(0) + " mg";
-    if (hepBoloSub) hepBoloSub.textContent = "≈ " + (bolo * 100).toFixed(0) + " UI (1 mg/kg). Bolo extra de " + (peso * 50).toFixed(0) + " UI si la canulación pasa de 15 min.";
-    hepConc.textContent = concMgMl.toFixed(2) + " mg/mL";
-    hepDosis.textContent = dosisMgH.toFixed(1) + " mg/h";
-    hepDosis.title = dosisMgKgH.toFixed(2) + " mg/kg/h";
+    if (hepBoloSub) hepBoloSub.textContent = "= " + (bolo * UI_POR_MG).toFixed(0) + " UI (1 mg/kg). Bolo extra de " + (peso * 50).toFixed(0) + " UI si la canulación pasa de 15 min.";
+    hepDosis.textContent = n1(dosisUiKgH) + " UI/kg/h";
+    if (hepDosisSub) hepDosisSub.textContent = n1(dosisMgH) + " mg/h · " + dosisUiH.toFixed(0) + " UI/h";
     if (biva) biva.textContent = (0.2 * peso).toFixed(1) + " mg/h";
   }
   [hpeso, hritmo].forEach(function (el) { el.addEventListener("input", updateHep); });
@@ -1865,7 +1864,7 @@
     });
     [["criterios", "Indicación de ECMO VV", "Murray, APSS, PaFiO₂, índice de oxigenación y criterios ELSO, CESAR, ECMOnet, EOLIA"],
       ["recirc", "Recirculación", "Fórmula del protocolo para VV con SpreO₂, SpostO₂ y SvO₂"],
-      ["hep", "Heparina", "Bolo de canulación, preparación de la perfusión, dosis actual y bivalirudina"],
+      ["hep", "Heparina", "Bolo de canulación, dosis actual en UI/kg/h y bivalirudina"],
       ["resp", "RESP score", "Supervivencia en ECMO respiratorio (Schmidt 2014)"],
       ["save", "SAVE score", "Supervivencia en ECMO VA (Schmidt 2015)"]].forEach(function (c) {
       IDX.push({ s: "calc", tab: c[0], p: "Calculadora", t: c[1], x: c[2] });
