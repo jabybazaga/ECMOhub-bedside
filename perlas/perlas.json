@@ -150,6 +150,25 @@
         "ancla": "va-arlequin",
         "t": "Ver Síndrome de Arlequín en ECMO VA"
       }
+    },
+    {
+      "id": "condensacion",
+      "titulo": "Efecto shunt en el oxigenador: condensación y gas de barrido",
+      "cat": "Circuito",
+      "resumen": "Por qué cae el intercambio sin motivo aparente y qué hace dentro de las fibras la ráfaga de gas de barrido.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "condensacion",
+        "poster": "perlas/condensacion.svg"
+      },
+      "puntos": [
+        "<b>Qué pasa</b>: la sangre a 37 °C cede vapor de agua a través de la membrana. Al contacto con el gas de barrido, más frío, <b>condensa en gotas dentro de las fibras huecas</b>.",
+        "<b>Efecto shunt</b>: las gotas taponan las fibras, el gas no pasa y se pierde superficie útil de intercambio. Cae el intercambio sin trombosis ni rotura de la membrana; si se acumula mucha agua, <b>puede subir el CO₂</b>.",
+        "<b>Lavado («suspiro» o <i>flush</i>)</b>: aumentar <b>temporalmente</b> el flujo de gas de barrido expulsa el agua por la salida de gas y el intercambio se recupera. Después, volver al flujo previo.",
+        "<b>Prevención</b>: calentar el gas a 37 °C, junto con el aumento breve del barrido, soluciona y previene la membrana húmeda.",
+        "<b>Salida de líquido</b>: es normal ver agua en la salida de gas. Si sale <b>plasma (espuma amarillenta)</b> o la PaFI del oxigenador es &lt; 150, hay que cambiar el sistema."
+      ],
+      "fuente": "Protocolo CHUB (gas de barrido, membrana húmeda y salida de líquido por el oxigenador)"
     }
   ]
 }

@@ -1,6 +1,6 @@
 /* =====================================================================
    Perlas interactivas: respirador en VV, destete VV/VA, cavitación,
-   revisión de la membrana y síndrome de Arlequín.
+   revisión de la membrana, síndrome de Arlequín y membrana húmeda.
    Cada componente recibe el contenedor y devuelve una función que lo
    detiene (se llama al cerrar el visor). Los textos clínicos salen del
    protocolo CHUB; las curvas y cifras animadas son ilustrativas.
@@ -573,16 +573,16 @@
   //    cuánto eyecta el corazón nativo. Saturaciones y velocidades ilustrativas.
   // ------------------------------------------------------------------
   var ARL_ROJO = [200, 40, 52], ARL_AZUL = [47, 104, 212];
-  var ARL = [
-    { gc: 0.08, lat: 0.012, seg: "GC muy bajo", t: "1 · GC nativo muy disminuido",
-      m: "El corazón apenas eyecta. La oxigenación de todo el cuerpo, <b>cerebro incluido</b>, depende del flujo del ECMO VA periférico: la gasometría de radial derecha, radial izquierda y pierna muestra sangre muy oxigenada y el NIRS cerebral es simétrico.",
-      sat: [1, 1, 1] },
-    { gc: 0.55, lat: 0.045, seg: "Empieza a recuperar", t: "2 · El corazón empieza a recuperar",
-      m: "Con el pulmón aún sin intercambio, el VI eyecta sangre <b>poco oxigenada</b> hacia el tronco braquiocefálico y el punto de mezcla se desplaza por el cayado. El pulsioxímetro y la gasometría de la <b>mano derecha</b> caen; la mano izquierda y la pierna siguen bien oxigenadas. El <b>NIRS derecho</b> cae y aparece la asimetría R/L.",
-      sat: [0, 1, 1] },
-    { gc: 1, lat: 0.075, seg: "Recupera más", t: "3 · Recupera más contractilidad",
-      m: "El punto de mezcla pasa a la aorta descendente, más allá de la subclavia izquierda. <b>Todo el cerebro</b> recibe sangre poco oxigenada y los pulsioxímetros de <b>ambas manos</b> marcan 80–85 %; caen <b>ambos NIRS</b>. Las piernas siguen bien oxigenadas.",
-      sat: [0, 0, 1] }
+  // Zonas según el último tronco que ha pasado el punto de mezcla (M).
+  var ARL_ZONAS = [
+    { m: "M en la raíz aórtica", t: "GC nativo muy disminuido",
+      d: "El corazón apenas eyecta. La oxigenación de todo el cuerpo, <b>cerebro incluido</b>, depende del flujo del ECMO VA periférico: radial derecha, radial izquierda y pierna con sangre muy oxigenada y NIRS cerebral simétrico." },
+    { m: "M pasa el tronco braquiocefálico", t: "El corazón empieza a recuperar",
+      d: "Con el pulmón aún sin intercambio, el VI eyecta sangre <b>poco oxigenada</b> hacia el tronco braquiocefálico. Caen el pulsioxímetro y la gasometría de la <b>mano derecha</b> y el <b>NIRS derecho</b>: aparece la asimetría R/L. Mano izquierda y pierna, bien oxigenadas." },
+    { m: "M pasa la carótida izquierda", t: "Todo el cerebro, mal oxigenado",
+      d: "La sangre del corazón llega ya a las dos carótidas: <b>caen ambos NIRS</b>. La subclavia izquierda aún recibe sangre del ECMO, así que la <b>mano izquierda sigue en 95–100 %</b> y engaña." },
+    { m: "M pasa la subclavia izquierda", t: "Recupera más contractilidad",
+      d: "El punto de mezcla queda en la aorta descendente. <b>Todo el cerebro</b> y <b>ambas manos</b> reciben sangre poco oxigenada (80–85 %); caen ambos NIRS. Las piernas siguen bien oxigenadas." }
   ];
   function arlequin(el) {
     var P = {
@@ -599,8 +599,13 @@
     el.innerHTML =
       '<div class="arl">' +
         '<p class="arl-req"><span>ECMO VA periférica</span><i>+</i><span>Fallo respiratorio</span><i>+</i><span>Recuperación cardiaca</span></p>' +
-        '<div class="segc arl-seg" role="radiogroup" aria-label="Gasto cardiaco nativo">' +
-          ARL.map(function (s, i) { return boton(s.seg, ' role="radio" aria-checked="' + (i === 0) + '" data-i="' + i + '"' + (i === 0 ? ' class="on"' : "")); }).join("") +
+        '<div class="arl-rec">' +
+          '<label class="arl-rl" for="arl-r"><span>Recuperación del ventrículo izquierdo</span><b data-zona></b></label>' +
+          '<div class="arl-pista"><input type="range" id="arl-r" min="0" max="100" step="1" value="0">' +
+            '<div class="arl-hitos" aria-hidden="true">' + [["Braquiocef.", 25], ["Carót. izda", 50], ["Subcl. izda", 75]].map(function (h) {
+              return '<span style="--p:' + h[1] + '"><i></i>' + h[0] + '</span>';
+            }).join("") + '</div></div>' +
+          '<div class="arl-ext"><span>GC nativo muy bajo</span><span>Recuperado</span></div>' +
         '</div>' +
         '<svg class="arl-sc" viewBox="0 0 320 408" role="img" aria-label="Silueta con el corazón, la aorta, los troncos supraaórticos y la cánula de retorno femoral del ECMO. El color de cada vaso indica si lleva sangre del corazón, poco oxigenada, o del ECMO, oxigenada.">' +
           '<defs><pattern id="arl-pul" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="pul-f"/><path d="M0 0 V6" class="pul-l"/></pattern></defs>' +
@@ -624,6 +629,7 @@
           '<path class="vaso az" data-az d="' + P.A + '"/>' +
           '<g data-gotas></g>' +
           '<g data-m><circle class="m-halo" r="13"/><circle class="m-pt" r="7"/><text class="m-tx" y="4">M</text></g>' +
+          '<g class="hito" data-hito opacity="0"><rect x="66" y="74" width="188" height="22" rx="11"/><text x="160" y="89"></text></g>' +
           '<path class="canula" d="M118 356 L137 328"/>' +
           '<path class="linea-ecmo" d="M62 342 C88 346 106 352 118 356"/>' +
           '<g transform="translate(14 326)"><rect class="ecmo" width="48" height="32" rx="6"/><text class="ecmo-t" x="24" y="20">ECMO</text></g>' +
@@ -641,7 +647,8 @@
           
         '</svg>' +
         '<div class="arl-ley"><span><i class="az"></i>Poco oxigenada: corazón y drenaje</span><span><i class="ro"></i>Oxigenada: retorno del ECMO</span><span><i class="mz"></i>M · punto de mezcla</span><span><i class="pu"></i>Pulmón sin intercambio</span></div>' +
-        '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación y saturaciones ilustrativas.</span></div>' +
+        '<div class="pix-row">' + boton('<span class="ico" aria-hidden="true"></span><span class="tx">Recorrer</span>', ' class="pix-pausa arl-play" aria-pressed="false"') + pausaHTML() + '</div>' +
+        '<p class="pix-nota arl-nota">Animación y saturaciones ilustrativas.</p>' +
         '<div class="cav-card arl-card" aria-live="polite"></div>' +
       '</div>';
 
@@ -658,11 +665,19 @@
       return mejor;
     }
     var O = { BCT: origen(154, 120), LCC: origen(167, 112), LSA: origen(179, 114) };
-    // Punto de mezcla de cada situación: raíz · entre braquiocefálico y carótida izda · pasada la subclavia izda
-    var MZ = [6, O.BCT + 0.75 * (O.LCC - O.BCT), O.LSA + 26];
+    // El deslizador (0–100) recorre la aorta; los troncos caen en 25, 50 y 75 para que se vea cada paso.
+    var NUDOS = [[0, 6], [25, O.BCT], [50, O.LCC], [75, O.LSA], [100, O.LSA + 60]];
+    function lmDe(r) {
+      for (var j = 1; j < NUDOS.length; j++) if (r <= NUDOS[j][0]) {
+        var a = NUDOS[j - 1], b = NUDOS[j];
+        return a[1] + (b[1] - a[1]) * (r - a[0]) / (b[0] - a[0]);
+      }
+      return NUDOS[NUDOS.length - 1][1];
+    }
     var NS = "http://www.w3.org/2000/svg", pool = [];
     for (var i = 0; i < 150; i++) { var c = document.createElementNS(NS, "circle"); c.setAttribute("r", "1.9"); c.setAttribute("class", "gota"); gG.appendChild(c); pool.push(c); }
-    var idx = 0, est = 0, lm = MZ[0], gc = ARL[0].gc, reloj = 0, raf = 0, tAnt = 0;
+    var rango = el.querySelector("#arl-r"), zonaTx = el.querySelector("[data-zona]"), hito = svg.querySelector("[data-hito]");
+    var rec = 0, lm = lmDe(0), gc = 0.08, zona = -1, reloj = 0, raf = 0, tAnt = 0, hitoT = 0, barrido = 0;
 
     var RUTA = { dren: svg.querySelector('[data-ruta="dren"]'), ret: svg.querySelector('[data-ruta="ret"]') };
     RUTA.lDren = RUTA.dren.getTotalLength(); RUTA.lRet = RUTA.ret.getTotalLength();
@@ -673,7 +688,7 @@
     }
     function mezcla(a, b, k) { return "rgb(" + a.map(function (v, j) { return Math.round(v + (b[j] - v) * k); }).join(",") + ")"; }
     // 0 = sangre del ECMO (roja) · 1 = sangre del corazón (azul)
-    function azulDe(o) { return Math.max(0, Math.min(1, (lm - o) / 5)); }
+    function azulDe(o) { return Math.max(0, Math.min(1, (lm - o) / 1.5)); }
     function colores() {
       var k = { BCT: azulDe(O.BCT), LCC: azulDe(O.LCC), LSA: azulDe(O.LSA) };
       k.RC = k.RS = k.BCT;
@@ -709,7 +724,7 @@
       for (; n < pool.length; n++) pool[n].style.display = "none";
     }
     function pleth(i, ok) {
-      var amp = 0.6 + 7 * ARL[est].gc, d = "M7 42";
+      var amp = 0.6 + 7 * gc, d = "M7 42";
       for (var x = 0; x <= 62; x += 2) {
         var f = (x % 19) / 19, y = f < 0.3 ? Math.sin(f / 0.3 * Math.PI / 2) : Math.max(0, 1 - (f - 0.3) / 0.7) * (1 + 0.25 * Math.sin((f - 0.3) * 14));
         d += " L" + (7 + x) + " " + (42 - amp * y).toFixed(1);
@@ -719,41 +734,59 @@
       o.setAttribute("class", "tag " + (ok ? "ok" : "baja"));
       o.querySelector(".v").textContent = ok ? "95–100 %" : "80–85 %";
     }
+    function zonaDe(k) { return k.LSA > 0.5 ? 3 : k.LCC > 0.5 ? 2 : k.BCT > 0.5 ? 1 : 0; }
     function paso(dt) {
       reloj += dt;
-      var obj = MZ[est], ogc = ARL[est].gc;
-      lm += (obj - lm) * Math.min(1, dt * 2.2);
-      gc += (ogc - gc) * Math.min(1, dt * 2.2);
+      if (barrido) { rec = Math.min(100, rec + dt * 12); rango.value = Math.round(rec); if (rec >= 100) parar(); }
+      var obj = lmDe(rec), ogc = 0.08 + 0.92 * rec / 100;
+      var f = REDUCIR || !dt ? 1 : Math.min(1, dt * 7);
+      lm += (obj - lm) * f;
+      gc += (ogc - gc) * f;
       var k = colores();
       gotas(k);
-      var lat = 1 + ARL[est].lat * Math.pow(Math.max(0, Math.sin(reloj * Math.PI * 2 * 1.2)), 3);
+      var z = zonaDe(k);
+      if (z !== zona) cambiaZona(z, zona);
+      [k.BCT < 0.5, k.LSA < 0.5, true].forEach(function (ok, j) { pleth(j, ok); });
+      var lat = 1 + (0.012 + 0.063 * gc) * Math.pow(Math.max(0, Math.sin(reloj * Math.PI * 2 * 1.2)), 3);
       corazon.setAttribute("transform", "translate(166 192) scale(" + lat.toFixed(3) + ") translate(-166 -192)");
       var h = 0.5 + 0.5 * Math.sin(reloj * 4);
       mk.querySelector(".m-halo").setAttribute("r", (11 + 4 * h).toFixed(1));
+      if (hitoT > 0) { hitoT -= dt; hito.setAttribute("opacity", Math.max(0, Math.min(1, hitoT * 2)).toFixed(2)); }
     }
-    function ver(i) {
-      est = i;
-      var s = ARL[i];
-      card.innerHTML = "<b>" + s.t + "</b><p>" + s.m + '</p><span class="src">Medir en <b>radial derecha</b>: es la primera en caer. La pulsioximetría de la pierna engaña.</span>';
-      Array.prototype.forEach.call(el.querySelectorAll(".arl-seg button"), function (b) {
-        var on = +b.getAttribute("data-i") === i;
-        b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
-      });
-      gc = REDUCIR ? s.gc : gc;
-      s.sat.forEach(function (ok, j) { pleth(j, ok); });
-      if (REDUCIR) { lm = MZ[i]; paso(0); }
+    // Al cruzar un tronco: texto de la zona y un aviso breve sobre el muñeco.
+    var AVISO = ["Todo el cuerpo con sangre del ECMO", "Cae la mano derecha y el NIRS R", "Caen ambos NIRS", "Caen ambas manos"];
+    function cambiaZona(z, antes) {
+      zona = z;
+      var Z = ARL_ZONAS[z];
+      zonaTx.textContent = Z.m;
+      rango.setAttribute("aria-valuetext", Z.m);
+      card.innerHTML = "<b>" + Z.t + "</b><p>" + Z.d + '</p><span class="src">Medir en <b>radial derecha</b>: es la primera en caer. La pulsioximetría de la pierna engaña.</span>';
+      if (antes < 0) return;
+      hito.querySelector("text").textContent = z > antes ? AVISO[z] : Z.m;
+      hitoT = REDUCIR ? 0 : 2.2;
+      hito.setAttribute("opacity", REDUCIR ? "0" : "1");
+      if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) { /* sin vibración */ } }
     }
+    var btnPlay = el.querySelector(".arl-play");
+    function parar() { barrido = 0; btnPlay.setAttribute("aria-pressed", "false"); btnPlay.querySelector(".tx").textContent = "Recorrer"; }
     function frame(ts) {
       var dt = tAnt ? Math.min(0.05, (ts - tAnt) / 1000) : 0;
       tAnt = ts;
       paso(dt);
       raf = requestAnimationFrame(frame);
     }
-    el.querySelector(".arl-seg").addEventListener("click", function (e) {
-      var b = e.target.closest("button[data-i]");
-      if (b) { ver(+b.getAttribute("data-i")); if (raf) return; paso(0.5); }
+    rango.addEventListener("input", function () {
+      parar();
+      rec = +rango.value;
+      if (!raf) paso(0);
     });
-    ver(0);
+    btnPlay.addEventListener("click", function () {
+      if (barrido) { parar(); return; }
+      if (rec >= 100) { rec = 0; rango.value = 0; }
+      barrido = 1; btnPlay.setAttribute("aria-pressed", "true"); btnPlay.querySelector(".tx").textContent = "Detener";
+      if (!raf) { tAnt = 0; raf = requestAnimationFrame(frame); }
+    });
+    if (REDUCIR) btnPlay.hidden = true;
     paso(0);
     if (!REDUCIR) raf = requestAnimationFrame(frame);
     enlazarPausa(el, function (p) {
@@ -762,5 +795,223 @@
     return function () { cancelAnimationFrame(raf); };
   }
 
-  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion, membrana: membrana, arlequin: arlequin };
+  // ------------------------------------------------------------------
+  // 6. Membrana húmeda: el vapor de agua condensa dentro de las fibras huecas,
+  //    bloquea el gas (efecto shunt) y una ráfaga de barrido lo expulsa.
+  //    Velocidades y porcentajes ilustrativos; conducta del protocolo CHUB.
+  // ------------------------------------------------------------------
+  var COND_TX = {
+    ok: { sev: "ok", t: "Intercambio normal", d: "El gas de barrido recorre todas las fibras y toda la superficie de la membrana intercambia." },
+    agua: { sev: "warn", t: "Condensación: efecto shunt", d: "La sangre a 37 °C cede vapor de agua a través de la membrana. Al contacto con el gas de barrido, más frío, <b>condensa en gotas dentro de las fibras</b>. Cada gota tapona su fibra: el gas no llega más allá y esa superficie deja de intercambiar. Si se acumula mucha agua, puede <b>subir el CO₂</b>." },
+    lavado: { sev: "info", t: "Lavado con gas de barrido", d: "Ráfaga temporal de barrido alto: el gas empuja las gotas hacia la salida y el agua sale por el puerto de gas." },
+    limpio: { sev: "ok", t: "Agua expulsada", d: "Las fibras quedan libres y el intercambio se recupera. Después, <b>volver al flujo de barrido previo</b>." },
+    caliente: { sev: "ok", t: "Gas calentado a 37 °C", d: "Sin diferencia de temperatura entre la sangre y el gas, el vapor no condensa. El protocolo lo propone para <b>solucionar y prevenir</b> la membrana húmeda." }
+  };
+  function condensacion(el) {
+    var FY = [62, 88, 114, 140, 166, 192], X0 = 54, X1 = 306, FH = 14;
+    el.innerHTML =
+      '<div class="cnd">' +
+        '<svg class="cnd-sc" viewBox="0 0 360 270" role="img" aria-label="Corte del oxigenador: la sangre baja entre fibras huecas horizontales por las que circula el gas de barrido; dentro de las fibras se forman gotas de agua que bloquean el gas">' +
+          '<rect class="caja" x="40" y="40" width="280" height="176" rx="14"/>' +
+          '<g data-sangre></g>' +
+          FY.map(function (y, i) {
+            return '<g data-f="' + i + '"><rect class="fibra" x="' + X0 + '" y="' + (y - FH / 2) + '" width="' + (X1 - X0) + '" height="' + FH + '" rx="7"/>' +
+              '<rect class="bloq" data-bloq x="' + X1 + '" y="' + (y - FH / 2) + '" width="0" height="' + FH + '" rx="7"/></g>';
+          }).join("") +
+          '<g data-gas></g><g data-gotas></g>' +
+          '<path class="colector" d="M54 50 H24 V206 H54"/><path class="colector" d="M306 50 H336 V206 H306"/>' +
+          '<path class="flecha-gas" d="M4 128 H22"/><path class="punta-gas" d="M22 122 L30 128 L22 134 Z"/>' +
+          '<text class="lb" x="6" y="30">Gas de barrido</text><text class="lb t" data-tgas x="6" y="232">Gas frío</text>' +
+          '<path class="puerto" d="M326 206 V226"/><text class="lb" x="314" y="240" text-anchor="end">Salida de gas</text>' +
+          '<g data-caidas></g>' +
+          '<g class="lupa-m"><circle cx="200" cy="140" r="17"/><path d="M212 152 L226 166"/></g>' +
+          '<text class="lb s" x="180" y="30" text-anchor="middle">Sangre 37 °C ↓</text>' +
+        '</svg>' +
+        '<div class="cnd-lupa">' +
+          '<svg class="lupa-sc" viewBox="0 0 360 176" role="img" aria-label="Lupa sobre la pared de una fibra: el O₂ pasa del gas a la sangre y el CO₂ de la sangre al gas">' +
+            '<defs><clipPath id="lupa-c"><circle cx="96" cy="88" r="80"/></clipPath></defs>' +
+            '<g clip-path="url(#lupa-c)">' +
+              '<rect class="l-gas" x="0" y="0" width="200" height="84"/><rect class="l-san" x="0" y="92" width="200" height="90"/>' +
+              '<rect class="l-agua" data-lagua x="0" y="34" width="200" height="50" opacity="0"/>' +
+              '<rect class="l-mem" x="0" y="84" width="200" height="8"/>' +
+              '<g data-mol></g>' +
+            '</g>' +
+            '<circle class="l-borde" cx="96" cy="88" r="80"/>' +
+            '<text class="l-tx" x="96" y="30" text-anchor="middle">Gas de barrido</text>' +
+            '<text class="l-tx s" x="96" y="160" text-anchor="middle">Sangre</text>' +
+            '<text class="l-tx a" data-lagtx x="96" y="64" text-anchor="middle" opacity="0">Agua</text>' +
+            '<g transform="translate(194 14)">' +
+              '<text class="l-k" x="0" y="10">Concentración</text>' +
+              '<text class="l-k2" x="0" y="34">Gas</text>' +
+              '<circle class="o2" cx="52" cy="30" r="4.5"/><rect class="l-bar o2" x="62" y="26" width="70" height="8" rx="4"/>' +
+              '<circle class="co2" cx="52" cy="46" r="4.5"/><rect class="l-bar co2" x="62" y="42" width="10" height="8" rx="4"/>' +
+              '<text class="l-k2" x="0" y="78">Sangre</text>' +
+              '<circle class="o2" cx="52" cy="74" r="4.5"/><rect class="l-bar o2" x="62" y="70" width="18" height="8" rx="4"/>' +
+              '<circle class="co2" cx="52" cy="90" r="4.5"/><rect class="l-bar co2" data-bco2 x="62" y="86" width="60" height="8" rx="4"/>' +
+              '<text class="l-k" x="0" y="118"><tspan class="o2t">● O₂</tspan>  gas → sangre</text>' +
+              '<text class="l-k" x="0" y="136"><tspan class="co2t">● CO₂</tspan>  sangre → gas</text>' +
+              '<text class="l-est" data-lest x="0" y="160">Intercambio activo</text>' +
+            '</g>' +
+          '</svg>' +
+        '</div>' +
+        '<div class="cnd-ind">' +
+          '<div class="cnd-i"><span class="k">Superficie útil</span><b data-util>100 %</b><span class="bar"><i data-ubar></i></span></div>' +
+          '<div class="cnd-i"><span class="k">CO₂ postmembrana</span><b data-co2>Normal</b></div>' +
+          '<div class="cnd-i"><span class="k">Barrido</span><b data-sw>Pautado</b></div>' +
+        '</div>' +
+        '<div class="cnd-acc">' +
+          boton("Lavado con gas de barrido", ' class="cnd-flush" data-flush') +
+          '<label class="cnd-cal"><input type="checkbox" data-cal> <span>Calentar el gas a 37 °C</span></label>' +
+        '</div>' +
+        '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Tiempo acelerado. Cifras ilustrativas.</span></div>' +
+        '<div class="cav-card cnd-card" aria-live="polite"></div>' +
+      '</div>';
+    var svg = el.querySelector(".cnd-sc"), NS = "http://www.w3.org/2000/svg";
+    var gSangre = svg.querySelector("[data-sangre]"), gGas = svg.querySelector("[data-gas]"), gGotas = svg.querySelector("[data-gotas]"), gCaidas = svg.querySelector("[data-caidas]");
+    var BLOQ = FY.map(function (y, i) { return svg.querySelector('[data-f="' + i + '"] [data-bloq]'); });
+    var card = el.querySelector(".cnd-card"), btnF = el.querySelector("[data-flush]"), chkC = el.querySelector("[data-cal]");
+    function circulo(cls, r) { var c = document.createElementNS(NS, "circle"); c.setAttribute("class", cls); c.setAttribute("r", r); return c; }
+    // Hematíes que bajan entre las fibras
+    var SANGRE = [];
+    for (var sx = 70; sx < 300; sx += 26) for (var k = 0; k < 3; k++) { var c = circulo("hem", 2.4); gSangre.appendChild(c); SANGRE.push({ el: c, x: sx + (k % 2) * 9, f: k / 3 }); }
+    // Moléculas de gas por fibra
+    var GAS = FY.map(function () { var a = []; for (var j = 0; j < 18; j++) { var g = circulo("gas", 2); gGas.appendChild(g); a.push(g); } return a; });
+    // Gotas de agua: algunas de salida para que el efecto se vea enseguida
+    var GOT = FY.map(function () { return []; });
+    function nuevaGota(i, x, r) { var e = circulo("gota-agua", r); gGotas.appendChild(e); GOT[i].push({ el: e, x: x, r: r }); }
+    nuevaGota(1, 210, 6); nuevaGota(3, 150, 4.5); nuevaGota(4, 250, 6.5);
+    var CAIDAS = [];
+    // Lupa: moléculas que cruzan la membrana a favor de gradiente (y = 84–92)
+    var gMol = el.querySelector("[data-mol]"), MOL = [];
+    function molecula(tipo) {
+      var c = circulo(tipo, tipo === "o2" ? 4 : 4.6);
+      gMol.appendChild(c);
+      var m = { el: c, t: tipo };
+      nace(m);
+      MOL.push(m);
+    }
+    function nace(m) {
+      m.x = 20 + Math.random() * 150;
+      m.y = m.t === "o2" ? 20 + Math.random() * 56 : 100 + Math.random() * 64;
+      m.vx = (Math.random() - 0.5) * 20; m.vy = 0; m.vida = 0;
+    }
+    for (var mo = 0; mo < 14; mo++) { molecula("o2"); molecula("co2"); }
+    var lAgua = el.querySelector("[data-lagua]"), lAgTx = el.querySelector("[data-lagtx]"), lEst = el.querySelector("[data-lest]"), bCo2 = el.querySelector("[data-bco2]"), co2San = 60;
+    function lupa(dt, mojada, vBarr) {
+      lAgua.setAttribute("opacity", mojada ? "0.85" : "0");
+      lAgTx.setAttribute("opacity", mojada ? "1" : "0");
+      lEst.textContent = mojada ? "Bloqueado por el agua" : "Intercambio activo";
+      lEst.setAttribute("class", "l-est" + (mojada ? " baja" : ""));
+      // Sin intercambio, el CO₂ se acumula en la sangre
+      co2San += dt * (mojada ? 12 : -18); co2San = Math.max(60, Math.min(84, co2San));
+      bCo2.setAttribute("width", co2San.toFixed(1));
+      MOL.forEach(function (m) {
+        m.vida += dt;
+        m.x += (m.vx + (Math.random() - 0.5) * 40) * dt;
+        var deriva = m.t === "o2" ? 17 : -17;   // O₂ hacia la sangre, CO₂ hacia el gas
+        m.y += (deriva + (Math.random() - 0.5) * 50) * dt;
+        if (mojada) {
+          // el agua separa el gas de la membrana: nada cruza
+          if (m.t === "o2" && m.y > 30 && m.y < 92) m.y = 30;
+          if (m.t === "co2" && m.y < 96) m.y = 96;
+        }
+        if (m.t === "co2" && m.y < 80) m.x += vBarr * dt;   // el barrido arrastra el CO₂ que sale
+        var fuera = m.x < 6 || m.x > 190 || (m.t === "o2" && m.y > 168) || (m.t === "co2" && m.y < 8);
+        if (fuera || m.vida > 9) nace(m);
+        m.el.setAttribute("cx", m.x.toFixed(1)); m.el.setAttribute("cy", m.y.toFixed(1));
+      });
+    }
+    var reloj = 0, raf = 0, tAnt = 0, flush = 0, limpioT = 0, calor = false, estado = "", siembra = 0;
+
+    function tapon(i) { var m = X1; GOT[i].forEach(function (g) { if (g.r >= 5.5 && g.x < m) m = g.x; }); return m; }
+    function paso(dt) {
+      reloj += dt;
+      var vGas = flush > 0 ? 260 : 46;
+      if (flush > 0) { flush -= dt; if (flush <= 0) limpioT = 3; }
+      if (limpioT > 0) limpioT -= dt;
+      // Condensación: nacen gotas en fibras al azar y crecen hasta taponar la fibra
+      if (!calor && flush <= 0) {
+        siembra += dt * 0.9;
+        while (siembra > 1) { siembra -= 1; var i = Math.floor(Math.random() * FY.length); nuevaGota(i, X0 + 20 + Math.random() * (X1 - X0 - 40), 1.2); }
+      }
+      var util = 0;
+      FY.forEach(function (y, i) {
+        GOT[i] = GOT[i].filter(function (g) {
+          if (flush > 0) g.x += dt * (80 + 14 * g.r);
+          else if (!calor) g.r = Math.min(6.8, g.r + dt * 0.9);
+          else g.r = Math.max(0, g.r - dt * 0.6);
+          if (g.x > X1 - 2 || g.r <= 0.2) {
+            g.el.remove();
+            if (g.x > X1 - 2) CAIDAS.push({ el: gCaidas.appendChild(circulo("gota-agua", Math.min(4, g.r))), y: 210, v: 0 });
+            return false;
+          }
+          g.el.setAttribute("cx", g.x.toFixed(1)); g.el.setAttribute("cy", y); g.el.setAttribute("r", g.r.toFixed(2));
+          return true;
+        });
+        var t = tapon(i);
+        util += (t - X0) / (X1 - X0);
+        BLOQ[i].setAttribute("x", t.toFixed(1)); BLOQ[i].setAttribute("width", Math.max(0, X1 - t).toFixed(1));
+        var fase = (reloj * vGas) % 14;
+        GAS[i].forEach(function (g, j) {
+          var x = X0 + 6 + fase + j * 14;
+          if (x < t - 6) { g.setAttribute("cx", x.toFixed(1)); g.setAttribute("cy", y); g.style.display = ""; } else g.style.display = "none";
+        });
+      });
+      util /= FY.length;
+      SANGRE.forEach(function (h) {
+        var yy = 44 + ((h.f + reloj * 0.12) % 1) * 168;
+        h.el.setAttribute("cx", h.x); h.el.setAttribute("cy", yy.toFixed(1));
+      });
+      CAIDAS = CAIDAS.filter(function (d) {
+        d.v += dt * 300; d.y += d.v * dt;
+        if (d.y > 262) { d.el.remove(); return false; }
+        d.el.setAttribute("cx", 326); d.el.setAttribute("cy", d.y.toFixed(1));
+        return true;
+      });
+      indicadores(util);
+      lupa(dt, tapon(3) < 214, flush > 0 ? 120 : 26);
+    }
+    function indicadores(util) {
+      var pct = Math.round(util * 100);
+      el.querySelector("[data-util]").textContent = pct + " %";
+      var bar = el.querySelector("[data-ubar]");
+      bar.style.width = pct + "%";
+      bar.className = pct < 75 ? "baja" : "";
+      var co2 = el.querySelector("[data-co2]");
+      co2.textContent = pct < 75 ? "Sube" : "Normal";
+      co2.className = pct < 75 ? "baja" : "";
+      el.querySelector("[data-sw]").textContent = flush > 0 ? "Ráfaga alta" : "Pautado";
+      var e = flush > 0 ? "lavado" : calor ? "caliente" : limpioT > 0 ? "limpio" : pct < 97 ? "agua" : "ok";
+      if (e !== estado) {
+        estado = e;
+        var T = COND_TX[e];
+        card.className = "cav-card cnd-card " + T.sev;
+        card.innerHTML = "<b>" + T.t + "</b><p>" + T.d + '</p><span class="src">Protocolo CHUB · membrana húmeda y gas de barrido</span>';
+      }
+    }
+    function frame(ts) {
+      var dt = tAnt ? Math.min(0.05, (ts - tAnt) / 1000) : 0;
+      tAnt = ts;
+      paso(dt);
+      raf = requestAnimationFrame(frame);
+    }
+    btnF.addEventListener("click", function () {
+      flush = 3; limpioT = 0;
+      if (REDUCIR || !raf) { GOT.forEach(function (a, i) { a.forEach(function (g) { g.el.remove(); }); GOT[i] = []; }); flush = 0; limpioT = 3; paso(0); }
+    });
+    chkC.addEventListener("change", function () {
+      calor = chkC.checked;
+      svg.querySelector("[data-tgas]").textContent = calor ? "Gas a 37 °C" : "Gas frío";
+      svg.classList.toggle("caliente", calor);
+      if (!raf) paso(0);
+    });
+    paso(0);
+    if (!REDUCIR) raf = requestAnimationFrame(frame);
+    enlazarPausa(el, function (p) {
+      if (p) { cancelAnimationFrame(raf); raf = 0; } else { tAnt = 0; raf = requestAnimationFrame(frame); }
+    });
+    return function () { cancelAnimationFrame(raf); };
+  }
+
+  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion, membrana: membrana, arlequin: arlequin, condensacion: condensacion };
 })();
