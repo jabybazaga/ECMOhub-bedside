@@ -14,7 +14,7 @@
     return '<button type="button" class="pix-pausa" aria-pressed="false"><span class="ico" aria-hidden="true"></span><span class="tx">Pausar</span></button>';
   }
   function enlazarPausa(el, cb) {
-    var b = el.querySelector(".pix-pausa");
+    var b = el.querySelector(".pix-pausa:not(.pix-play)");
     if (!b) return;
     b.addEventListener("click", function () {
       var p = b.getAttribute("aria-pressed") !== "true";
@@ -320,11 +320,27 @@
     { p: -90, sev: "warn", t: "Succión en el límite", m: "El protocolo pide no pasar de −80 mmHg. Vigilar hemólisis y revisar volemia.", burb: 2, temblor: 0.6, colapso: 0.4 },
     { p: -120, sev: "crit", t: "Succión excesiva · cavitación", m: "Bajar rpm de inmediato. Descartar hipovolemia, cánula acodada o mal posicionada, taponamiento, neumotórax y presión intraabdominal alta. No subir rpm: si es precarga, incluso bajarlas.", burb: 6, temblor: 1.6, colapso: 1 }
   ];
+  // Burbujas, temblor de la línea y colapso de la vena según |P1| (ilustrativo).
+  var P1_MIN = 20, P1_MAX = 130;
+  var CAV_NUDOS = [[20, 0, 0, 0], [50, 0.2, 0, 0.05], [65, 0.6, 0, 0.15], [80, 1.2, 0.3, 0.3], [90, 2, 0.6, 0.4], [100, 3.5, 1, 0.7], [120, 6, 1.6, 1], [130, 7, 1.8, 1]];
+  function parametros(v) {
+    for (var j = 1; j < CAV_NUDOS.length; j++) if (v <= CAV_NUDOS[j][0]) {
+      var a = CAV_NUDOS[j - 1], b = CAV_NUDOS[j], k = (v - a[0]) / (b[0] - a[0]);
+      return { burb: a[1] + (b[1] - a[1]) * k, temblor: a[2] + (b[2] - a[2]) * k, colapso: a[3] + (b[3] - a[3]) * k };
+    }
+    var u = CAV_NUDOS[CAV_NUDOS.length - 1];
+    return { burb: u[1], temblor: u[2], colapso: u[3] };
+  }
   function cavitacion(el) {
     el.innerHTML =
       '<div class="cav">' +
-        '<div class="segc cav-seg" role="radiogroup" aria-label="Presión de drenaje P1">' +
-          NIVELES.map(function (n, i) { return boton("P1 " + String(n.p).replace("-", "−"), ' role="radio" aria-checked="' + (i === 0) + '" data-i="' + i + '"' + (i === 0 ? ' class="on"' : "")); }).join("") +
+        '<div class="desl">' +
+          '<label class="desl-l" for="cav-r"><span>Presión de drenaje (P1)</span><b data-p1t></b></label>' +
+          '<div class="desl-p"><input type="range" id="cav-r" min="' + P1_MIN + '" max="' + P1_MAX + '" step="1" value="30">' +
+            '<div class="desl-h" aria-hidden="true">' + [[50, "−50", "#1F6FB2"], [80, "−80", "#B5651D"], [100, "−100", "#B4322E"]].map(function (h) {
+              return '<span style="--p:' + ((h[0] - P1_MIN) / (P1_MAX - P1_MIN) * 100).toFixed(1) + ';--c:' + h[2] + '"><i></i>' + h[1] + '</span>';
+            }).join("") + '</div></div>' +
+          '<div class="desl-e"><span>−20 mmHg</span><span>−130 mmHg</span></div>' +
         '</div>' +
         '<svg class="cav-sc" viewBox="0 0 360 230" role="img" aria-label="Cánula de drenaje en la vena cava, línea hasta la bomba centrífuga y microburbujas a la entrada de la bomba">' +
           '<defs><radialGradient id="cav-b" cx="35%" cy="35%" r="65%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#C9DCEC"/></radialGradient></defs>' +
@@ -340,27 +356,36 @@
           '<g data-burbujas></g>' +
           '<text x="14" y="222" class="lb mono" data-flujo>Flujo 4,2 L/min</text>' +
         '</svg>' +
-        '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación ilustrativa.</span></div>' +
+        '<div class="pix-row">' + boton('<span class="ico" aria-hidden="true"></span><span class="tx">Recorrer</span>', ' class="pix-pausa pix-play" aria-pressed="false"') + pausaHTML() + '</div>' +
+        '<p class="pix-nota desl-nota">Animación ilustrativa.</p>' +
         '<div class="cav-card" aria-live="polite"></div>' +
       '</div>';
     var svg = el.querySelector(".cav-sc"), gB = svg.querySelector("[data-burbujas]"), rotor = svg.querySelector("[data-rotor]");
     var linea = svg.querySelector("[data-linea]"), vaso = svg.querySelector("[data-vaso]"), p1 = svg.querySelector("[data-p1]");
     var flujo = svg.querySelector("[data-flujo]"), card = el.querySelector(".cav-card");
-    var nivel = NIVELES[0], burbujas = [], raf = 0, tAnt = 0, ang = 0, acum = 0, pausado = false, reloj = 0;
+    var rango = el.querySelector("#cav-r"), p1t = el.querySelector("[data-p1t]"), btnPlay = el.querySelector(".pix-play");
+    var succ = 30, nivel = parametros(30), zona = -1, barrido = 0;
+    var burbujas = [], raf = 0, tAnt = 0, ang = 0, acum = 0, pausado = false, reloj = 0;
     var NS = "http://www.w3.org/2000/svg";
-    function ver(i) {
-      nivel = NIVELES[i];
-      p1.textContent = String(nivel.p).replace("-", "−") + " mmHg";
-      el.querySelector(".cav").setAttribute("data-sev", nivel.sev);
-      card.className = "cav-card " + nivel.sev;
-      card.innerHTML = '<b>' + nivel.t + '</b><p>' + nivel.m + '</p><span class="src">Protocolo CHUB · umbrales de P1</span>';
-      Array.prototype.forEach.call(el.querySelectorAll(".cav-seg button"), function (b) {
-        var on = +b.getAttribute("data-i") === i;
-        b.classList.toggle("on", on);
-        b.setAttribute("aria-checked", String(on));
-      });
+    // P1 continua: la zona (y su texto) cambia al cruzar −50, −80 y −100
+    function ponP1(v) {
+      succ = v; nivel = parametros(v);
+      var txt = "−" + Math.round(v) + " mmHg";
+      p1.textContent = txt;
+      var z = v >= 100 ? 3 : v >= 80 ? 2 : v >= 50 ? 1 : 0, N = NIVELES[z];
+      p1t.textContent = txt + " · " + N.t.split(" · ")[0];
+      p1t.className = N.sev;
+      rango.setAttribute("aria-valuetext", p1t.textContent);
+      if (z !== zona) {
+        zona = z;
+        el.querySelector(".cav").setAttribute("data-sev", N.sev);
+        card.className = "cav-card " + N.sev;
+        card.innerHTML = '<b>' + N.t + '</b><p>' + N.m + '</p><span class="src">Protocolo CHUB · umbrales de P1</span>';
+        if (navigator.vibrate && z > 0) { try { navigator.vibrate(12); } catch (e) { /* sin vibración */ } }
+      }
       if (REDUCIR) estatico();
     }
+    function parar() { barrido = 0; btnPlay.setAttribute("aria-pressed", "false"); btnPlay.querySelector(".tx").textContent = "Recorrer"; }
     function nuevaBurbuja() {
       var c = document.createElementNS(NS, "circle");
       c.setAttribute("fill", "url(#cav-b)");
@@ -377,6 +402,7 @@
     }
     function paso(dt) {
       reloj += dt;
+      if (barrido) { var v = Math.min(P1_MAX, succ + dt * 13); rango.value = Math.round(v); ponP1(v); if (v >= P1_MAX) parar(); }
       ang = (ang + dt * 540) % 360;
       rotor.setAttribute("transform", "rotate(" + ang.toFixed(1) + ")");
       acum += dt * nivel.burb;
@@ -396,8 +422,9 @@
       var cierre = nivel.colapso * (0.55 + 0.45 * Math.max(0, Math.sin(reloj * 3.2)));
       var a = 50 + 22 * cierre, bb = 118 - 22 * cierre;
       vaso.setAttribute("d", "M10 50 Q70 " + a.toFixed(1) + " 120 50 V118 Q70 " + bb.toFixed(1) + " 10 118 Z");
-      var f = 4.2 - (nivel.sev === "crit" ? 0.5 + 0.6 * Math.max(0, Math.sin(reloj * 3.2)) : nivel.sev === "warn" ? 0.1 : 0);
-      flujo.textContent = "Flujo " + f.toFixed(1).replace(".", ",") + " L/min" + (nivel.sev === "crit" ? " · oscila" : "");
+      var osc = Math.max(0, Math.min(1, (succ - 95) / 25));
+      var f = 4.2 - 0.1 * Math.max(0, Math.min(1, (succ - 80) / 20)) - osc * (0.5 + 0.6 * Math.max(0, Math.sin(reloj * 3.2)));
+      flujo.textContent = "Flujo " + f.toFixed(1).replace(".", ",") + " L/min" + (succ >= 100 ? " · oscila" : "");
     }
     function frame(ts) {
       var dt = tAnt ? Math.min(0.05, (ts - tAnt) / 1000) : 0;
@@ -411,11 +438,15 @@
       for (var i = 0; i < n; i++) { var b = nuevaBurbuja(); b.s = 0.1 + 0.75 * i / Math.max(1, n); burbujas.push(b); }
       paso(0);
     }
-    el.querySelector(".cav-seg").addEventListener("click", function (e) {
-      var b = e.target.closest("button[data-i]");
-      if (b) ver(+b.getAttribute("data-i"));
+    rango.addEventListener("input", function () { parar(); ponP1(+rango.value); if (!raf && !REDUCIR) paso(0); });
+    btnPlay.addEventListener("click", function () {
+      if (barrido) { parar(); return; }
+      if (succ >= P1_MAX) { rango.value = P1_MIN; ponP1(P1_MIN); }
+      barrido = 1; btnPlay.setAttribute("aria-pressed", "true"); btnPlay.querySelector(".tx").textContent = "Detener";
+      if (!raf) { tAnt = 0; raf = requestAnimationFrame(frame); }
     });
-    ver(0);
+    if (REDUCIR) btnPlay.hidden = true;
+    ponP1(30);
     if (!REDUCIR) raf = requestAnimationFrame(frame); else estatico();
     enlazarPausa(el, function (p) {
       pausado = p;
@@ -599,13 +630,13 @@
     el.innerHTML =
       '<div class="arl">' +
         '<p class="arl-req"><span>ECMO VA periférica</span><i>+</i><span>Fallo respiratorio</span><i>+</i><span>Recuperación cardiaca</span></p>' +
-        '<div class="arl-rec">' +
-          '<label class="arl-rl" for="arl-r"><span>Recuperación del ventrículo izquierdo</span><b data-zona></b></label>' +
-          '<div class="arl-pista"><input type="range" id="arl-r" min="0" max="100" step="1" value="0">' +
-            '<div class="arl-hitos" aria-hidden="true">' + [["Braquiocef.", 25], ["Carót. izda", 50], ["Subcl. izda", 75]].map(function (h) {
+        '<div class="desl">' +
+          '<label class="desl-l" for="arl-r"><span>Recuperación del ventrículo izquierdo</span><b data-zona></b></label>' +
+          '<div class="desl-p"><input type="range" id="arl-r" min="0" max="100" step="1" value="0">' +
+            '<div class="desl-h" aria-hidden="true">' + [["Braquiocef.", 25], ["Carót. izda", 50], ["Subcl. izda", 75]].map(function (h) {
               return '<span style="--p:' + h[1] + '"><i></i>' + h[0] + '</span>';
             }).join("") + '</div></div>' +
-          '<div class="arl-ext"><span>GC nativo muy bajo</span><span>Recuperado</span></div>' +
+          '<div class="desl-e"><span>GC nativo muy bajo</span><span>Recuperado</span></div>' +
         '</div>' +
         '<svg class="arl-sc" viewBox="0 0 320 408" role="img" aria-label="Silueta con el corazón, la aorta, los troncos supraaórticos y la cánula de retorno femoral del ECMO. El color de cada vaso indica si lleva sangre del corazón, poco oxigenada, o del ECMO, oxigenada.">' +
           '<defs><pattern id="arl-pul" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="pul-f"/><path d="M0 0 V6" class="pul-l"/></pattern></defs>' +
@@ -647,8 +678,8 @@
           
         '</svg>' +
         '<div class="arl-ley"><span><i class="az"></i>Poco oxigenada: corazón y drenaje</span><span><i class="ro"></i>Oxigenada: retorno del ECMO</span><span><i class="mz"></i>M · punto de mezcla</span><span><i class="pu"></i>Pulmón sin intercambio</span></div>' +
-        '<div class="pix-row">' + boton('<span class="ico" aria-hidden="true"></span><span class="tx">Recorrer</span>', ' class="pix-pausa arl-play" aria-pressed="false"') + pausaHTML() + '</div>' +
-        '<p class="pix-nota arl-nota">Animación y saturaciones ilustrativas.</p>' +
+        '<div class="pix-row">' + boton('<span class="ico" aria-hidden="true"></span><span class="tx">Recorrer</span>', ' class="pix-pausa pix-play" aria-pressed="false"') + pausaHTML() + '</div>' +
+        '<p class="pix-nota desl-nota">Animación y saturaciones ilustrativas.</p>' +
         '<div class="cav-card arl-card" aria-live="polite"></div>' +
       '</div>';
 
@@ -767,7 +798,7 @@
       hito.setAttribute("opacity", REDUCIR ? "0" : "1");
       if (navigator.vibrate) { try { navigator.vibrate(12); } catch (e) { /* sin vibración */ } }
     }
-    var btnPlay = el.querySelector(".arl-play");
+    var btnPlay = el.querySelector(".pix-play");
     function parar() { barrido = 0; btnPlay.setAttribute("aria-pressed", "false"); btnPlay.querySelector(".tx").textContent = "Recorrer"; }
     function frame(ts) {
       var dt = tAnt ? Math.min(0.05, (ts - tAnt) / 1000) : 0;
