@@ -107,10 +107,49 @@
         "<b>Qué es</b>: en ECMO VA periférica con retorno femoral, la sangre del ECMO sube <b>retrógrada</b> por la aorta y se encuentra con la que eyecta el corazón nativo en el <b>punto de mezcla</b>.",
         "<b>Requisitos</b>: ECMO VA periférica + fallo respiratorio + recuperación de la función cardiaca nativa. Con el pulmón sin intercambio, lo que eyecta el VI es sangre poco oxigenada.",
         "Cuanto más se recupera el corazón, <b>más distal</b> queda el punto de mezcla: primero cae la mano derecha (tronco braquiocefálico); después todo el cerebro y ambas manos (SatO₂ 80–85 %). Las piernas siguen bien oxigenadas.",
-        "<b>Detección</b>: gasometría en <b>radial derecha</b> + NIRS de la mitad superior. La pulsioximetría de la pierna engaña.",
-        "<b>Escalado</b>, cada escalón solo si el anterior no basta: subir el flujo de ECMO al máximo que permita la clínica → reducir el gasto nativo (sedación, control de la taquicardia, retirar inotrópicos) → flujo anterógrado (retorno axilar izquierdo o reconversión central) → alternativa V-VA."
+        "<b>Detección</b>: gasometría en <b>radial derecha</b> + NIRS de la mitad superior. La pulsioximetría de la pierna engaña."
       ],
-      "fuente": "Protocolo CHUB (detección y escalado) · fisiología de la hipoxemia diferencial"
+      "fuente": "Protocolo CHUB (detección y escalado) · indicaciones del equipo (FiO₂ y causa del fallo respiratorio) · fisiología de la hipoxemia diferencial",
+      "algoritmo": {
+        "titulo": "Algoritmo simplificado de manejo",
+        "nota": "Cada escalón solo si el anterior no basta.",
+        "pasos": [
+          {
+            "k": "Sospecha",
+            "t": "ECMO VA periférica + fallo respiratorio + corazón que recupera."
+          },
+          {
+            "k": "Confirmar",
+            "t": "Gasometría en <b>radial derecha</b> + NIRS de la mitad superior. No fiarse de la pierna."
+          },
+          {
+            "k": "1",
+            "t": "<b>Subir la FiO₂ del respirador</b> e identificar la causa del fallo respiratorio (EAP, neumonía)."
+          },
+          {
+            "k": "2",
+            "t": "<b>Subir el flujo de ECMO</b> al máximo que permita la clínica."
+          },
+          {
+            "k": "3",
+            "t": "<b>Reducir el gasto nativo</b>: sedación, control de la taquicardia, retirar inotrópicos."
+          },
+          {
+            "k": "4",
+            "t": "<b>Flujo anterógrado</b>: retorno axilar izquierdo o reconversión central. Alternativa: V-VA con cánula venosa de retorno adicional de menor calibre."
+          },
+          {
+            "k": "Destete",
+            "t": "Si la función cardiaca ya es óptima: <b>reconvertir a VV</b>.",
+            "ok": true
+          }
+        ]
+      },
+      "enlace": {
+        "s": "va",
+        "ancla": "va-arlequin",
+        "t": "Ver Síndrome de Arlequín en ECMO VA"
+      }
     }
   ]
 }

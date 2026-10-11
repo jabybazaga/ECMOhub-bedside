@@ -575,13 +575,13 @@
   var ARL_ROJO = [200, 40, 52], ARL_AZUL = [47, 104, 212];
   var ARL = [
     { gc: 0.08, lat: 0.012, seg: "GC muy bajo", t: "1 · GC nativo muy disminuido",
-      m: "El corazón apenas eyecta. La oxigenación de todo el cuerpo, <b>cerebro incluido</b>, depende del flujo del ECMO VA periférico: la gasometría de radial derecha, radial izquierda y pierna muestra sangre muy oxigenada.",
+      m: "El corazón apenas eyecta. La oxigenación de todo el cuerpo, <b>cerebro incluido</b>, depende del flujo del ECMO VA periférico: la gasometría de radial derecha, radial izquierda y pierna muestra sangre muy oxigenada y el NIRS cerebral es simétrico.",
       sat: [1, 1, 1] },
     { gc: 0.55, lat: 0.045, seg: "Empieza a recuperar", t: "2 · El corazón empieza a recuperar",
-      m: "Con el pulmón aún sin intercambio, el VI eyecta sangre <b>poco oxigenada</b> hacia el tronco braquiocefálico y el punto de mezcla se desplaza por el cayado. El pulsioxímetro y la gasometría de la <b>mano derecha</b> caen; la mano izquierda y la pierna siguen bien oxigenadas.",
+      m: "Con el pulmón aún sin intercambio, el VI eyecta sangre <b>poco oxigenada</b> hacia el tronco braquiocefálico y el punto de mezcla se desplaza por el cayado. El pulsioxímetro y la gasometría de la <b>mano derecha</b> caen; la mano izquierda y la pierna siguen bien oxigenadas. El <b>NIRS derecho</b> cae y aparece la asimetría R/L.",
       sat: [0, 1, 1] },
     { gc: 1, lat: 0.075, seg: "Recupera más", t: "3 · Recupera más contractilidad",
-      m: "El punto de mezcla pasa a la aorta descendente, más allá de la subclavia izquierda. <b>Todo el cerebro</b> recibe sangre poco oxigenada y los pulsioxímetros de <b>ambas manos</b> marcan 80–85 %; las piernas siguen bien oxigenadas.",
+      m: "El punto de mezcla pasa a la aorta descendente, más allá de la subclavia izquierda. <b>Todo el cerebro</b> recibe sangre poco oxigenada y los pulsioxímetros de <b>ambas manos</b> marcan 80–85 %; caen <b>ambos NIRS</b>. Las piernas siguen bien oxigenadas.",
       sat: [0, 0, 1] }
   ];
   function arlequin(el) {
@@ -615,6 +615,10 @@
           '<path class="hemi" data-hemi="i" d="M162 18 C180 18 186 32 186 44 C186 58 176 68 162 68 Z"/>' +
           '<path class="pulmon" d="M120 124 Q110 162 118 206 Q134 214 146 202 L148 132 Q138 116 120 124 Z"/>' +
           '<path class="pulmon" d="M200 124 Q210 162 202 206 Q186 214 174 204 L172 140 Q182 116 200 124 Z"/>' +
+          '<path class="canula-v" d="M152 213 C146 240 132 262 126 290 L120 334"/><path class="dren-core" d="M152 213 C146 240 132 262 126 290 L120 334"/>' +
+          '<path class="linea-dren" d="M120 334 C96 330 60 326 40 346"/>' +
+          '<path class="ruta" data-ruta="dren" d="M152 213 C146 240 132 262 126 290 L120 334 C96 330 60 326 40 346"/>' +
+          '<path class="ruta" data-ruta="ret" d="M62 362 C90 370 108 364 118 356 L137 328"/>' +
           '<g data-corazon><path class="corazon" d="M160 182 C154 170 138 172 140 186 C142 200 160 210 168 216 C176 208 192 198 192 186 C192 172 174 170 170 182 Z"/></g>' +
           ID.map(function (k) { return '<path class="vaso" data-v="' + k + '" d="' + P[k] + '"/>'; }).join("") +
           '<path class="vaso az" data-az d="' + P.A + '"/>' +
@@ -623,16 +627,20 @@
           '<path class="canula" d="M118 356 L137 328"/>' +
           '<path class="linea-ecmo" d="M62 362 C90 370 108 364 118 356"/>' +
           '<g transform="translate(14 346)"><rect class="ecmo" width="48" height="32" rx="6"/><text class="ecmo-t" x="24" y="20">ECMO</text></g>' +
-          '<text class="lb" x="14" y="394">Retorno femoral</text>' +
+          '<text class="lb" x="6" y="386">Drenaje: VCI</text><text class="lb" x="6" y="397">Retorno: femoral</text>' +
+          '<rect class="sensor" x="140" y="22" width="11" height="7" rx="2"/><rect class="sensor" x="169" y="22" width="11" height="7" rx="2"/>' +
+          '<g class="nirs" transform="translate(222 6)"><rect width="94" height="52" rx="8"/><text class="k" x="8" y="15">NIRS cerebral</text>' +
+            '<text class="k" x="10" y="40">R</text><text class="nv" data-nirs="r" x="21" y="42">80</text>' +
+            '<text class="k" x="52" y="40">L</text><text class="nv" data-nirs="l" x="62" y="42">80</text></g>' +
+          [["Mano dcha", 2, 274], ["Mano izda", 242, 274], ["Pierna", 204, 352]].map(function (t, i) {
+            return '<g class="tag" data-o="' + i + '" transform="translate(' + t[1] + " " + t[2] + ')"><rect width="76" height="46" rx="8"/><text class="k" x="7" y="13">' + t[0] + '</text><text class="v" x="7" y="29">—</text><path d=""/></g>';
+          }).join("") +
           '<g class="clip" transform="translate(76 262)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
           '<g class="clip" transform="translate(244 262)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
           '<g class="clip" transform="translate(180 384)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
           
         '</svg>' +
-        '<div class="arl-ley"><span><i class="az"></i>Sangre del corazón · poco oxigenada</span><span><i class="ro"></i>Sangre del ECMO · oxigenada</span><span><i class="mz"></i>M · punto de mezcla</span><span><i class="pu"></i>Pulmón sin intercambio</span></div>' +
-        '<div class="arl-sat">' + ["Mano dcha · radial", "Mano izda · radial", "Pierna"].map(function (n, i) {
-          return '<div class="arl-o" data-o="' + i + '"><span class="k">' + n + '</span><b>—</b><svg viewBox="0 0 90 26" aria-hidden="true"><path d=""/></svg></div>';
-        }).join("") + '</div>' +
+        '<div class="arl-ley"><span><i class="az"></i>Poco oxigenada: corazón y drenaje</span><span><i class="ro"></i>Oxigenada: retorno del ECMO</span><span><i class="mz"></i>M · punto de mezcla</span><span><i class="pu"></i>Pulmón sin intercambio</span></div>' +
         '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación y saturaciones ilustrativas.</span></div>' +
         '<div class="cav-card arl-card" aria-live="polite"></div>' +
       '</div>';
@@ -656,6 +664,13 @@
     for (var i = 0; i < 150; i++) { var c = document.createElementNS(NS, "circle"); c.setAttribute("r", "1.9"); c.setAttribute("class", "gota"); gG.appendChild(c); pool.push(c); }
     var idx = 0, est = 0, lm = MZ[0], gc = ARL[0].gc, reloj = 0, raf = 0, tAnt = 0;
 
+    var RUTA = { dren: svg.querySelector('[data-ruta="dren"]'), ret: svg.querySelector('[data-ruta="ret"]') };
+    RUTA.lDren = RUTA.dren.getTotalLength(); RUTA.lRet = RUTA.ret.getTotalLength();
+    function nirs(lado, k) {
+      var t = svg.querySelector('[data-nirs="' + lado + '"]');
+      t.textContent = Math.round(80 - 25 * k);
+      t.setAttribute("class", "nv" + (k > 0.5 ? " baja" : ""));
+    }
     function mezcla(a, b, k) { return "rgb(" + a.map(function (v, j) { return Math.round(v + (b[j] - v) * k); }).join(",") + ")"; }
     // 0 = sangre del ECMO (roja) · 1 = sangre del corazón (azul)
     function azulDe(o) { return Math.max(0, Math.min(1, (lm - o) / 5)); }
@@ -665,6 +680,8 @@
       ID.forEach(function (n) { if (n !== "A") V[n].style.stroke = mezcla(ARL_ROJO, ARL_AZUL, k[n] || 0); });
       svg.querySelector('[data-hemi="d"]').style.fill = mezcla(ARL_ROJO, ARL_AZUL, k.RC);
       svg.querySelector('[data-hemi="i"]').style.fill = mezcla(ARL_ROJO, ARL_AZUL, k.LCC);
+      // NIRS: simétrico en 80; cae a 55 en el hemisferio que recibe sangre del corazón
+      nirs("r", k.RC); nirs("l", k.LCC);
       az.setAttribute("stroke-dasharray", lm.toFixed(1) + " " + (LA + 10));
       var p = V.A.getPointAtLength(lm);
       mk.setAttribute("transform", "translate(" + p.x.toFixed(1) + " " + p.y.toFixed(1) + ")");
@@ -687,18 +704,20 @@
       ["BCT", "RC", "RS", "LCC", "LSA"].forEach(function (t) { tramo(V[t], 0, LEN[t], (k[t] > 0.5 ? vCor : vEcmo) * 0.8, false); });
       tramo(V.RL, 0, LEN.RL, vEcmo * 0.6, false);
       tramo(V.LI, 0, LEN.LI, vEcmo * 0.7, false);
+      tramo(RUTA.dren, 0, RUTA.lDren, vEcmo, false);
+      tramo(RUTA.ret, 0, RUTA.lRet, vEcmo, false);
       for (; n < pool.length; n++) pool[n].style.display = "none";
     }
     function pleth(i, ok) {
-      var amp = 1 + 9 * ARL[est].gc, d = "M0 20";
-      for (var x = 0; x <= 90; x += 2) {
-        var f = (x % 30) / 30, y = f < 0.3 ? Math.sin(f / 0.3 * Math.PI / 2) : Math.max(0, 1 - (f - 0.3) / 0.7) * (1 + 0.25 * Math.sin((f - 0.3) * 14));
-        d += " L" + x + " " + (20 - amp * y).toFixed(1);
+      var amp = 0.6 + 7 * ARL[est].gc, d = "M7 42";
+      for (var x = 0; x <= 62; x += 2) {
+        var f = (x % 19) / 19, y = f < 0.3 ? Math.sin(f / 0.3 * Math.PI / 2) : Math.max(0, 1 - (f - 0.3) / 0.7) * (1 + 0.25 * Math.sin((f - 0.3) * 14));
+        d += " L" + (7 + x) + " " + (42 - amp * y).toFixed(1);
       }
-      var o = el.querySelector('[data-o="' + i + '"]');
+      var o = svg.querySelector('.tag[data-o="' + i + '"]');
       o.querySelector("path").setAttribute("d", d);
-      o.className = "arl-o " + (ok ? "ok" : "baja");
-      o.querySelector("b").textContent = ok ? "95–100 %" : "80–85 %";
+      o.setAttribute("class", "tag " + (ok ? "ok" : "baja"));
+      o.querySelector(".v").textContent = ok ? "95–100 %" : "80–85 %";
     }
     function paso(dt) {
       reloj += dt;
