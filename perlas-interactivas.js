@@ -602,7 +602,7 @@
         '<div class="segc arl-seg" role="radiogroup" aria-label="Gasto cardiaco nativo">' +
           ARL.map(function (s, i) { return boton(s.seg, ' role="radio" aria-checked="' + (i === 0) + '" data-i="' + i + '"' + (i === 0 ? ' class="on"' : "")); }).join("") +
         '</div>' +
-        '<svg class="arl-sc" viewBox="0 0 320 400" role="img" aria-label="Silueta con el corazón, la aorta, los troncos supraaórticos y la cánula de retorno femoral del ECMO. El color de cada vaso indica si lleva sangre del corazón, poco oxigenada, o del ECMO, oxigenada.">' +
+        '<svg class="arl-sc" viewBox="0 0 320 408" role="img" aria-label="Silueta con el corazón, la aorta, los troncos supraaórticos y la cánula de retorno femoral del ECMO. El color de cada vaso indica si lleva sangre del corazón, poco oxigenada, o del ECMO, oxigenada.">' +
           '<defs><pattern id="arl-pul" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="pul-f"/><path d="M0 0 V6" class="pul-l"/></pattern></defs>' +
           '<g class="cuerpo">' +
             '<ellipse cx="160" cy="44" rx="30" ry="34"/><rect x="146" y="72" width="28" height="26"/>' +
@@ -616,23 +616,23 @@
           '<path class="pulmon" d="M120 124 Q110 162 118 206 Q134 214 146 202 L148 132 Q138 116 120 124 Z"/>' +
           '<path class="pulmon" d="M200 124 Q210 162 202 206 Q186 214 174 204 L172 140 Q182 116 200 124 Z"/>' +
           '<path class="canula-v" d="M152 213 C146 240 132 262 126 290 L120 334"/><path class="dren-core" d="M152 213 C146 240 132 262 126 290 L120 334"/>' +
-          '<path class="linea-dren" d="M120 334 C96 330 60 326 40 346"/>' +
-          '<path class="ruta" data-ruta="dren" d="M152 213 C146 240 132 262 126 290 L120 334 C96 330 60 326 40 346"/>' +
-          '<path class="ruta" data-ruta="ret" d="M62 362 C90 370 108 364 118 356 L137 328"/>' +
+          '<path class="linea-dren" d="M120 334 C100 330 70 314 44 326"/>' +
+          '<path class="ruta" data-ruta="dren" d="M152 213 C146 240 132 262 126 290 L120 334 C100 330 70 314 44 326"/>' +
+          '<path class="ruta" data-ruta="ret" d="M62 342 C88 346 106 352 118 356 L137 328"/>' +
           '<g data-corazon><path class="corazon" d="M160 182 C154 170 138 172 140 186 C142 200 160 210 168 216 C176 208 192 198 192 186 C192 172 174 170 170 182 Z"/></g>' +
           ID.map(function (k) { return '<path class="vaso" data-v="' + k + '" d="' + P[k] + '"/>'; }).join("") +
           '<path class="vaso az" data-az d="' + P.A + '"/>' +
           '<g data-gotas></g>' +
           '<g data-m><circle class="m-halo" r="13"/><circle class="m-pt" r="7"/><text class="m-tx" y="4">M</text></g>' +
           '<path class="canula" d="M118 356 L137 328"/>' +
-          '<path class="linea-ecmo" d="M62 362 C90 370 108 364 118 356"/>' +
-          '<g transform="translate(14 346)"><rect class="ecmo" width="48" height="32" rx="6"/><text class="ecmo-t" x="24" y="20">ECMO</text></g>' +
-          '<text class="lb" x="6" y="386">Drenaje: VCI</text><text class="lb" x="6" y="397">Retorno: femoral</text>' +
+          '<path class="linea-ecmo" d="M62 342 C88 346 106 352 118 356"/>' +
+          '<g transform="translate(14 326)"><rect class="ecmo" width="48" height="32" rx="6"/><text class="ecmo-t" x="24" y="20">ECMO</text></g>' +
+          '<text class="lb" x="6" y="384">Drenaje: VCI</text><text class="lb" x="6" y="398">Retorno: femoral</text>' +
           '<rect class="sensor" x="140" y="22" width="11" height="7" rx="2"/><rect class="sensor" x="169" y="22" width="11" height="7" rx="2"/>' +
           '<g class="nirs" transform="translate(222 6)"><rect width="94" height="52" rx="8"/><text class="k" x="8" y="15">NIRS cerebral</text>' +
             '<text class="k" x="10" y="40">R</text><text class="nv" data-nirs="r" x="21" y="42">80</text>' +
             '<text class="k" x="52" y="40">L</text><text class="nv" data-nirs="l" x="62" y="42">80</text></g>' +
-          [["Mano dcha", 2, 274], ["Mano izda", 242, 274], ["Pierna", 204, 352]].map(function (t, i) {
+          [["Mano dcha", 2, 270], ["Mano izda", 242, 270], ["Pierna", 204, 352]].map(function (t, i) {
             return '<g class="tag" data-o="' + i + '" transform="translate(' + t[1] + " " + t[2] + ')"><rect width="76" height="46" rx="8"/><text class="k" x="7" y="13">' + t[0] + '</text><text class="v" x="7" y="29">—</text><path d=""/></g>';
           }).join("") +
           '<g class="clip" transform="translate(76 262)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
