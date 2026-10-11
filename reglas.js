@@ -133,7 +133,7 @@
       } else {
         var _iGasVA = f.length;
         if (isFinite(sao2)) {
-          if (sao2 < 95) f.push(F("crit", "SaO₂ por debajo del objetivo", n0(sao2) + " %", "En VA el objetivo es 95–100 %. Si la muestra es de radial derecha, sospechar síndrome de Arlequín: comparar con la extremidad inferior y con NIRS. Escalado: subir flujo de ECMO → valorar reducir el gasto nativo → retorno axilar o central → V-VA.", CH));
+          if (sao2 < 95) f.push(F("crit", "SaO₂ por debajo del objetivo", n0(sao2) + " %", "En VA el objetivo es 95–100 %. Si la muestra es de radial derecha, sospechar síndrome de Arlequín: comparar con la extremidad inferior y con NIRS. Escalado: subir FiO₂ del respirador y buscar la causa del fallo respiratorio (EAP, neumonía) → subir flujo de ECMO → valorar reducir el gasto nativo → retorno axilar o central → V-VA.", CH));
           else f.push(F("ok", "SaO₂ en objetivo", n0(sao2) + " %", "Dentro de 95–100 %. Confirmar que la muestra es de radial derecha.", CH));
         }
         tagCat(_iGasVA, "gasometria");

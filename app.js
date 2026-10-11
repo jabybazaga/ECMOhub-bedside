@@ -1207,6 +1207,7 @@
 
   var SVG_CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>';
   var SVG_CHEV_L = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>';
+  var SVG_CHEV_R = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>';
   var SVG_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
   var SVG_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>';
   var SVG_COPY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
@@ -2063,6 +2064,13 @@
     var b = e.target.closest("[data-esquema]");
     if (b) { abrirEsquema(b.dataset.esquema); return; }
     if (e.target.closest("[data-vclose]")) cerrarEsquema();
+    // Enlace de una perla a su sección de la app: cierra el visor, cambia de pantalla y resalta el apartado.
+    var ir = e.target.closest("[data-ir]");
+    if (ir) {
+      go(ir.dataset.ir);
+      var ancla = ir.dataset.ancla && document.getElementById(ir.dataset.ancla);
+      if (ancla) setTimeout(function () { scrollA(ancla); ancla.classList.remove("flash"); void ancla.offsetWidth; ancla.classList.add("flash"); }, 80);
+    }
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrarEsquema(); });
 
@@ -2190,6 +2198,9 @@
     viewerEl.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Perla · ' + esc(pl.cat || "") + '</div><div class="t" id="viewer-t">' + esc(pl.titulo) + '</div></div></div>' +
       '<div class="vb"><div class="fig' + (m && m.tipo === "video" ? " vid" : "") + (m && m.tipo === "interactivo" ? " ix" : "") + (m ? "" : " pend") + '">' + fig + '</div>' +
       '<div class="vpts"><h4>Puntos clave</h4><ul class="lst">' + (pl.puntos || []).map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul>' +
+      (pl.algoritmo ? '<div class="alg"><h5>' + esc(pl.algoritmo.titulo) + '</h5>' + (pl.algoritmo.nota ? '<p class="alg-n">' + esc(pl.algoritmo.nota) + '</p>' : "") +
+        '<ol>' + pl.algoritmo.pasos.map(function (x) { return '<li' + (x.ok ? ' class="ok"' : "") + '><span class="ak">' + esc(x.k) + '</span><span class="at">' + x.t + '</span></li>'; }).join("") + '</ol></div>' : "") +
+      (pl.enlace ? '<button type="button" class="ir-app" data-ir="' + esc(pl.enlace.s) + '" data-ancla="' + esc(pl.enlace.ancla || "") + '"><span>' + esc(pl.enlace.t) + '</span>' + SVG_CHEV_R + '</button>' : "") +
       (pl.fuente ? '<p class="vsrc">' + esc(pl.fuente) + '</p>' : "") + '</div></div>';
     viewerEl.hidden = false; void viewerEl.offsetWidth; viewerEl.classList.add("on");
     var pix = viewerEl.querySelector("[data-pix]"), comp = pix && window.ECMO_PIX && window.ECMO_PIX[pix.dataset.pix];

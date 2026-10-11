@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=38">
+<link rel="manifest" href="manifest.json?v=39">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -549,12 +549,13 @@
       <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Sospecha</span><span class="dl-v"><b>Presión de pulso &lt; 15 mmHg</b> · pérdida de onda dícrota</span></div><div class="dl-row"><span class="dl-k">Primero</span><span class="dl-v">Dobutamina &lt; 10 · reducir poscarga</span></div><div class="dl-row"><span class="dl-k">Descarga mecánica</span><span class="dl-v">Necesaria en la mayoría: Impella; balón si hay trombo</span></div></div>
       <div class="note"><b>PAM &gt; 90</b> empeora el flujo y favorece la distensión: nitroprusiato o urapidilo, no bajar el flujo. <span class="pill elso">EXTERNO</span></div>
 
-      <h3 class="rh">Síndrome de Arlequín</h3>
+      <h3 class="rh" id="va-arlequin">Síndrome de Arlequín</h3>
       <div class="deflist tbl"><div class="dl-row"><span class="dl-k">Qué es</span><span class="dl-v">Sangre mal oxigenada del VD a la mitad superior; el ECMO perfunde la inferior</span></div><div class="dl-row"><span class="dl-k">Detección</span><span class="dl-v"><b>Gasometría en radial derecha</b> + NIRS de la mitad superior. La pulsioximetría de la pierna engaña</span></div></div>
       <div class="steps">
         <div class="st-h">Escalado del tratamiento</div>
         <p class="st-sig">Cada escalón solo si el anterior no basta.</p>
         <ol>
+          <li>Subir la FiO₂ del respirador e identificar la causa del fallo respiratorio (EAP, neumonía).</li>
           <li>Aumentar el flujo de ECMO al máximo que permita la clínica.</li>
           <li>Reducir el gasto cardiaco nativo: sedación, control de taquicardia, retirar inotrópicos.</li>
           <li>Convertir el flujo en anterógrado: retorno axilar izquierdo o reconversión central.</li>
@@ -876,7 +877,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 38 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 39 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
