@@ -92,6 +92,25 @@
         "Qué hacer: <b>bajar rpm</b> de inmediato y buscar la causa (hipovolemia, cánula acodada o mal posicionada, taponamiento, neumotórax, presión intraabdominal alta). No subir rpm."
       ],
       "fuente": "Protocolo CHUB (umbrales de P1) · concepto general de cavitación"
+    },
+    {
+      "id": "arlequin",
+      "titulo": "Síndrome de Arlequín (hipoxemia diferencial)",
+      "cat": "Complicaciones",
+      "resumen": "Dónde se encuentran la sangre del corazón y la del ECMO VA, y qué partes del cuerpo quedan mal oxigenadas.",
+      "media": {
+        "tipo": "interactivo",
+        "componente": "arlequin",
+        "poster": "perlas/arlequin.svg"
+      },
+      "puntos": [
+        "<b>Qué es</b>: en ECMO VA periférica con retorno femoral, la sangre del ECMO sube <b>retrógrada</b> por la aorta y se encuentra con la que eyecta el corazón nativo en el <b>punto de mezcla</b>.",
+        "<b>Requisitos</b>: ECMO VA periférica + fallo respiratorio + recuperación de la función cardiaca nativa. Con el pulmón sin intercambio, lo que eyecta el VI es sangre poco oxigenada.",
+        "Cuanto más se recupera el corazón, <b>más distal</b> queda el punto de mezcla: primero cae la mano derecha (tronco braquiocefálico); después todo el cerebro y ambas manos (SatO₂ 80–85 %). Las piernas siguen bien oxigenadas.",
+        "<b>Detección</b>: gasometría en <b>radial derecha</b> + NIRS de la mitad superior. La pulsioximetría de la pierna engaña.",
+        "<b>Escalado</b>, cada escalón solo si el anterior no basta: subir el flujo de ECMO al máximo que permita la clínica → reducir el gasto nativo (sedación, control de la taquicardia, retirar inotrópicos) → flujo anterógrado (retorno axilar izquierdo o reconversión central) → alternativa V-VA."
+      ],
+      "fuente": "Protocolo CHUB (detección y escalado) · fisiología de la hipoxemia diferencial"
     }
   ]
 }

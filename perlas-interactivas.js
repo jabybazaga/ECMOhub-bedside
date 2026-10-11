@@ -1,5 +1,6 @@
 /* =====================================================================
-   Perlas interactivas: respirador en VV, destete VV/VA y cavitación.
+   Perlas interactivas: respirador en VV, destete VV/VA, cavitación,
+   revisión de la membrana y síndrome de Arlequín.
    Cada componente recibe el contenedor y devuelve una función que lo
    detiene (se llama al cerrar el visor). Los textos clínicos salen del
    protocolo CHUB; las curvas y cifras animadas son ilustrativas.
@@ -567,5 +568,180 @@
     return function () {};
   }
 
-  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion, membrana: membrana };
+  // ------------------------------------------------------------------
+  // 5. Síndrome de Arlequín: el punto de mezcla recorre la aorta según
+  //    cuánto eyecta el corazón nativo. Saturaciones y velocidades ilustrativas.
+  // ------------------------------------------------------------------
+  var ARL_ROJO = [200, 40, 52], ARL_AZUL = [47, 104, 212];
+  var ARL = [
+    { gc: 0.08, lat: 0.012, seg: "GC muy bajo", t: "1 · GC nativo muy disminuido",
+      m: "El corazón apenas eyecta. La oxigenación de todo el cuerpo, <b>cerebro incluido</b>, depende del flujo del ECMO VA periférico: la gasometría de radial derecha, radial izquierda y pierna muestra sangre muy oxigenada.",
+      sat: [1, 1, 1] },
+    { gc: 0.55, lat: 0.045, seg: "Empieza a recuperar", t: "2 · El corazón empieza a recuperar",
+      m: "Con el pulmón aún sin intercambio, el VI eyecta sangre <b>poco oxigenada</b> hacia el tronco braquiocefálico y el punto de mezcla se desplaza por el cayado. El pulsioxímetro y la gasometría de la <b>mano derecha</b> caen; la mano izquierda y la pierna siguen bien oxigenadas.",
+      sat: [0, 1, 1] },
+    { gc: 1, lat: 0.075, seg: "Recupera más", t: "3 · Recupera más contractilidad",
+      m: "El punto de mezcla pasa a la aorta descendente, más allá de la subclavia izquierda. <b>Todo el cerebro</b> recibe sangre poco oxigenada y los pulsioxímetros de <b>ambas manos</b> marcan 80–85 %; las piernas siguen bien oxigenadas.",
+      sat: [0, 0, 1] }
+  ];
+  function arlequin(el) {
+    var P = {
+      A: "M158 172 C150 156 146 136 152 124 C158 112 176 110 184 120 C190 128 188 140 186 152 L178 250 C174 262 150 268 142 290 L137 328",
+      BCT: "M154 120 C150 108 146 100 142 96",
+      RC: "M142 96 C144 86 146 76 147 52",
+      RS: "M142 96 C130 96 112 98 101 110 L85 180 L76 246",
+      LCC: "M167 112 C168 98 171 84 173 52",
+      LSA: "M179 114 C190 104 206 100 219 110 L235 180 L244 246",
+      RL: "M137 328 L134 382",
+      LI: "M178 250 C182 262 182 272 182 290 L184 382"
+    };
+    var ID = ["A", "BCT", "RC", "RS", "LCC", "LSA", "RL", "LI"];
+    el.innerHTML =
+      '<div class="arl">' +
+        '<p class="arl-req"><span>ECMO VA periférica</span><i>+</i><span>Fallo respiratorio</span><i>+</i><span>Recuperación cardiaca</span></p>' +
+        '<div class="segc arl-seg" role="radiogroup" aria-label="Gasto cardiaco nativo">' +
+          ARL.map(function (s, i) { return boton(s.seg, ' role="radio" aria-checked="' + (i === 0) + '" data-i="' + i + '"' + (i === 0 ? ' class="on"' : "")); }).join("") +
+        '</div>' +
+        '<svg class="arl-sc" viewBox="0 0 320 400" role="img" aria-label="Silueta con el corazón, la aorta, los troncos supraaórticos y la cánula de retorno femoral del ECMO. El color de cada vaso indica si lleva sangre del corazón, poco oxigenada, o del ECMO, oxigenada.">' +
+          '<defs><pattern id="arl-pul" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="pul-f"/><path d="M0 0 V6" class="pul-l"/></pattern></defs>' +
+          '<g class="cuerpo">' +
+            '<ellipse cx="160" cy="44" rx="30" ry="34"/><rect x="146" y="72" width="28" height="26"/>' +
+            '<path d="M108 96 Q160 88 212 96 L218 120 L214 270 Q160 282 106 270 L102 120 Z"/>' +
+            '<path d="M108 98 Q92 100 88 118 L70 238 Q68 250 76 252 Q84 252 86 240 L104 132 Z"/>' +
+            '<path d="M212 98 Q228 100 232 118 L250 238 Q252 250 244 252 Q236 252 234 240 L216 132 Z"/>' +
+            '<path d="M110 262 L157 272 L151 392 L125 392 Z"/><path d="M210 262 L163 272 L169 392 L195 392 Z"/>' +
+          '</g>' +
+          '<path class="hemi" data-hemi="d" d="M158 18 C140 18 134 32 134 44 C134 58 144 68 158 68 Z"/>' +
+          '<path class="hemi" data-hemi="i" d="M162 18 C180 18 186 32 186 44 C186 58 176 68 162 68 Z"/>' +
+          '<path class="pulmon" d="M120 124 Q110 162 118 206 Q134 214 146 202 L148 132 Q138 116 120 124 Z"/>' +
+          '<path class="pulmon" d="M200 124 Q210 162 202 206 Q186 214 174 204 L172 140 Q182 116 200 124 Z"/>' +
+          '<g data-corazon><path class="corazon" d="M160 182 C154 170 138 172 140 186 C142 200 160 210 168 216 C176 208 192 198 192 186 C192 172 174 170 170 182 Z"/></g>' +
+          ID.map(function (k) { return '<path class="vaso" data-v="' + k + '" d="' + P[k] + '"/>'; }).join("") +
+          '<path class="vaso az" data-az d="' + P.A + '"/>' +
+          '<g data-gotas></g>' +
+          '<g data-m><circle class="m-halo" r="13"/><circle class="m-pt" r="7"/><text class="m-tx" y="4">M</text></g>' +
+          '<path class="canula" d="M118 356 L137 328"/>' +
+          '<path class="linea-ecmo" d="M62 362 C90 370 108 364 118 356"/>' +
+          '<g transform="translate(14 346)"><rect class="ecmo" width="48" height="32" rx="6"/><text class="ecmo-t" x="24" y="20">ECMO</text></g>' +
+          '<text class="lb" x="14" y="394">Retorno femoral</text>' +
+          '<g class="clip" transform="translate(76 262)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
+          '<g class="clip" transform="translate(244 262)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
+          '<g class="clip" transform="translate(180 384)"><rect x="-9" y="-6" width="18" height="12" rx="4"/></g>' +
+          
+        '</svg>' +
+        '<div class="arl-ley"><span><i class="az"></i>Sangre del corazón · poco oxigenada</span><span><i class="ro"></i>Sangre del ECMO · oxigenada</span><span><i class="mz"></i>M · punto de mezcla</span><span><i class="pu"></i>Pulmón sin intercambio</span></div>' +
+        '<div class="arl-sat">' + ["Mano dcha · radial", "Mano izda · radial", "Pierna"].map(function (n, i) {
+          return '<div class="arl-o" data-o="' + i + '"><span class="k">' + n + '</span><b>—</b><svg viewBox="0 0 90 26" aria-hidden="true"><path d=""/></svg></div>';
+        }).join("") + '</div>' +
+        '<div class="pix-row">' + pausaHTML() + '<span class="pix-nota">Animación y saturaciones ilustrativas.</span></div>' +
+        '<div class="cav-card arl-card" aria-live="polite"></div>' +
+      '</div>';
+
+    var svg = el.querySelector(".arl-sc"), V = {};
+    ID.forEach(function (k) { V[k] = svg.querySelector('[data-v="' + k + '"]'); });
+    var az = svg.querySelector("[data-az]"), gG = svg.querySelector("[data-gotas]"), mk = svg.querySelector("[data-m]");
+    var corazon = svg.querySelector("[data-corazon]"), card = el.querySelector(".arl-card");
+    var LA = V.A.getTotalLength(), LEN = {};
+    ID.forEach(function (k) { LEN[k] = V[k].getTotalLength(); });
+    // Longitud sobre la aorta donde nace cada tronco
+    function origen(x, y) {
+      var mejor = 0, dmin = 1e9;
+      for (var l = 0; l <= LA; l += 1) { var p = V.A.getPointAtLength(l), d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y); if (d < dmin) { dmin = d; mejor = l; } }
+      return mejor;
+    }
+    var O = { BCT: origen(154, 120), LCC: origen(167, 112), LSA: origen(179, 114) };
+    // Punto de mezcla de cada situación: raíz · entre braquiocefálico y carótida izda · pasada la subclavia izda
+    var MZ = [6, O.BCT + 0.75 * (O.LCC - O.BCT), O.LSA + 26];
+    var NS = "http://www.w3.org/2000/svg", pool = [];
+    for (var i = 0; i < 150; i++) { var c = document.createElementNS(NS, "circle"); c.setAttribute("r", "1.9"); c.setAttribute("class", "gota"); gG.appendChild(c); pool.push(c); }
+    var idx = 0, est = 0, lm = MZ[0], gc = ARL[0].gc, reloj = 0, raf = 0, tAnt = 0;
+
+    function mezcla(a, b, k) { return "rgb(" + a.map(function (v, j) { return Math.round(v + (b[j] - v) * k); }).join(",") + ")"; }
+    // 0 = sangre del ECMO (roja) · 1 = sangre del corazón (azul)
+    function azulDe(o) { return Math.max(0, Math.min(1, (lm - o) / 5)); }
+    function colores() {
+      var k = { BCT: azulDe(O.BCT), LCC: azulDe(O.LCC), LSA: azulDe(O.LSA) };
+      k.RC = k.RS = k.BCT;
+      ID.forEach(function (n) { if (n !== "A") V[n].style.stroke = mezcla(ARL_ROJO, ARL_AZUL, k[n] || 0); });
+      svg.querySelector('[data-hemi="d"]').style.fill = mezcla(ARL_ROJO, ARL_AZUL, k.RC);
+      svg.querySelector('[data-hemi="i"]').style.fill = mezcla(ARL_ROJO, ARL_AZUL, k.LCC);
+      az.setAttribute("stroke-dasharray", lm.toFixed(1) + " " + (LA + 10));
+      var p = V.A.getPointAtLength(lm);
+      mk.setAttribute("transform", "translate(" + p.x.toFixed(1) + " " + p.y.toFixed(1) + ")");
+      return k;
+    }
+    function gotas(k) {
+      var n = 0;
+      function tramo(path, desde, hasta, vel, inverso) {
+        var largo = hasta - desde;
+        if (largo <= 2) return;
+        var fase = (reloj * vel) % 12;
+        for (var s = fase; s < largo && n < pool.length; s += 12) {
+          var l = inverso ? hasta - s : desde + s, p = path.getPointAtLength(l), g = pool[n++];
+          g.setAttribute("cx", p.x.toFixed(1)); g.setAttribute("cy", p.y.toFixed(1)); g.style.display = "";
+        }
+      }
+      var vEcmo = 34, vCor = 34 * gc;
+      tramo(V.A, 0, lm, vCor, false);
+      tramo(V.A, lm, LA, vEcmo, true);
+      ["BCT", "RC", "RS", "LCC", "LSA"].forEach(function (t) { tramo(V[t], 0, LEN[t], (k[t] > 0.5 ? vCor : vEcmo) * 0.8, false); });
+      tramo(V.RL, 0, LEN.RL, vEcmo * 0.6, false);
+      tramo(V.LI, 0, LEN.LI, vEcmo * 0.7, false);
+      for (; n < pool.length; n++) pool[n].style.display = "none";
+    }
+    function pleth(i, ok) {
+      var amp = 1 + 9 * ARL[est].gc, d = "M0 20";
+      for (var x = 0; x <= 90; x += 2) {
+        var f = (x % 30) / 30, y = f < 0.3 ? Math.sin(f / 0.3 * Math.PI / 2) : Math.max(0, 1 - (f - 0.3) / 0.7) * (1 + 0.25 * Math.sin((f - 0.3) * 14));
+        d += " L" + x + " " + (20 - amp * y).toFixed(1);
+      }
+      var o = el.querySelector('[data-o="' + i + '"]');
+      o.querySelector("path").setAttribute("d", d);
+      o.className = "arl-o " + (ok ? "ok" : "baja");
+      o.querySelector("b").textContent = ok ? "95–100 %" : "80–85 %";
+    }
+    function paso(dt) {
+      reloj += dt;
+      var obj = MZ[est], ogc = ARL[est].gc;
+      lm += (obj - lm) * Math.min(1, dt * 2.2);
+      gc += (ogc - gc) * Math.min(1, dt * 2.2);
+      var k = colores();
+      gotas(k);
+      var lat = 1 + ARL[est].lat * Math.pow(Math.max(0, Math.sin(reloj * Math.PI * 2 * 1.2)), 3);
+      corazon.setAttribute("transform", "translate(166 192) scale(" + lat.toFixed(3) + ") translate(-166 -192)");
+      var h = 0.5 + 0.5 * Math.sin(reloj * 4);
+      mk.querySelector(".m-halo").setAttribute("r", (11 + 4 * h).toFixed(1));
+    }
+    function ver(i) {
+      est = i;
+      var s = ARL[i];
+      card.innerHTML = "<b>" + s.t + "</b><p>" + s.m + '</p><span class="src">Medir en <b>radial derecha</b>: es la primera en caer. La pulsioximetría de la pierna engaña.</span>';
+      Array.prototype.forEach.call(el.querySelectorAll(".arl-seg button"), function (b) {
+        var on = +b.getAttribute("data-i") === i;
+        b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
+      });
+      gc = REDUCIR ? s.gc : gc;
+      s.sat.forEach(function (ok, j) { pleth(j, ok); });
+      if (REDUCIR) { lm = MZ[i]; paso(0); }
+    }
+    function frame(ts) {
+      var dt = tAnt ? Math.min(0.05, (ts - tAnt) / 1000) : 0;
+      tAnt = ts;
+      paso(dt);
+      raf = requestAnimationFrame(frame);
+    }
+    el.querySelector(".arl-seg").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-i]");
+      if (b) { ver(+b.getAttribute("data-i")); if (raf) return; paso(0.5); }
+    });
+    ver(0);
+    paso(0);
+    if (!REDUCIR) raf = requestAnimationFrame(frame);
+    enlazarPausa(el, function (p) {
+      if (p) { cancelAnimationFrame(raf); raf = 0; } else { tAnt = 0; raf = requestAnimationFrame(frame); }
+    });
+    return function () { cancelAnimationFrame(raf); };
+  }
+
+  window.ECMO_PIX = { respirador: respirador, destete: destete, cavitacion: cavitacion, membrana: membrana, arlequin: arlequin };
 })();
