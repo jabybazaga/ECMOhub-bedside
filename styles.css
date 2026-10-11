@@ -1100,7 +1100,69 @@ html[data-theme="oscuro"] .sc-opts button.on,html[data-theme="noche"] .sc-opts b
 .cav-card.ok b{color:var(--good)}
 .cav-card.warn{background:var(--warn-soft);border-color:var(--warn-line)}.cav-card.warn b{color:var(--warn)}
 .cav-card.crit{background:var(--crit-soft);border-color:var(--crit-line)}.cav-card.crit b{color:var(--crit)}
+/* Perla: membrana húmeda (condensación) */
+.cnd-sc{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.cnd-sc .caja{fill:#F7DADA;stroke:#C9746F;stroke-width:1.5}
+.cnd-sc .hem{fill:#C82834;opacity:.55}
+.cnd-sc .fibra{fill:#F4F8FC;stroke:#8FA9C2;stroke-width:1.2}
+.cnd-sc.caliente .fibra{fill:#FFF6EA;stroke:#D9A35A}
+.cnd-sc .bloq{fill:#AEB7C0;opacity:.75}
+.cnd-sc .gas{fill:#2F68D4}
+.cnd-sc .gota-agua{fill:#8EC3EA;stroke:#3F7FB8;stroke-width:1}
+.cnd-sc .colector{fill:none;stroke:var(--ink-3);stroke-width:2.5;stroke-linejoin:round}
+.cnd-sc .flecha-gas{stroke:#2F68D4;stroke-width:3}
+.cnd-sc .punta-gas{fill:#2F68D4}
+.cnd-sc .puerto{stroke:var(--ink-3);stroke-width:6;stroke-linecap:round}
+.cnd-sc .lb{font:600 11.5px var(--serif);fill:var(--ink-2)}
+.cnd-sc .lb.s{fill:#A3241E}
+.cnd-sc .lupa-m circle{fill:none;stroke:var(--ink);stroke-width:2.5}
+.cnd-sc .lupa-m path{stroke:var(--ink);stroke-width:5;stroke-linecap:round}
+.cnd-lupa{margin-top:10px}
+.lupa-sc{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.lupa-sc .l-gas{fill:#EEF5FC}
+.lupa-sc .l-san{fill:#F7DADA}
+.lupa-sc .l-agua{fill:#8EC3EA}
+.lupa-sc .l-mem{fill:#8FA9C2}
+.lupa-sc .l-borde{fill:none;stroke:var(--ink);stroke-width:3}
+.lupa-sc .l-tx{font:700 12px var(--serif);fill:#3E5A75}
+.lupa-sc .l-tx.s{fill:#A3241E}
+.lupa-sc .l-tx.a{fill:#1F4E79}
+.lupa-sc .l-k{font:600 11.5px var(--serif);fill:var(--ink-2)}
+.lupa-sc .l-k2{font:700 12px var(--serif);fill:var(--ink)}
+.lupa-sc .o2,.lupa-sc .o2t{fill:#2F68D4}
+.lupa-sc .co2,.lupa-sc .co2t{fill:#6B7480}
+.lupa-sc .l-bar{opacity:.85}
+.lupa-sc .l-est{font:700 12.5px var(--serif);fill:var(--good)}
+.lupa-sc .l-est.baja{fill:var(--crit)}
+.cnd-ind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.cnd-i{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:8px 10px;min-width:0}
+.cnd-i .k{display:block;font-size:12px;font-weight:600;color:var(--ink-3);line-height:1.25}
+.cnd-i b{display:block;font:700 16px var(--serif);color:var(--good);margin-top:2px;font-variant-numeric:tabular-nums}
+.cnd-i b.baja{color:var(--crit)}
+.cnd-i .bar{display:block;height:5px;border-radius:3px;background:var(--surface-3);margin-top:5px;overflow:hidden}
+.cnd-i .bar i{display:block;height:100%;background:var(--good);transition:width .2s}
+.cnd-i .bar i.baja{background:var(--crit)}
+.cnd-acc{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:10px}
+.cnd-flush{min-height:48px;padding:0 18px;border-radius:12px;border:0;background:#2F68D4;color:#fff;font:700 15px var(--serif);cursor:pointer}
+.cnd-flush:active{transform:scale(.98)}
+.cnd-cal{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:14px;color:var(--ink-2);cursor:pointer}
+.cnd-cal input{width:20px;height:20px;accent-color:var(--accent)}
+.cav-card.info{background:var(--accent-soft);border-color:var(--accent)}.cav-card.info b{color:var(--accent-ink)}
 /* Perla: síndrome de Arlequín */
+.arl-rec{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px 8px}
+.arl-rl{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;font:700 15px var(--cond);color:var(--ink)}
+.arl-rl b{font:600 13px var(--serif);color:var(--accent-ink)}
+.arl-pista{position:relative;height:66px}
+.arl-pista input{position:relative;z-index:1}
+.arl-hitos{position:absolute;inset:0;pointer-events:none}
+.arl-hitos span{position:absolute;top:44px;left:calc(13px + (100% - 26px) * var(--p) / 100);transform:translateX(-50%);font-size:11.5px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.arl-hitos i{position:absolute;left:50%;top:-30px;width:2px;height:16px;margin-left:-1px;border-radius:1px;background:#8A4FBF}
+.arl-ext{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3)}
+.arl-sc .hito rect{fill:#8A4FBF}
+.arl-sc .hito text{fill:#fff;font:700 11px var(--serif);text-anchor:middle}
+.arl-play .ico{border:0;border-left:11px solid currentColor;border-top:6px solid transparent;border-bottom:6px solid transparent;width:0;height:0}
+.arl-play[aria-pressed="true"] .ico{width:12px;height:12px;border:0;border-radius:2px;background:currentColor}
+.arl-nota{margin:6px 2px 0}
 .arl-req{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 6px;margin:0 0 10px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
 .arl-req span{padding:4px 9px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line)}
 .arl-req i{font-style:normal;color:var(--ink-3)}
