@@ -1120,7 +1120,7 @@ html[data-theme="oscuro"] .sc-opts button.on,html[data-theme="noche"] .sc-opts b
 .lupa-sc{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
 .lupa-sc .l-gas{fill:#EEF5FC}
 .lupa-sc .l-san{fill:#F7DADA}
-.lupa-sc .l-agua{fill:#8EC3EA}
+.lupa-sc .l-agua{fill:#8EC3EA;opacity:.9}
 .lupa-sc .l-mem{fill:#8FA9C2}
 .lupa-sc .l-borde{fill:none;stroke:var(--ink);stroke-width:3}
 .lupa-sc .l-tx{font:700 12px var(--serif);fill:#3E5A75}
@@ -1133,6 +1133,8 @@ html[data-theme="oscuro"] .sc-opts button.on,html[data-theme="noche"] .sc-opts b
 .lupa-sc .l-bar{opacity:.85}
 .lupa-sc .l-est{font:700 12.5px var(--serif);fill:var(--good)}
 .lupa-sc .l-est.baja{fill:var(--crit)}
+.lupa-sc .l-est.warn{fill:var(--warn)}
+.lupa-sc .l-agua{transition:none}
 .cnd-ind{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .cnd-i{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:8px 10px;min-width:0}
 .cnd-i .k{display:block;font-size:12px;font-weight:600;color:var(--ink-3);line-height:1.25}

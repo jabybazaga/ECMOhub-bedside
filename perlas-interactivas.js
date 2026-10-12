@@ -859,11 +859,11 @@
           '<text class="lb s" x="180" y="30" text-anchor="middle">Sangre 37 °C ↓</text>' +
         '</svg>' +
         '<div class="cnd-lupa">' +
-          '<svg class="lupa-sc" viewBox="0 0 360 176" role="img" aria-label="Lupa sobre la pared de una fibra: el O₂ pasa del gas a la sangre y el CO₂ de la sangre al gas">' +
+          '<svg class="lupa-sc" viewBox="0 0 360 212" role="img" aria-label="Lupa sobre la pared de una fibra: el O₂ pasa del gas a la sangre y el CO₂ de la sangre al gas">' +
             '<defs><clipPath id="lupa-c"><circle cx="96" cy="88" r="80"/></clipPath></defs>' +
             '<g clip-path="url(#lupa-c)">' +
               '<rect class="l-gas" x="0" y="0" width="200" height="84"/><rect class="l-san" x="0" y="92" width="200" height="90"/>' +
-              '<rect class="l-agua" data-lagua x="0" y="34" width="200" height="50" opacity="0"/>' +
+              '<rect class="l-agua" data-lagua x="176" y="42" width="0" height="46" rx="10"/>' +
               '<rect class="l-mem" x="0" y="84" width="200" height="8"/>' +
               '<g data-mol></g>' +
             '</g>' +
@@ -871,17 +871,19 @@
             '<text class="l-tx" x="96" y="30" text-anchor="middle">Gas de barrido</text>' +
             '<text class="l-tx s" x="96" y="160" text-anchor="middle">Sangre</text>' +
             '<text class="l-tx a" data-lagtx x="96" y="64" text-anchor="middle" opacity="0">Agua</text>' +
-            '<g transform="translate(194 14)">' +
+            '<g transform="translate(194 10)">' +
               '<text class="l-k" x="0" y="10">Concentración</text>' +
-              '<text class="l-k2" x="0" y="34">Gas</text>' +
-              '<circle class="o2" cx="52" cy="30" r="4.5"/><rect class="l-bar o2" x="62" y="26" width="70" height="8" rx="4"/>' +
-              '<circle class="co2" cx="52" cy="46" r="4.5"/><rect class="l-bar co2" x="62" y="42" width="10" height="8" rx="4"/>' +
-              '<text class="l-k2" x="0" y="78">Sangre</text>' +
-              '<circle class="o2" cx="52" cy="74" r="4.5"/><rect class="l-bar o2" x="62" y="70" width="18" height="8" rx="4"/>' +
-              '<circle class="co2" cx="52" cy="90" r="4.5"/><rect class="l-bar co2" data-bco2 x="62" y="86" width="60" height="8" rx="4"/>' +
-              '<text class="l-k" x="0" y="118"><tspan class="o2t">● O₂</tspan>  gas → sangre</text>' +
-              '<text class="l-k" x="0" y="136"><tspan class="co2t">● CO₂</tspan>  sangre → gas</text>' +
-              '<text class="l-est" data-lest x="0" y="160">Intercambio activo</text>' +
+              '<text class="l-k2" x="0" y="30">Gas de barrido</text>' +
+              '<circle class="o2" cx="4" cy="40" r="4.5"/><rect class="l-bar o2" x="12" y="36" width="120" height="8" rx="4"/>' +
+              '<circle class="co2" cx="4" cy="54" r="4.5"/><rect class="l-bar co2" x="12" y="50" width="8" height="8" rx="4"/>' +
+              '<text class="l-k2" x="0" y="78">Sangre que entra</text>' +
+              '<circle class="o2" cx="4" cy="88" r="4.5"/><rect class="l-bar o2" x="12" y="84" width="22" height="8" rx="4"/>' +
+              '<circle class="co2" cx="4" cy="102" r="4.5"/><rect class="l-bar co2" x="12" y="98" width="110" height="8" rx="4"/>' +
+              '<text class="l-k2" x="0" y="126">Sangre que sale</text>' +
+              '<circle class="o2" cx="4" cy="136" r="4.5"/><rect class="l-bar o2" data-so2 x="12" y="132" width="120" height="8" rx="4"/>' +
+              '<circle class="co2" cx="4" cy="150" r="4.5"/><rect class="l-bar co2" data-sco2 x="12" y="146" width="10" height="8" rx="4"/>' +
+              '<text class="l-k" x="0" y="172"><tspan class="o2t">● O₂</tspan>   <tspan class="co2t">● CO₂</tspan></text>' +
+              '<text class="l-est" data-lest x="0" y="192">Intercambio activo</text>' +
             '</g>' +
           '</svg>' +
         '</div>' +
@@ -926,28 +928,35 @@
       m.y = m.t === "o2" ? 20 + Math.random() * 56 : 100 + Math.random() * 64;
       m.vx = (Math.random() - 0.5) * 20; m.vy = 0; m.vida = 0;
     }
-    for (var mo = 0; mo < 14; mo++) { molecula("o2"); molecula("co2"); }
-    var lAgua = el.querySelector("[data-lagua]"), lAgTx = el.querySelector("[data-lagtx]"), lEst = el.querySelector("[data-lest]"), bCo2 = el.querySelector("[data-bco2]"), co2San = 60;
-    function lupa(dt, mojada, vBarr) {
-      lAgua.setAttribute("opacity", mojada ? "0.85" : "0");
-      lAgTx.setAttribute("opacity", mojada ? "1" : "0");
-      lEst.textContent = mojada ? "Bloqueado por el agua" : "Intercambio activo";
-      lEst.setAttribute("class", "l-est" + (mojada ? " baja" : ""));
-      // Sin intercambio, el CO₂ se acumula en la sangre
-      co2San += dt * (mojada ? 12 : -18); co2San = Math.max(60, Math.min(84, co2San));
-      bCo2.setAttribute("width", co2San.toFixed(1));
+    for (var mo = 0; mo < 16; mo++) { molecula("o2"); molecula("co2"); }
+    var lAgua = el.querySelector("[data-lagua]"), lAgTx = el.querySelector("[data-lagtx]"), lEst = el.querySelector("[data-lest]");
+    var bSO2 = el.querySelector("[data-so2]"), bSCO2 = el.querySelector("[data-sco2]"), mojado = 0;
+    // Lupa: el agua cubre la membrana en la misma proporción que se pierde superficie útil.
+    // Por la parte mojada no cruza nada; la sangre que sale gana menos O₂ y pierde menos CO₂.
+    function lupa(dt, util, vBarr) {
+      var obj = 1 - util;
+      mojado += (obj - mojado) * (dt ? Math.min(1, dt * 3) : 1);
+      var w = 160 * mojado, wx = 176 - w;
+      lAgua.setAttribute("x", wx.toFixed(1)); lAgua.setAttribute("width", w.toFixed(1));
+      lAgTx.setAttribute("x", (wx + w / 2).toFixed(1));
+      lAgTx.setAttribute("opacity", w > 40 ? "1" : "0");
+      var u = 1 - mojado;
+      bSO2.setAttribute("width", (22 + 98 * u).toFixed(1));
+      bSCO2.setAttribute("width", (10 + 100 * (1 - u)).toFixed(1));
+      lEst.textContent = mojado < 0.12 ? "Intercambio activo" : mojado < 0.45 ? "Intercambio reducido" : "Intercambio muy reducido";
+      lEst.setAttribute("class", "l-est" + (mojado < 0.12 ? "" : mojado < 0.45 ? " warn" : " baja"));
       MOL.forEach(function (m) {
         m.vida += dt;
         m.x += (m.vx + (Math.random() - 0.5) * 40) * dt;
         var deriva = m.t === "o2" ? 17 : -17;   // O₂ hacia la sangre, CO₂ hacia el gas
         m.y += (deriva + (Math.random() - 0.5) * 50) * dt;
-        if (mojada) {
-          // el agua separa el gas de la membrana: nada cruza
-          if (m.t === "o2" && m.y > 30 && m.y < 92) m.y = 30;
+        if (m.x >= wx) {
+          // bajo el agua el gas no llega a la membrana: nada cruza
+          if (m.t === "o2" && m.y > 38 && m.y < 92) m.y = 38;
           if (m.t === "co2" && m.y < 96) m.y = 96;
         }
         if (m.t === "co2" && m.y < 80) m.x += vBarr * dt;   // el barrido arrastra el CO₂ que sale
-        var fuera = m.x < 6 || m.x > 190 || (m.t === "o2" && m.y > 168) || (m.t === "co2" && m.y < 8);
+        var fuera = m.x < 6 || m.x > 190 || (m.t === "o2" && m.y > 128) || (m.t === "co2" && m.y < 48);
         if (fuera || m.vida > 9) nace(m);
         m.el.setAttribute("cx", m.x.toFixed(1)); m.el.setAttribute("cy", m.y.toFixed(1));
       });
@@ -1000,7 +1009,7 @@
         return true;
       });
       indicadores(util);
-      lupa(dt, tapon(3) < 214, flush > 0 ? 120 : 26);
+      lupa(dt, util, flush > 0 ? 120 : 26);
     }
     function indicadores(util) {
       var pct = Math.round(util * 100);
