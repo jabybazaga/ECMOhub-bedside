@@ -1,11 +1,13 @@
 /* =====================================================================
    Registro de llamadas ECMO: mismas columnas y listas cerradas que la hoja
    «Registro» del Excel de la unidad (Registro_llamadas_ECMO_ordenado.xlsx),
-   en el mismo orden, para que las filas exportadas se peguen tal cual.
+   con los mismos nombres y en el mismo orden.
    Año, Semestre y Grupo de edad se calculan igual que las fórmulas del Excel.
-   Detrás de las 31 columnas del registro van las del traslado (hora de inicio,
+   Detrás de las columnas del registro van las del traslado (hora de inicio,
    gasometría, soporte y ventilación mecánica).
-   La app NO recoge el nombre: la columna «Paciente» se exporta vacía.
+   La app NO recoge el nombre: la columna «Paciente» del registro no existe aquí
+   ni en el archivo exportado; se rellena después en el Excel del servicio.
+   El flujo de Power Automate empareja por nombre de cabecera: no cambies ninguna.
    ===================================================================== */
 (function (raiz) {
   "use strict";
@@ -21,12 +23,11 @@
     motivo: ["Mejoría / respuesta a otro tratamiento", "No indicación", "Futilidad", "Comorbilidad / situación basal", "Edad", "Contraindicación para anticoagulación", "DAC sin receptor", "Canulación por equipo externo", "Otros"]
   };
 
-  // Columnas A–AE del Excel y, desde AF, las nuevas. tipo: num | txt | fecha | hora | lista | sino | calc | nombre
+  // Columnas A–AE del Excel (salvo «Paciente», D) y, desde AF, las nuevas. tipo: num | txt | fecha | hora | lista | sino | calc
   var COLUMNAS = [
     { k: "nllamada", t: "Nº llamada", tipo: "num", grupo: "id", ayuda: "El siguiente correlativo del registro" },
     { k: "codpac", t: "Cód. paciente", tipo: "txt", grupo: "id", ph: "P-000" },
     { k: "codepi", t: "Cód. episodio", tipo: "txt", grupo: "id", ph: "E-000" },
-    { k: "paciente", t: "Paciente", tipo: "nombre" },
     { k: "llamadanum", t: "Llamada nº (del paciente)", tipo: "num", grupo: "id" },
     { k: "fecha", t: "Fecha activación", tipo: "fecha", grupo: "id" },
     { k: "anio", t: "Año", tipo: "calc" },
@@ -110,7 +111,6 @@
   function fila(r) {
     var c = calculados(r);
     return COLUMNAS.map(function (col) {
-      if (col.tipo === "nombre") return "";
       if (col.tipo === "calc") return c[col.k];
       if (col.k === "driving") return c.driving;
       var v = r[col.k];

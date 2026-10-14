@@ -1,3 +1,4 @@
+/* ECMO HUB bedside — © 2026 Luis Javier Pérez Bazaga. Todos los derechos reservados. */
 /* =====================================================================
    ECMO a pie de cama · hoja de estilos
    Temas: claro (por defecto), oscuro y noche (guardia), con data-theme
@@ -1409,3 +1410,40 @@ html[data-theme="noche"] .btn-traslado.sigue{background:#3A2A12;border-color:#7A
 .viewer .rg-aviso{max-width:560px;margin:0 auto 12px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
 .reg-card .rc-amb{display:inline-flex;width:24px;height:24px;color:#B4322E}
 .reg-card .rc-amb svg{width:22px;height:22px}
+
+/* ---------- Envío al registro: confirmación ---------- */
+.reg-conf{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:6px 0 12px;padding:10px 12px 10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.reg-conf[hidden]{display:none}
+.reg-conf .rcf-t{flex:1 1 auto;font-size:14px;color:var(--ink-2)}
+.reg-conf .reg-btn{flex:0 0 auto;min-height:44px}
+.reg-conf.preg{display:block;padding:14px;border-color:var(--accent);background:var(--accent-soft)}
+.reg-conf .rcf-q{margin:0 0 4px;font:700 17px var(--cond);color:var(--ink)}
+.reg-conf .rcf-s{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:var(--ink-2);overflow-wrap:anywhere}
+.reg-conf .rcf-b{display:flex;flex-wrap:wrap;gap:10px}
+.reg-conf .rcf-b .reg-btn{flex:1 1 150px;min-height:48px}
+
+/* ---------- Acerca de ---------- */
+.acerca-link{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;margin:12px 0 0;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.acerca-link>svg:first-child{width:22px;height:22px;flex:none;color:var(--ink-2)}
+.acerca-link span{flex:1 1 auto;display:flex;flex-direction:column;min-width:0}
+.acerca-link b{font-weight:600;font-size:14.5px}
+.acerca-link small{font-size:12.5px;color:var(--ink-3)}
+.acerca-link .chev{width:18px;height:18px;flex:none;color:var(--ink-3)}
+.acerca-id{display:flex;align-items:center;gap:14px;margin:4px 0 14px}
+.acerca-id img{width:64px;height:64px;border-radius:14px;object-fit:cover;flex:none;background:#fff}
+.acerca-id b{display:block;font:700 22px var(--cond);color:var(--ink);line-height:1.15}
+.acerca-id span{font-size:14px;color:var(--ink-3)}
+.acerca-copy{margin:0 2px 8px;font-size:15px;font-weight:600;color:var(--ink)}
+.acerca-p{margin:0 2px 8px;font-size:14px;line-height:1.55;color:var(--ink-2)}
+.aviso-clin{background:var(--warn-soft);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.55;color:var(--ink)}
+
+/* ---------- Aviso clínico al abrir por primera vez ---------- */
+.aviso-ini{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px 16px;background:var(--scrim)}
+.aviso-ini[hidden]{display:none}
+.aviso-ini .ai-card{width:100%;max-width:420px;max-height:100%;overflow-y:auto;background:var(--surface);color:var(--ink);border-radius:20px;padding:22px 20px 16px;box-shadow:0 16px 40px rgba(10,18,24,.3);display:flex;flex-direction:column;gap:12px;animation:pop 200ms var(--ease-out)}
+.aviso-ini .ai-ic{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:var(--warn-soft);color:var(--warn)}
+.aviso-ini .ai-ic svg{width:26px;height:26px}
+.aviso-ini h2{margin:0;font:700 22px var(--cond)}
+.aviso-ini p{margin:0;font-size:15px;line-height:1.55;color:var(--ink-2)}
+.aviso-ini .reg-btn{flex:none;width:100%;margin-top:4px}
+.aviso-ini small{font-size:12px;color:var(--ink-3);text-align:center}
