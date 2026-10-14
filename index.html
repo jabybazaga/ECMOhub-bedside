@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=43">
+<link rel="manifest" href="manifest.json?v=44">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -102,10 +102,14 @@
       </div>
 
       <div class="grp">Datos</div>
-      <div class="grid3">
+      <div class="grid2 tools">
         <button class="tile inf" data-go="informes">
           <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></div>
           <div class="tt">Informes</div><span class="tcount" id="inf-count" hidden></span>
+        </button>
+        <button class="tile reg" data-go="registro">
+          <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 9v11M15 9v11"/></svg></div>
+          <div class="tt">Registro de llamadas</div><span class="tcount" id="reg-count" hidden></span>
         </button>
         <button class="tile sup" data-go="datos">
           <div class="tic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg></div>
@@ -801,6 +805,23 @@
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
 
+  <!-- ============ REGISTRO DE LLAMADAS ============ -->
+  <section id="screen-registro" class="screen">
+    <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Registro de llamadas</h1></div></div>
+    <div class="content">
+      <p class="ref-lede">Una fila por llamada, con las mismas columnas y listas que la hoja «Registro» del Excel de la unidad. Se guarda en este dispositivo y funciona sin conexión. <b>Sin nombre:</b> identifica al paciente con su código P-000.</p>
+      <div class="reg-acc">
+        <button type="button" class="reg-btn prim" data-reg-nueva><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Nueva llamada</button>
+        <button type="button" class="reg-btn" data-reg-export><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>Exportar a Excel</button>
+      </div>
+      <label class="chk reg-todas"><input type="checkbox" id="reg-todas"><span>Incluir también las ya exportadas</span></label>
+      <p class="reg-msg" id="reg-msg" aria-live="polite"></p>
+      <div id="reg-lista"></div>
+      <div class="note reg-ayuda"><b>Para pasarlas al registro:</b> abre el Excel exportado, copia las filas sin la cabecera y pégalas en la primera fila libre de la hoja «Registro» con <i>Pegado especial → Valores</i>. Las columnas van en el mismo orden; «Paciente» va vacía y Año, Semestre y Grupo de edad ya vienen calculados.</div>
+    </div>
+    <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
+  </section>
+
   <!-- ============ INFORMES ============ -->
   <section id="screen-informes" class="screen">
     <div id="informes-view-lista" class="pane on">
@@ -877,7 +898,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 43 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 44 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
@@ -894,6 +915,8 @@
 <div class="crisis" id="crisis" role="dialog" aria-modal="true" hidden></div>
 
 <script src="reglas.js"></script>
+<script src="registro.js"></script>
+<script src="xlsx.js"></script>
 <script src="perlas-interactivas.js"></script>
 <script src="app.js"></script>
 </body>
