@@ -8,7 +8,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=46">
+<link rel="manifest" href="manifest.json?v=47">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -124,7 +124,7 @@
       </div>
 
       <div class="disclaimer"><b>No sustituye al protocolo.</b> Consulta rápida a pie de cama; ante cualquier duda, el documento original.</div>
-      <button type="button" class="acerca-link" data-go="acerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg><span><b>Acerca de</b><small>Versión 46 · © 2026 Luis Javier Pérez Bazaga</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button type="button" class="acerca-link" data-go="acerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg><span><b>Acerca de</b><small>Versión 47 · © 2026 Luis Javier Pérez Bazaga</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -821,7 +821,7 @@
       <p class="reg-msg" id="reg-msg" aria-live="polite"></p>
       <div class="reg-conf" id="reg-conf" aria-live="polite" hidden></div>
       <div id="reg-lista"></div>
-      <div class="note reg-ayuda"><b>Volcado automático:</b> al pulsar <b>Enviar al registro</b> se abre el menú Compartir; elige OneDrive o SharePoint y guarda el archivo en <b>SharePoint › uci-ecmo › REGISTRO › Entradas app</b> (en el ordenador se descarga y lo subes tú). Un flujo de Power Automate añade las filas al registro. Cuando confirmes que está guardado, las llamadas se borran de este dispositivo.<br><b>Sin nombre:</b> el archivo no lleva la columna «Paciente»; se rellena después en el Excel del servicio.</div>
+      <div class="note reg-ayuda"><b>Volcado automático:</b> al pulsar <b>Enviar al registro</b> se abre el menú Compartir (iPhone, iPad); elige OneDrive o SharePoint y guarda el archivo en <b>SharePoint › uci-ecmo › REGISTRO › Entradas app</b>. En Android y en el ordenador el archivo se descarga: pulsa <b>Abrir Entradas app</b>, luego <b>Cargar</b> y elige el archivo en Descargas. Un flujo de Power Automate añade las filas al registro. Cuando confirmes que está guardado, las llamadas se borran de este dispositivo.<br><b>Sin nombre:</b> el archivo no lleva la columna «Paciente»; se rellena después en el Excel del servicio.</div>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -832,7 +832,7 @@
     <div class="content">
       <div class="acerca-id">
         <img src="logo.jpg" alt="" width="64" height="64">
-        <div><b>ECMO HUB bedside</b><span>Versión 46</span></div>
+        <div><b>ECMO HUB bedside</b><span>Versión 47</span></div>
       </div>
       <p class="acerca-copy">© 2026 Luis Javier Pérez Bazaga. Todos los derechos reservados.</p>
       <p class="acerca-p">Desarrollada en el Servicio de Medicina Intensiva del Hospital Universitario de Badajoz (grupo de ECMO móvil).</p>
@@ -920,7 +920,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 46 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 47 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 
