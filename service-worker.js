@@ -1,11 +1,13 @@
+/* ECMO HUB bedside — © 2026 Luis Javier Pérez Bazaga. Todos los derechos reservados. */
 // Service worker de la app "ECMO a pie de cama".
 // Sube la versión de CACHE_NAME cada vez que cambies los ficheros
 // para que el móvil descargue la versión nueva.
-const CACHE_NAME = "ecmo-pie-de-cama-v45";
+const CACHE_NAME = "ecmo-pie-de-cama-v46";
 const ASSETS = [
   "./",
   "index.html",
   "styles.css",
+  "config.js",
   "reglas.js",
   "registro.js",
   "xlsx.js",

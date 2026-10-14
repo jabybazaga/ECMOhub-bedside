@@ -1,3 +1,4 @@
+/* ECMO HUB bedside — © 2026 Luis Javier Pérez Bazaga. Todos los derechos reservados. */
 (function () {
   "use strict";
 
@@ -42,7 +43,7 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
   // ---------- navegación entre pantallas ----------
-  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "registro", "buscar", "ajustes"];
+  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "registro", "acerca", "buscar", "ajustes"];
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
@@ -146,11 +147,31 @@
     });
   });
 
+  // Aviso clínico: se muestra la primera vez que se abre la app y se recuerda al pulsar «Entendido».
+  var AVISO_KEY = "ecmo_aviso_clinico";
+  var avisoEl = document.getElementById("aviso-ini");
+  function mostrarAviso() {
+    if (!avisoEl || ls(AVISO_KEY) === "1" || !avisoEl.hidden) return;
+    var app = document.getElementById("app");
+    avisoEl.hidden = false;
+    if (app) app.inert = true;
+    var b = avisoEl.querySelector("[data-aviso-ok]");
+    if (b) b.focus();
+  }
+  if (avisoEl) avisoEl.addEventListener("click", function (e) {
+    if (!e.target.closest("[data-aviso-ok]")) return;
+    ls(AVISO_KEY, "1");
+    avisoEl.hidden = true;
+    var app = document.getElementById("app");
+    if (app) app.inert = false;
+  });
+
   // splash: pasa a Inicio tras un instante o al tocar
   var splash = document.getElementById("splash");
   function dismissSplash() {
     splash.classList.remove("on");
     go("inicio");
+    mostrarAviso();
   }
   splash.addEventListener("click", dismissSplash);
   setTimeout(dismissSplash, 1100);
@@ -846,15 +867,23 @@
     }
   });
 
-  // ---------- Registro de llamadas (exportación a Excel) ----------
+  // ---------- Registro de llamadas (envío al registro en Excel) ----------
   // Cada llamada se guarda en este dispositivo con las columnas del Excel de la unidad
-  // (registro.js) y se exporta a .xlsx (xlsx.js) sin conexión.
+  // (registro.js) y se envía en un .xlsx (xlsx.js) generado sin conexión.
+  // Estados: «pendiente de enviar» (nunca enviada o cambiada después) y «pendiente de confirmar»
+  // (enviada; se borra del móvil cuando el usuario confirma que el archivo está en Entradas app).
   var REG_KEY = "ecmo_llamadas";
+  var ENV_KEY = "ecmo_llamadas_envio";
+  var CONFIG = window.ECMO_CONFIG || { metodoEnvio: "compartir" };
   var SVG_AMBU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17V7a1 1 0 0 1 1-1h11v11"/><path d="M14 10h4l3.5 3.5V17h-2"/><path d="M5 17h1M11 17h3"/><circle cx="8.5" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/><path d="M8 8.5v4M6 10.5h4"/></svg>';
   var REG = window.ECMO_REGISTRO;
   function getLlamadas() { try { return JSON.parse(ls(REG_KEY) || "[]"); } catch (e) { return []; } }
   function setLlamadas(l) { ls(REG_KEY, JSON.stringify(l)); }
   function pendiente(x) { return !x.exportado || x.mod > x.exportado; }
+  function porConfirmar(x) { return !pendiente(x); }
+  // Último envío: { ids, nombre, preguntar } — preguntar muestra «¿Lo has guardado en Entradas app?»
+  function getEnvio() { try { return JSON.parse(ls(ENV_KEY) || "null"); } catch (e) { return null; } }
+  function setEnvio(v) { if (v) ls(ENV_KEY, JSON.stringify(v)); else try { localStorage.removeItem(ENV_KEY); } catch (e) { /* sin almacenamiento */ } }
   function regFecha(iso) { var f = REG && REG.fechaDe(iso); return f ? ("0" + f.getDate()).slice(-2) + "/" + ("0" + (f.getMonth() + 1)).slice(-2) + "/" + f.getFullYear() : "Sin fecha"; }
   function hoyISO() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
   function regMsg(t, sev) { var m = document.getElementById("reg-msg"); if (m) { m.textContent = t || ""; m.className = "reg-msg" + (sev ? " " + sev : ""); } }
@@ -864,13 +893,12 @@
     var l = getLlamadas(), np = l.filter(pendiente).length;
     var cnt = document.getElementById("reg-count");
     if (cnt) { cnt.textContent = np; cnt.hidden = !np; }
+    pintarConfirmacion();
     if (!host) return;
     if (!l.length) { host.innerHTML = '<p class="note">Aún no hay llamadas guardadas en este dispositivo. Pulsa <b>Nueva llamada</b> para registrar la primera.</p>'; return; }
     l = l.slice().sort(function (a, b) { return (b.d.fecha || "").localeCompare(a.d.fecha || "") || b.creado - a.creado; });
     host.innerHTML = l.map(function (x) {
-      var d = x.d, est = !x.exportado ? '<span class="badge warn">Pendiente</span>'
-        : x.mod > x.exportado ? '<span class="badge warn">Modificada tras exportar</span>'
-        : '<span class="badge ok">Exportada ' + new Date(x.exportado).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }) + "</span>";
+      var d = x.d, est = pendiente(x) ? '<span class="badge warn">Pendiente de enviar</span>' : '<span class="badge zero">Pendiente de confirmar</span>';
       var linea = [d.codpac, d.tipo, d.desenlace].filter(Boolean).map(esc).join(" · ") || "Sin datos clave";
       return '<button type="button" class="reg-card" data-reg-id="' + x.id + '"><span class="rc-top">' + (x.traslado ? '<i class="rc-amb" aria-label="Traslado">' + SVG_AMBU + "</i>" : "") + "<b>" + (d.nllamada ? "Nº " + esc(d.nllamada) : "Sin nº") + '</b><span>' + regFecha(d.fecha) + (d.horatraslado ? " · " + esc(d.horatraslado) : "") + "</span>" + est + "</span>" +
         '<span class="rc-l">' + linea + "</span>" + (d.hospital ? '<span class="rc-s">' + esc(d.hospital) + (d.categoria ? " · " + esc(d.categoria) : "") + "</span>" : "") + "</button>";
@@ -956,42 +984,102 @@
     cerrarEsquema();
     renderRegistro();
   }
-  function exportarLlamadas() {
+  // Tras enviar no se borra nada: navigator.share no confirma que el archivo llegue a SharePoint.
+  function idsAConfirmar() {
+    var env = getEnvio(), ok = getLlamadas().filter(porConfirmar).map(function (x) { return x.id; });
+    return env && env.ids ? env.ids.filter(function (id) { return ok.indexOf(id) > -1; }) : ok;
+  }
+  function pintarConfirmacion() {
+    var host = document.getElementById("reg-conf");
+    if (!host) return;
+    var env = getEnvio(), total = getLlamadas().filter(porConfirmar).length, ids = idsAConfirmar();
+    if (!total) { host.hidden = true; host.innerHTML = ""; if (env) setEnvio(null); return; }
+    host.hidden = false;
+    if (env && env.preguntar && ids.length) {
+      host.className = "reg-conf preg";
+      host.innerHTML = '<p class="rcf-q">¿Lo has guardado en Entradas app?</p><p class="rcf-s">' + (env.nombre ? esc(env.nombre) + " · " : "") + ids.length + (ids.length === 1 ? " llamada" : " llamadas") +
+        ". Si respondes que sí, " + (ids.length === 1 ? "se borra" : "se borran") + ' de este dispositivo.</p><div class="rcf-b"><button type="button" class="reg-btn prim" data-conf-si>Sí, borrar del móvil</button><button type="button" class="reg-btn" data-conf-no>Todavía no</button></div>';
+    } else {
+      host.className = "reg-conf";
+      host.innerHTML = '<span class="rcf-t">' + total + (total === 1 ? " llamada pendiente" : " llamadas pendientes") + ' de confirmar</span><button type="button" class="reg-btn" data-conf-abrir>Confirmar</button>';
+    }
+  }
+
+  // Vías de envío al registro. Cada una recibe el File y devuelve una promesa con { via }.
+  // Hoy solo existe «compartir». La subida directa con Microsoft Graph será ENVIO.graph(archivo),
+  // con la misma forma, y se activa con metodoEnvio: 'graph' en config.js sin tocar lo demás.
+  var ENVIO = {
+    compartir: function (archivo) {
+      function descargar() {
+        var url = URL.createObjectURL(archivo), a = document.createElement("a");
+        a.href = url; a.download = archivo.name; document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+        return { via: "descarga" };
+      }
+      // En el móvil o la tablet, el menú Compartir (OneDrive, SharePoint, Teams…); en el ordenador, descarga.
+      if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+        return navigator.share({ files: [archivo], title: "Llamadas ECMO" }).then(function () { return { via: "compartir" }; }, function (e) {
+          if (e && e.name === "AbortError") throw e;
+          return descargar();
+        });
+      }
+      return Promise.resolve(descargar());
+    }
+  };
+  function enviarRegistro(archivo) {
+    return (ENVIO[CONFIG.metodoEnvio] || ENVIO.compartir)(archivo);
+  }
+  function nombreEnvio(d) {
+    return "llamadas_ECMO_" + d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + "_" +
+      ("0" + d.getHours()).slice(-2) + ("0" + d.getMinutes()).slice(-2) + ".xlsx";
+  }
+  function enviarLlamadas() {
     if (!REG || !window.ECMO_XLSX) return;
     var todas = document.getElementById("reg-todas"), l = getLlamadas();
     var sel = l.filter(function (x) { return (todas && todas.checked) || pendiente(x); });
-    if (!sel.length) { regMsg(l.length ? "No hay llamadas pendientes. Marca «Incluir también las ya exportadas» para exportarlas de nuevo." : "Aún no hay llamadas que exportar.", "warn"); return; }
+    if (!sel.length) { regMsg(l.length ? "No hay llamadas pendientes de enviar. Marca «Incluir también las pendientes de confirmar» para enviarlas de nuevo." : "Aún no hay llamadas que enviar.", "warn"); return; }
     sel.sort(function (a, b) { return (a.d.fecha || "").localeCompare(b.d.fecha || "") || a.creado - b.creado; });
     var bytes = window.ECMO_XLSX.libro("Registro", [REG.cabecera()].concat(sel.map(function (x) { return REG.fila(x.d); })), { tabla: "Llamadas" });
-    var nombre = "Llamadas_ECMO_" + hoyISO() + ".xlsx", tipo = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    var ids = sel.map(function (x) { return x.id; });
-    function marcar() {
+    var nombre = nombreEnvio(new Date()), tipo = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    var ids = sel.map(function (x) { return x.id; }), archivo;
+    try { archivo = new File([bytes], nombre, { type: tipo }); } catch (e) { archivo = new Blob([bytes], { type: tipo }); archivo.name = nombre; }
+    enviarRegistro(archivo).then(function (r) {
       var ahora = Date.now(), lista = getLlamadas();
       lista.forEach(function (x) { if (ids.indexOf(x.id) > -1) { x.exportado = ahora; if (x.mod > ahora) x.mod = ahora; } });
       setLlamadas(lista);
-      regMsg(sel.length + (sel.length === 1 ? " llamada exportada" : " llamadas exportadas") + " a " + nombre + ".", "ok");
+      setEnvio({ ids: ids, nombre: nombre, preguntar: true });
+      if (r && r.via === "descarga") regMsg("Archivo descargado: " + nombre + ". Súbelo a SharePoint › uci-ecmo › REGISTRO › Entradas app.", "warn");
+      else regMsg("Archivo compartido: " + nombre + ".", "ok");
       renderRegistro();
-    }
-    var archivo = null;
-    try { archivo = new File([bytes], nombre, { type: tipo }); } catch (e) { archivo = null; }
-    // En tablet o móvil se comparte directamente (OneDrive, Teams, correo…); en el ordenador se descarga.
-    if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
-      navigator.share({ files: [archivo], title: nombre }).then(marcar).catch(function (e) {
-        if (e && e.name === "AbortError") regMsg("Exportación cancelada: las llamadas siguen pendientes.", "warn");
-        else descargar();
-      });
-    } else descargar();
-    function descargar() {
-      var url = URL.createObjectURL(new Blob([bytes], { type: tipo })), a = document.createElement("a");
-      a.href = url; a.download = nombre; document.body.appendChild(a); a.click();
-      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
-      marcar();
-    }
+    }, function (e) {
+      regMsg(e && e.name === "AbortError" ? "Envío cancelado: las llamadas siguen pendientes de enviar." : "No se pudo enviar el archivo. Las llamadas siguen pendientes de enviar.", "warn");
+    });
   }
   var regHost = document.getElementById("screen-registro");
   if (regHost) regHost.addEventListener("click", function (e) {
     if (e.target.closest("[data-reg-nueva]")) { regMsg(""); abrirLlamada(null); return; }
-    if (e.target.closest("[data-reg-export]")) { exportarLlamadas(); return; }
+    if (e.target.closest("[data-reg-enviar]")) { enviarLlamadas(); return; }
+    if (e.target.closest("[data-conf-si]")) {
+      var bor = idsAConfirmar();
+      setLlamadas(getLlamadas().filter(function (x) { return bor.indexOf(x.id) < 0; }));
+      setEnvio(null);
+      regMsg(bor.length + (bor.length === 1 ? " llamada borrada" : " llamadas borradas") + " de este dispositivo.", "ok");
+      renderRegistro();
+      return;
+    }
+    if (e.target.closest("[data-conf-no]")) {
+      var en = getEnvio();
+      if (en) { en.preguntar = false; setEnvio(en); }
+      regMsg("Se quedan en este dispositivo como pendientes de confirmar.", "");
+      renderRegistro();
+      return;
+    }
+    if (e.target.closest("[data-conf-abrir]")) {
+      setEnvio({ ids: getLlamadas().filter(porConfirmar).map(function (x) { return x.id; }), nombre: "", preguntar: true });
+      regMsg("");
+      renderRegistro();
+      return;
+    }
     var c = e.target.closest("[data-reg-id]");
     if (c) { regMsg(""); abrirLlamada(c.dataset.regId); }
   });
