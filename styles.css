@@ -1392,6 +1392,10 @@ html[data-theme="noche"] .folio{filter:brightness(.82)}
 .viewer .rg-sino{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .viewer .rg-sino button{min-height:44px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);font:600 15px var(--serif);cursor:pointer}
 .viewer .rg-sino button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+/* Identificación del paciente: tres opciones; los códigos solo si ya está en el registro */
+.viewer .rg-ident .rg-sino{grid-template-columns:repeat(3,1fr)}
+.viewer .rg-ident .rg-sino button{font-size:14px;padding:0 4px;line-height:1.2}
+.viewer .rg:not([data-ident="Ya registrado"]) [data-f="codpac"],.viewer .rg:not([data-ident="Ya registrado"]) [data-f="codepi"]{display:none}
 .viewer .rg-calc{margin:10px 0 0;font-size:13px;color:var(--ink-3)}
 .viewer .rg-pie{display:flex;flex-wrap:wrap;gap:10px;max-width:560px;margin:0 auto 24px}
 .reg-todas{background:none;border:0;padding-left:0;padding-right:0}

@@ -48,7 +48,8 @@ Este documento dice de dónde sale cada bloque de contenido clínico de la app. 
 | **Supervivencia** · Registro ELSO al alta y por clase de riesgo | `index.html` (`#screen-datos`), `app.js` (`renderSurv`) | ELSO (Live Registry) y EOLIA | Informa |
 | **Fuentes** | `index.html` (`#screen-fuentes`) | CHUB, ELSO y otras publicaciones | Informa |
 | **Inicio** · «Iniciar traslado» | `index.html`, `app.js` | Registro SES | Registra |
-| **Registro de llamadas** · Formulario, listas cerradas, columnas calculadas (Año, Semestre, Grupo de edad, driving pressure) y envío al registro | `registro.js`, `xlsx.js`, `config.js`, `app.js` | Registro SES | Registra / Calcula |
+| **Registro de llamadas** · Formulario, listas cerradas, identificación del paciente, columnas calculadas (Año, Semestre, Grupo de edad, driving pressure) y envío al registro | `registro.js`, `xlsx.js`, `config.js`, `app.js` | Registro SES | Registra / Calcula |
+| **Volcado al registro** · Asignación de Nº llamada, Cód. paciente, Cód. episodio (regla de 7 y 60 días) y «Llamada nº»; tabla «Revisar» | `flujo/anadir-al-registro.ts` (Office Script), `flujo/LEEME.md` | Registro SES | Registra |
 | **Acerca de** y aviso clínico | `index.html` (`#screen-acerca`, `#aviso-ini`), `app.js` | Propio | Informa |
 
 ## Qué recomienda y qué no, en la ronda y el informe
