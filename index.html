@@ -8,7 +8,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=47">
+<link rel="manifest" href="manifest.json?v=48">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -124,7 +124,7 @@
       </div>
 
       <div class="disclaimer"><b>No sustituye al protocolo.</b> Consulta rápida a pie de cama; ante cualquier duda, el documento original.</div>
-      <button type="button" class="acerca-link" data-go="acerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg><span><b>Acerca de</b><small>Versión 47 · © 2026 Luis Javier Pérez Bazaga</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+      <button type="button" class="acerca-link" data-go="acerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg><span><b>Acerca de</b><small>Versión 48 · © 2026 Luis Javier Pérez Bazaga</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -812,7 +812,7 @@
   <section id="screen-registro" class="screen">
     <div class="appbar plain"><div class="toprow"><button class="back" data-go="inicio" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><h1 class="title">Registro de llamadas</h1></div></div>
     <div class="content">
-      <p class="ref-lede">Una fila por llamada, con las mismas columnas y listas que la hoja «Registro» del Excel de la unidad. Se guarda en este dispositivo y funciona sin conexión. <b>Sin nombre:</b> identifica al paciente con su código P-000.</p>
+      <p class="ref-lede">Una fila por llamada, con las mismas columnas y listas que la hoja «Registro» del Excel de la unidad. Se guarda en este dispositivo y funciona sin conexión. <b>Sin nombre:</b> indica si el paciente es nuevo o ya está en el registro (con su código P-000). El Nº de llamada, los códigos nuevos y el episodio los pone el registro al volcarla.</p>
       <div class="reg-acc">
         <button type="button" class="reg-btn prim" data-reg-nueva><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Nueva llamada</button>
         <button type="button" class="reg-btn" data-reg-enviar><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5"/><path d="M12 12v8M9 15l3-3 3 3"/></svg>Enviar al registro</button>
@@ -832,7 +832,7 @@
     <div class="content">
       <div class="acerca-id">
         <img src="logo.jpg" alt="" width="64" height="64">
-        <div><b>ECMO HUB bedside</b><span>Versión 47</span></div>
+        <div><b>ECMO HUB bedside</b><span>Versión 48</span></div>
       </div>
       <p class="acerca-copy">© 2026 Luis Javier Pérez Bazaga. Todos los derechos reservados.</p>
       <p class="acerca-p">Desarrollada en el Servicio de Medicina Intensiva del Hospital Universitario de Badajoz (grupo de ECMO móvil).</p>
@@ -920,7 +920,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 47 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 48 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 

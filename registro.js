@@ -8,11 +8,16 @@
    La app NO recoge el nombre: la columna «Paciente» del registro no existe aquí
    ni en el archivo exportado; se rellena después en el Excel del servicio.
    El flujo de Power Automate empareja por nombre de cabecera: no cambies ninguna.
+   Identificación: la app no conoce el registro. Cada llamada dice si el paciente es
+   nuevo, si ya está en el registro (con su Cód. paciente) o si no se sabe; el flujo
+   asigna Nº llamada, códigos nuevos, «Llamada nº» y episodio con las reglas del
+   registro, y lo dudoso lo deja en la tabla «Revisar».
    ===================================================================== */
 (function (raiz) {
   "use strict";
 
   var SI_NO = ["Sí", "No"];
+  var IDENT = ["Nuevo", "Ya registrado", "No lo sé"];
   var LISTAS = {
     categoria: ["SDRA / neumonía / IRA", "Shock cardiogénico", "Politraumatismo", "Shock séptico", "TEP", "Vía aérea / fístula", "Donación en asistolia (DAC)", "Otros"],
     tipo: ["VV", "VA", "VAV (híbrida)", "DAC"],
@@ -23,12 +28,13 @@
     motivo: ["Mejoría / respuesta a otro tratamiento", "No indicación", "Futilidad", "Comorbilidad / situación basal", "Edad", "Contraindicación para anticoagulación", "DAC sin receptor", "Canulación por equipo externo", "Otros"]
   };
 
-  // Columnas A–AE del Excel (salvo «Paciente», D) y, desde AF, las nuevas. tipo: num | txt | fecha | hora | lista | sino | calc
+  // Columnas A–AE del Excel (salvo «Paciente», D) y, desde AF, las nuevas. tipo: num | txt | fecha | hora | lista | sino | opcion | calc
+  // arriba: se muestra la primera de su grupo en el formulario (el orden del archivo no cambia)
   var COLUMNAS = [
-    { k: "nllamada", t: "Nº llamada", tipo: "num", grupo: "id", ayuda: "El siguiente correlativo del registro" },
-    { k: "codpac", t: "Cód. paciente", tipo: "txt", grupo: "id", ph: "P-000" },
-    { k: "codepi", t: "Cód. episodio", tipo: "txt", grupo: "id", ph: "E-000" },
-    { k: "llamadanum", t: "Llamada nº (del paciente)", tipo: "num", grupo: "id" },
+    { k: "nllamada", t: "Nº llamada", tipo: "num", grupo: "id", ayuda: "Déjalo vacío: lo pone el registro al volcarla" },
+    { k: "codpac", t: "Cód. paciente", tipo: "txt", grupo: "id", ph: "P-000", ayuda: "Solo si ya está en el registro" },
+    { k: "codepi", t: "Cód. episodio", tipo: "txt", grupo: "id", ph: "E-000", ayuda: "Normalmente vacío: el registro aplica la regla de 7 y 60 días" },
+    { k: "llamadanum", t: "Llamada nº (del paciente)", tipo: "num", grupo: "id", ayuda: "Déjalo vacío: el registro cuenta las llamadas del paciente" },
     { k: "fecha", t: "Fecha activación", tipo: "fecha", grupo: "id" },
     { k: "anio", t: "Año", tipo: "calc" },
     { k: "semestre", t: "Semestre", tipo: "calc" },
@@ -72,7 +78,9 @@
     { k: "vt", t: "Volumen tidal (mL)", tipo: "num", grupo: "vm" },
     { k: "fr", t: "FR (rpm)", tipo: "num", grupo: "vm" },
     { k: "plateau", t: "Presión plateau (cmH2O)", tipo: "num", grupo: "vm" },
-    { k: "driving", t: "Driving pressure (cmH2O)", tipo: "num", grupo: "vm", ayuda: "Plateau − PEEP: se calcula sola si la dejas vacía" }
+    { k: "driving", t: "Driving pressure (cmH2O)", tipo: "num", grupo: "vm", ayuda: "Plateau − PEEP: se calcula sola si la dejas vacía" },
+    // No está en la hoja «Registro»: solo la usa el flujo para asignar los códigos
+    { k: "ident", t: "Paciente en el registro", tipo: "opcion", opciones: IDENT, grupo: "id", arriba: true }
   ];
   var GRUPOS = [
     { id: "id", t: "Identificación" },
@@ -89,6 +97,22 @@
   function fechaDe(iso) {
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
     return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+  // "p90", "P090", "90" → "P-090"; lo que no tenga número se deja tal cual para que se vea el error
+  function codigo(v, letra) {
+    var t = String(v == null ? "" : v).trim();
+    if (!t) return "";
+    var m = new RegExp("^" + letra + "?\\s*-?\\s*(\\d+)$", "i").exec(t);
+    return m ? letra + "-" + ("00" + +m[1]).slice(-Math.max(3, String(+m[1]).length)) : t.toUpperCase();
+  }
+  // Lo que impide enviar una llamada: sin esto el flujo no sabría a quién asignarla
+  function faltas(r) {
+    var f = [];
+    if (!fechaDe(r.fecha)) f.push("Falta la fecha de activación.");
+    if (IDENT.indexOf(r.ident) < 0) f.push("Indica si el paciente es nuevo, ya está en el registro o no lo sabes.");
+    else if (r.ident === "Ya registrado" && !/^P-\d+$/.test(codigo(r.codpac, "P"))) f.push("Escribe el Cód. paciente del registro (P-000).");
+    if (r.ident === "Ya registrado" && r.codepi && !/^E-\d+$/.test(codigo(r.codepi, "E"))) f.push("El Cód. episodio debe ser E-000 o quedar vacío.");
+    return f;
   }
   function num(v) { if (v == null || v === "") return null; var n = Number(String(v).replace(",", ".")); return isFinite(n) ? n : null; }
   // Driving pressure = plateau − PEEP, salvo que se haya escrito a mano
@@ -113,6 +137,8 @@
     return COLUMNAS.map(function (col) {
       if (col.tipo === "calc") return c[col.k];
       if (col.k === "driving") return c.driving;
+      // Paciente nuevo: los códigos los pone el registro
+      if (col.k === "codpac" || col.k === "codepi") return r.ident === "Nuevo" ? "" : codigo(r[col.k], col.k === "codpac" ? "P" : "E");
       var v = r[col.k];
       if (v == null || v === "") return "";
       if (col.tipo === "fecha") return fechaDe(v) || "";
@@ -122,7 +148,7 @@
   }
   function cabecera() { return COLUMNAS.map(function (c) { return c.t; }); }
 
-  var api = { COLUMNAS: COLUMNAS, GRUPOS: GRUPOS, LISTAS: LISTAS, SI_NO: SI_NO, calculados: calculados, fila: fila, cabecera: cabecera, fechaDe: fechaDe };
+  var api = { COLUMNAS: COLUMNAS, GRUPOS: GRUPOS, LISTAS: LISTAS, SI_NO: SI_NO, IDENT: IDENT, calculados: calculados, fila: fila, cabecera: cabecera, fechaDe: fechaDe, codigo: codigo, faltas: faltas };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else raiz.ECMO_REGISTRO = api;
 })(this);

@@ -899,8 +899,10 @@
     if (!l.length) { host.innerHTML = '<p class="note">Aún no hay llamadas guardadas en este dispositivo. Pulsa <b>Nueva llamada</b> para registrar la primera.</p>'; return; }
     l = l.slice().sort(function (a, b) { return (b.d.fecha || "").localeCompare(a.d.fecha || "") || b.creado - a.creado; });
     host.innerHTML = l.map(function (x) {
-      var d = x.d, est = pendiente(x) ? '<span class="badge warn">Pendiente de enviar</span>' : '<span class="badge zero">Pendiente de confirmar</span>';
-      var linea = [d.codpac, d.tipo, d.desenlace].filter(Boolean).map(esc).join(" · ") || "Sin datos clave";
+      var d = x.d, est = !pendiente(x) ? '<span class="badge zero">Pendiente de confirmar</span>'
+        : REG.faltas(d).length ? '<span class="badge crit">Incompleta</span>' : '<span class="badge warn">Pendiente de enviar</span>';
+      var quien = d.ident === "Nuevo" ? "Paciente nuevo" : d.ident === "No lo sé" ? "Paciente sin identificar" : d.ident === "Ya registrado" ? REG.codigo(d.codpac, "P") : "";
+      var linea = [quien, d.tipo, d.desenlace].filter(Boolean).map(esc).join(" · ") || "Sin datos clave";
       return '<button type="button" class="reg-card" data-reg-id="' + x.id + '"><span class="rc-top">' + (x.traslado ? '<i class="rc-amb" aria-label="Traslado">' + SVG_AMBU + "</i>" : "") + "<b>" + (d.nllamada ? "Nº " + esc(d.nllamada) : "Sin nº") + '</b><span>' + regFecha(d.fecha) + (d.horatraslado ? " · " + esc(d.horatraslado) : "") + "</span>" + est + "</span>" +
         '<span class="rc-l">' + linea + "</span>" + (d.hospital ? '<span class="rc-s">' + esc(d.hospital) + (d.categoria ? " · " + esc(d.categoria) : "") + "</span>" : "") + "</button>";
     }).join("");
@@ -929,13 +931,13 @@
       return '<div class="rg-f rg-w">' + lab + '<select id="' + id + '" data-k="' + c.k + '"><option value="">—</option>' +
         REG.LISTAS[c.lista].map(function (o) { return "<option" + (o === val ? " selected" : "") + ">" + esc(o) + "</option>"; }).join("") + "</select></div>";
     }
-    if (c.tipo === "sino") {
-      return '<div class="rg-f"><span class="rg-l" id="' + id + '">' + esc(c.t) + '</span><div class="rg-sino" role="group" aria-labelledby="' + id + '">' +
-        REG.SI_NO.map(function (o) { return '<button type="button" data-sino="' + c.k + '" data-v="' + o + '" aria-pressed="' + (o === val) + '">' + o + "</button>"; }).join("") + "</div></div>";
+    if (c.tipo === "sino" || c.tipo === "opcion") {
+      return '<div class="rg-f' + (c.tipo === "opcion" ? " rg-w rg-ident" : "") + '" data-f="' + c.k + '"><span class="rg-l" id="' + id + '">' + esc(c.t) + '</span><div class="rg-sino" role="group" aria-labelledby="' + id + '">' +
+        (c.opciones || REG.SI_NO).map(function (o) { return '<button type="button" data-sino="' + c.k + '" data-v="' + o + '" aria-pressed="' + (o === val) + '">' + o + "</button>"; }).join("") + "</div></div>";
     }
     if (c.largo) return '<div class="rg-f rg-w">' + lab + '<textarea id="' + id + '" data-k="' + c.k + '" rows="3">' + esc(val) + "</textarea></div>";
     var tipo = c.tipo === "num" ? 'type="text" inputmode="decimal"' : c.tipo === "fecha" ? 'type="date"' : c.tipo === "hora" ? 'type="time"' : 'type="text"';
-    return '<div class="rg-f' + (c.tipo === "txt" ? " rg-w" : "") + '">' + lab + "<input " + tipo + ' id="' + id + '" data-k="' + c.k + '" value="' + esc(val) + '"' +
+    return '<div class="rg-f' + (c.tipo === "txt" ? " rg-w" : "") + '" data-f="' + c.k + '">' + lab + "<input " + tipo + ' id="' + id + '" data-k="' + c.k + '" value="' + esc(val) + '"' +
       (c.ph ? ' placeholder="' + esc(c.ph) + '"' : "") + ' autocomplete="off">' + (c.ayuda ? '<span class="rg-h">' + esc(c.ayuda) + "</span>" : "") + "</div>";
   }
   function calcHTML() {
@@ -952,13 +954,14 @@
     else if (br && (!traslado || br.traslado)) { RG.d = br.d || {}; RG.traslado = !!br.traslado; }
     else {
       RG.traslado = !!traslado;
-      RG.d = traslado ? { fecha: hoyISO(), horatraslado: horaAhora(), llamadanum: "1", desplaz: "Sí" } : { fecha: hoyISO(), llamadanum: "1" };
+      RG.d = traslado ? { fecha: hoyISO(), horatraslado: horaAhora(), desplaz: "Sí" } : { fecha: hoyISO() };
     }
     if (!x) guardarBorrador();
     var titulo = x ? "Editar llamada" : RG.traslado ? "Traslado en curso" : "Nueva llamada";
     v.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar sin guardar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Registro de llamadas</div><div class="t" id="viewer-t">' + titulo + "</div></div></div>" +
-      '<div class="vb rg">' + (!x ? '<p class="rg-aviso">' + (br ? "Recuperado el borrador sin guardar. " : "") + "Los datos se guardan solos mientras escribes; pulsa <b>Guardar</b> al terminar.</p>" : "") + REG.GRUPOS.map(function (g) {
+      '<div class="vb rg" data-ident="' + esc(RG.d.ident || "") + '">' + (!x ? '<p class="rg-aviso">' + (br ? "Recuperado el borrador sin guardar. " : "") + "Los datos se guardan solos mientras escribes; pulsa <b>Guardar</b> al terminar.</p>" : "") + REG.GRUPOS.map(function (g) {
         var cs = REG.COLUMNAS.filter(function (c) { return c.grupo === g.id; });
+        cs = cs.filter(function (c) { return c.arriba; }).concat(cs.filter(function (c) { return !c.arriba; }));
         return '<section class="rg-g"><h2>' + esc(g.t) + "</h2>" + (g.ayuda ? '<p class="rg-gh">' + esc(g.ayuda) + "</p>" : "") +
           '<div class="rg-grid">' + cs.map(function (c) { return campoHTML(c, RG.d[c.k]); }).join("") + "</div>" +
           (g.id === "id" ? '<p class="rg-calc" data-rg-calc>' + esc(calcHTML()) + "</p>" : "") + "</section>";
@@ -981,7 +984,8 @@
     else l.push({ id: "L" + ahora.toString(36), creado: ahora, mod: ahora, exportado: null, d: d, traslado: RG.traslado || undefined });
     setLlamadas(l);
     if (!RG.id) borrarBorrador();
-    regMsg("Llamada guardada en este dispositivo.", "ok");
+    var fl = REG.faltas(d);
+    regMsg(fl.length ? "Guardada, pero no se podrá enviar hasta completarla: " + fl.join(" ") : "Llamada guardada en este dispositivo.", fl.length ? "warn" : "ok");
     cerrarEsquema();
     renderRegistro();
   }
@@ -1040,6 +1044,9 @@
     if (!REG || !window.ECMO_XLSX) return;
     var todas = document.getElementById("reg-todas"), l = getLlamadas();
     var sel = l.filter(function (x) { return (todas && todas.checked) || pendiente(x); });
+    var incompletas = sel.filter(function (x) { return REG.faltas(x.d).length; }).length;
+    sel = sel.filter(function (x) { return !REG.faltas(x.d).length; });
+    if (!sel.length && incompletas) { regMsg((incompletas === 1 ? "La llamada pendiente está incompleta" : "Las " + incompletas + " llamadas pendientes están incompletas") + ": ábrela e indica si el paciente es nuevo, ya está en el registro (con su Cód. paciente) o no lo sabes.", "warn"); return; }
     if (!sel.length) { regMsg(l.length ? "No hay llamadas pendientes de enviar. Marca «Incluir también las pendientes de confirmar» para enviarlas de nuevo." : "Aún no hay llamadas que enviar.", "warn"); return; }
     sel.sort(function (a, b) { return (a.d.fecha || "").localeCompare(b.d.fecha || "") || a.creado - b.creado; });
     var bytes = window.ECMO_XLSX.libro("Registro", [REG.cabecera()].concat(sel.map(function (x) { return REG.fila(x.d); })), { tabla: "Llamadas" });
@@ -1051,8 +1058,9 @@
       lista.forEach(function (x) { if (ids.indexOf(x.id) > -1) { x.exportado = ahora; if (x.mod > ahora) x.mod = ahora; } });
       setLlamadas(lista);
       setEnvio({ ids: ids, nombre: nombre, preguntar: true });
-      if (r && r.via === "descarga") regMsg("Archivo descargado: " + nombre + ". Súbelo a SharePoint › uci-ecmo › REGISTRO › Entradas app" + (CONFIG.enlaceCarpeta ? ": pulsa «Abrir Entradas app», luego Cargar y elige el archivo en Descargas." : "."), "warn");
-      else regMsg("Archivo compartido: " + nombre + ".", "ok");
+      var aviso = incompletas ? " " + incompletas + (incompletas === 1 ? " llamada incompleta no se ha enviado." : " llamadas incompletas no se han enviado.") : "";
+      if (r && r.via === "descarga") regMsg("Archivo descargado: " + nombre + ". Súbelo a SharePoint › uci-ecmo › REGISTRO › Entradas app" + (CONFIG.enlaceCarpeta ? ": pulsa «Abrir Entradas app», luego Cargar y elige el archivo en Descargas." : ".") + aviso, "warn");
+      else regMsg("Archivo compartido: " + nombre + "." + aviso, aviso ? "warn" : "ok");
       renderRegistro();
     }, function (e) {
       regMsg(e && e.name === "AbortError" ? "Envío cancelado: las llamadas siguen pendientes de enviar." : "No se pudo enviar el archivo. Las llamadas siguen pendientes de enviar.", "warn");
@@ -1109,6 +1117,7 @@
         $$('[data-sino="' + k + '"]', rgV).forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
         b.setAttribute("aria-pressed", String(on));
         RG.d[k] = on ? b.dataset.v : "";
+        if (k === "ident") { var vb = rgV.querySelector(".rg"); if (vb) vb.dataset.ident = RG.d.ident || ""; }
         guardarBorrador();
         return;
       }
