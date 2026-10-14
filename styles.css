@@ -1420,6 +1420,7 @@ html[data-theme="noche"] .btn-traslado.sigue{background:#3A2A12;border-color:#7A
 .reg-conf .rcf-q{margin:0 0 4px;font:700 17px var(--cond);color:var(--ink)}
 .reg-conf .rcf-s{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:var(--ink-2);overflow-wrap:anywhere}
 .reg-conf .rcf-b{display:flex;flex-wrap:wrap;gap:10px}
+.reg-conf .rcf-carpeta{display:flex;width:100%;margin:0 0 10px;min-height:48px;text-decoration:none;border-color:var(--accent);color:var(--accent-ink)}
 .reg-conf .rcf-b .reg-btn{flex:1 1 150px;min-height:48px}
 
 /* ---------- Acerca de ---------- */

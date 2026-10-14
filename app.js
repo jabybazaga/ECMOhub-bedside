@@ -875,6 +875,7 @@
   var REG_KEY = "ecmo_llamadas";
   var ENV_KEY = "ecmo_llamadas_envio";
   var CONFIG = window.ECMO_CONFIG || { metodoEnvio: "compartir" };
+  var SVG_CARPETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M12 16v-5M9.5 13.5 12 11l2.5 2.5"/></svg>';
   var SVG_AMBU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17V7a1 1 0 0 1 1-1h11v11"/><path d="M14 10h4l3.5 3.5V17h-2"/><path d="M5 17h1M11 17h3"/><circle cx="8.5" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/><path d="M8 8.5v4M6 10.5h4"/></svg>';
   var REG = window.ECMO_REGISTRO;
   function getLlamadas() { try { return JSON.parse(ls(REG_KEY) || "[]"); } catch (e) { return []; } }
@@ -998,7 +999,9 @@
     if (env && env.preguntar && ids.length) {
       host.className = "reg-conf preg";
       host.innerHTML = '<p class="rcf-q">¿Lo has guardado en Entradas app?</p><p class="rcf-s">' + (env.nombre ? esc(env.nombre) + " · " : "") + ids.length + (ids.length === 1 ? " llamada" : " llamadas") +
-        ". Si respondes que sí, " + (ids.length === 1 ? "se borra" : "se borran") + ' de este dispositivo.</p><div class="rcf-b"><button type="button" class="reg-btn prim" data-conf-si>Sí, borrar del móvil</button><button type="button" class="reg-btn" data-conf-no>Todavía no</button></div>';
+        ". Si respondes que sí, " + (ids.length === 1 ? "se borra" : "se borran") + ' de este dispositivo.</p>' +
+        (CONFIG.enlaceCarpeta ? '<a class="reg-btn rcf-carpeta" href="' + esc(CONFIG.enlaceCarpeta) + '" target="_blank" rel="noopener">' + SVG_CARPETA + "Abrir Entradas app</a>" : "") +
+        '<div class="rcf-b"><button type="button" class="reg-btn prim" data-conf-si>Sí, borrar del móvil</button><button type="button" class="reg-btn" data-conf-no>Todavía no</button></div>';
     } else {
       host.className = "reg-conf";
       host.innerHTML = '<span class="rcf-t">' + total + (total === 1 ? " llamada pendiente" : " llamadas pendientes") + ' de confirmar</span><button type="button" class="reg-btn" data-conf-abrir>Confirmar</button>';
@@ -1048,7 +1051,7 @@
       lista.forEach(function (x) { if (ids.indexOf(x.id) > -1) { x.exportado = ahora; if (x.mod > ahora) x.mod = ahora; } });
       setLlamadas(lista);
       setEnvio({ ids: ids, nombre: nombre, preguntar: true });
-      if (r && r.via === "descarga") regMsg("Archivo descargado: " + nombre + ". Súbelo a SharePoint › uci-ecmo › REGISTRO › Entradas app.", "warn");
+      if (r && r.via === "descarga") regMsg("Archivo descargado: " + nombre + ". Súbelo a SharePoint › uci-ecmo › REGISTRO › Entradas app" + (CONFIG.enlaceCarpeta ? ": pulsa «Abrir Entradas app», luego Cargar y elige el archivo en Descargas." : "."), "warn");
       else regMsg("Archivo compartido: " + nombre + ".", "ok");
       renderRegistro();
     }, function (e) {
