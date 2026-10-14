@@ -23,6 +23,7 @@
   --g-warn:linear-gradient(160deg,#E3A61E,#8A5A0A);
   --g-light:linear-gradient(160deg,#67717C,#5A636D);
   --g-inf:linear-gradient(160deg,#486EB7,#253F7C);
+  --g-reg:linear-gradient(160deg,#2E8A5E,#17583A);
   --g-sup:linear-gradient(160deg,#237C72,#13524B);
   --tile-ring:0 0 0 0 transparent;
   --ronda:#1F7A52; --ronda-ink:#13583B; --ronda-soft:#E2F1E8;
@@ -58,6 +59,7 @@ html[data-theme="oscuro"]{
   --g-warn:linear-gradient(160deg,#A9750F,#654407);
   --g-light:linear-gradient(160deg,#4C5866,#2C3540);
   --g-inf:linear-gradient(160deg,#3A5C9E,#20345F);
+  --g-reg:linear-gradient(160deg,#2A7A55,#14422E);
   --g-sup:linear-gradient(160deg,#21796F,#11443F);
   --tile-ring:inset 0 0 0 1px rgba(255,255,255,.07);
   --shadow:0 6px 16px rgba(0,0,0,.45);
@@ -261,6 +263,7 @@ html[data-theme="oscuro"] mark,html[data-theme="noche"] mark{background:#5A4A17;
 .tile.light::before{background:var(--g-light)}
 .tile.inf::before{background:var(--g-inf)}
 .tile.sup::before{background:var(--g-sup)}
+.tile.reg::before{background:var(--g-reg)}
 .tile,.hero{box-shadow:0 3px 8px rgba(19,26,32,.14),var(--tile-ring)}
 .tile .tcount{position:absolute;top:11px;right:11px;min-width:24px;height:24px;border-radius:12px;background:rgba(255,255,255,.22);font:600 12.5px var(--serif);display:flex;align-items:center;justify-content:center;padding:0 7px}
 .hero{display:flex;align-items:center;gap:14px;border:0;border-radius:16px;padding:16px;width:100%;text-align:left;color:#fff;box-shadow:0 4px 10px rgba(19,26,32,.18);position:relative;overflow:hidden;isolation:isolate}
@@ -1356,3 +1359,53 @@ html[data-theme="noche"] .folio{filter:brightness(.82)}
 .cr-sino .no{background:#2A3238;color:#F1F4F6;border:1.5px solid #4A555D}
 .cr-sino button:active{transform:scale(.97)}
 @media (max-height:700px){.cr-step{font-size:26px}.cr-ic{width:60px;height:60px}.cr-ic svg{width:34px;height:34px}.cr-sino button{min-height:84px}}
+
+/* Registro de llamadas */
+.reg-acc{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0}
+.reg-btn{flex:1 1 160px;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font:700 15px var(--cond);cursor:pointer}
+.reg-btn svg{width:18px;height:18px;flex:none}
+.reg-btn.prim{background:#1E6B47;border-color:#1E6B47;color:#fff}
+.reg-btn.peligro{color:var(--crit);border-color:var(--crit-line);background:var(--crit-soft)}
+.reg-todas{margin:2px 0}
+.reg-msg{margin:6px 0;font-size:13.5px;line-height:1.4;color:var(--ink-2)}
+.reg-msg:empty{display:none}
+.reg-msg.ok{color:var(--good)}.reg-msg.warn{color:var(--warn)}
+.reg-card{display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;padding:12px 14px;margin:0 0 10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.reg-card .rc-top{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px}
+.reg-card .rc-top b{font:700 16px var(--cond)}
+.reg-card .rc-top span:not(.badge){font-size:13px;color:var(--ink-3)}
+.reg-card .rc-top .badge{margin-left:auto}
+.reg-card .rc-l{font-size:14.5px;color:var(--ink-2)}
+.reg-card .rc-s{font-size:13px;color:var(--ink-3)}
+.reg-ayuda{margin-top:14px}
+.viewer .rg-g{max-width:560px;margin:0 auto 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px 14px}
+.viewer .rg-g h2{margin:0;font:700 17px var(--cond);color:var(--ink)}
+.viewer .rg-gh{margin:2px 0 0;font-size:13px;color:var(--ink-3)}
+.viewer .rg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;margin-top:10px}
+.viewer .rg-f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.viewer .rg-f.rg-w{grid-column:1/-1}
+.viewer .rg-f label,.viewer .rg-l{font-size:13px;font-weight:600;color:var(--ink-2);line-height:1.3}
+.viewer .rg-f input,.viewer .rg-f select,.viewer .rg-f textarea{width:100%;box-sizing:border-box;min-height:44px;font:16px var(--serif);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.viewer .rg-f textarea{min-height:88px;resize:vertical}
+.viewer .rg-h{font-size:12px;color:var(--ink-3)}
+.viewer .rg-sino{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.viewer .rg-sino button{min-height:44px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--ink-2);font:600 15px var(--serif);cursor:pointer}
+.viewer .rg-sino button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.viewer .rg-calc{margin:10px 0 0;font-size:13px;color:var(--ink-3)}
+.viewer .rg-pie{display:flex;flex-wrap:wrap;gap:10px;max-width:560px;margin:0 auto 24px}
+.reg-todas{background:none;border:0;padding-left:0;padding-right:0}
+/* Botón «Iniciar traslado» (Inicio) */
+.btn-traslado{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;margin:2px 0 6px;padding:10px 16px;border:0;border-radius:18px;background:linear-gradient(160deg,#C2402F,#8C1F17);color:#fff;text-align:left;font:inherit;cursor:pointer;box-shadow:0 6px 16px rgba(140,31,23,.28)}
+.btn-traslado .ico{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.btn-traslado .ico svg{width:28px;height:28px}
+.btn-traslado .tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.btn-traslado b{font:700 19px var(--cond)}
+.btn-traslado small{font-size:13px;color:rgba(255,255,255,.9);line-height:1.3}
+.btn-traslado .chev{flex:none;width:20px;height:20px}
+.btn-traslado.sigue{background:linear-gradient(160deg,#C77A1E,#8A4E0C);box-shadow:0 0 0 3px rgba(199,122,30,.35),0 6px 16px rgba(138,78,12,.3)}
+.btn-traslado:active{transform:scale(.99)}
+html[data-theme="noche"] .btn-traslado{background:#3A1714;box-shadow:none;border:1px solid #6B2A24}
+html[data-theme="noche"] .btn-traslado.sigue{background:#3A2A12;border-color:#7A5420}
+.viewer .rg-aviso{max-width:560px;margin:0 auto 12px;font-size:13.5px;line-height:1.45;color:var(--ink-2)}
+.reg-card .rc-amb{display:inline-flex;width:24px;height:24px;color:#B4322E}
+.reg-card .rc-amb svg{width:22px;height:22px}

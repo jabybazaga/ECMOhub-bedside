@@ -42,7 +42,7 @@
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
   // ---------- navegación entre pantallas ----------
-  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "buscar", "ajustes"];
+  var screenNames = ["inicio", "ronda", "calc", "vv", "va", "anticoag", "complicaciones", "escalas", "checklists", "perlas", "datos", "fuentes", "informes", "registro", "buscar", "ajustes"];
   var screens = {};
   screenNames.forEach(function (n) { screens[n] = document.getElementById("screen-" + n); });
 
@@ -126,6 +126,7 @@
     if (name === "buscar") { var q = document.getElementById("q"); if (q) { q.focus(); renderSearch(); } }
     if (name === "inicio") updateHero();
     if (name === "informes") renderListaInformes();
+    if (name === "registro") renderRegistro();
     if (name === "datos") renderSurv();
     if (name === "perlas") cargarPerlas();
     if (name === "ajustes") { syncAjustes(); renderFavs(); }
@@ -844,6 +845,201 @@
       pintarMaleta();
     }
   });
+
+  // ---------- Registro de llamadas (exportación a Excel) ----------
+  // Cada llamada se guarda en este dispositivo con las columnas del Excel de la unidad
+  // (registro.js) y se exporta a .xlsx (xlsx.js) sin conexión.
+  var REG_KEY = "ecmo_llamadas";
+  var SVG_AMBU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17V7a1 1 0 0 1 1-1h11v11"/><path d="M14 10h4l3.5 3.5V17h-2"/><path d="M5 17h1M11 17h3"/><circle cx="8.5" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/><path d="M8 8.5v4M6 10.5h4"/></svg>';
+  var REG = window.ECMO_REGISTRO;
+  function getLlamadas() { try { return JSON.parse(ls(REG_KEY) || "[]"); } catch (e) { return []; } }
+  function setLlamadas(l) { ls(REG_KEY, JSON.stringify(l)); }
+  function pendiente(x) { return !x.exportado || x.mod > x.exportado; }
+  function regFecha(iso) { var f = REG && REG.fechaDe(iso); return f ? ("0" + f.getDate()).slice(-2) + "/" + ("0" + (f.getMonth() + 1)).slice(-2) + "/" + f.getFullYear() : "Sin fecha"; }
+  function hoyISO() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function regMsg(t, sev) { var m = document.getElementById("reg-msg"); if (m) { m.textContent = t || ""; m.className = "reg-msg" + (sev ? " " + sev : ""); } }
+
+  function renderRegistro() {
+    var host = document.getElementById("reg-lista");
+    var l = getLlamadas(), np = l.filter(pendiente).length;
+    var cnt = document.getElementById("reg-count");
+    if (cnt) { cnt.textContent = np; cnt.hidden = !np; }
+    if (!host) return;
+    if (!l.length) { host.innerHTML = '<p class="note">Aún no hay llamadas guardadas en este dispositivo. Pulsa <b>Nueva llamada</b> para registrar la primera.</p>'; return; }
+    l = l.slice().sort(function (a, b) { return (b.d.fecha || "").localeCompare(a.d.fecha || "") || b.creado - a.creado; });
+    host.innerHTML = l.map(function (x) {
+      var d = x.d, est = !x.exportado ? '<span class="badge warn">Pendiente</span>'
+        : x.mod > x.exportado ? '<span class="badge warn">Modificada tras exportar</span>'
+        : '<span class="badge ok">Exportada ' + new Date(x.exportado).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }) + "</span>";
+      var linea = [d.codpac, d.tipo, d.desenlace].filter(Boolean).map(esc).join(" · ") || "Sin datos clave";
+      return '<button type="button" class="reg-card" data-reg-id="' + x.id + '"><span class="rc-top">' + (x.traslado ? '<i class="rc-amb" aria-label="Traslado">' + SVG_AMBU + "</i>" : "") + "<b>" + (d.nllamada ? "Nº " + esc(d.nllamada) : "Sin nº") + '</b><span>' + regFecha(d.fecha) + (d.horatraslado ? " · " + esc(d.horatraslado) : "") + "</span>" + est + "</span>" +
+        '<span class="rc-l">' + linea + "</span>" + (d.hospital ? '<span class="rc-s">' + esc(d.hospital) + (d.categoria ? " · " + esc(d.categoria) : "") + "</span>" : "") + "</button>";
+    }).join("");
+  }
+
+  // Formulario en la capa a pantalla completa (la misma de las perlas): «Atrás» lo cierra.
+  var RG = { id: null, d: {}, traslado: false };
+  // Borrador de la llamada nueva: se guarda a cada cambio para no perder nada si se cierra o se apaga la tablet.
+  var BORR_KEY = "ecmo_llamada_borrador";
+  function getBorrador() { try { return JSON.parse(ls(BORR_KEY) || "null"); } catch (e) { return null; } }
+  function guardarBorrador() { if (!RG.id) ls(BORR_KEY, JSON.stringify({ d: RG.d, traslado: RG.traslado })); pintarBotonTraslado(); }
+  function borrarBorrador() { try { localStorage.removeItem(BORR_KEY); } catch (e) { /* sin almacenamiento */ } pintarBotonTraslado(); }
+  function horaAhora() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function pintarBotonTraslado() {
+    var b = document.querySelector("[data-traslado]"), br = getBorrador();
+    if (!b) return;
+    var sigue = br && br.traslado;
+    b.classList.toggle("sigue", !!sigue);
+    b.querySelector("b").textContent = sigue ? "Continuar traslado" : "Iniciar traslado";
+    b.querySelector("small").textContent = sigue ? "Iniciado a las " + (br.d.horatraslado || "—") + " · sin guardar todavía" : "Registra la llamada y los datos del paciente, también sin conexión";
+  }
+  function campoHTML(c, v) {
+    var id = "rg-" + c.k, val = v == null ? "" : v;
+    var lab = '<label for="' + id + '">' + esc(c.t) + "</label>";
+    if (c.tipo === "lista") {
+      return '<div class="rg-f rg-w">' + lab + '<select id="' + id + '" data-k="' + c.k + '"><option value="">—</option>' +
+        REG.LISTAS[c.lista].map(function (o) { return "<option" + (o === val ? " selected" : "") + ">" + esc(o) + "</option>"; }).join("") + "</select></div>";
+    }
+    if (c.tipo === "sino") {
+      return '<div class="rg-f"><span class="rg-l" id="' + id + '">' + esc(c.t) + '</span><div class="rg-sino" role="group" aria-labelledby="' + id + '">' +
+        REG.SI_NO.map(function (o) { return '<button type="button" data-sino="' + c.k + '" data-v="' + o + '" aria-pressed="' + (o === val) + '">' + o + "</button>"; }).join("") + "</div></div>";
+    }
+    if (c.largo) return '<div class="rg-f rg-w">' + lab + '<textarea id="' + id + '" data-k="' + c.k + '" rows="3">' + esc(val) + "</textarea></div>";
+    var tipo = c.tipo === "num" ? 'type="text" inputmode="decimal"' : c.tipo === "fecha" ? 'type="date"' : c.tipo === "hora" ? 'type="time"' : 'type="text"';
+    return '<div class="rg-f' + (c.tipo === "txt" ? " rg-w" : "") + '">' + lab + "<input " + tipo + ' id="' + id + '" data-k="' + c.k + '" value="' + esc(val) + '"' +
+      (c.ph ? ' placeholder="' + esc(c.ph) + '"' : "") + ' autocomplete="off">' + (c.ayuda ? '<span class="rg-h">' + esc(c.ayuda) + "</span>" : "") + "</div>";
+  }
+  function calcHTML() {
+    var c = REG.calculados(RG.d);
+    var t = [c.anio, c.semestre, c.grupoedad].filter(function (x) { return x !== ""; }).join(" · ");
+    return t ? "Se calculan solos: " + t : "Año, semestre y grupo de edad se calculan con la fecha y la edad.";
+  }
+  function abrirLlamada(id, traslado) {
+    var v = document.getElementById("viewer");
+    if (!v || !REG) return;
+    var x = id ? getLlamadas().filter(function (y) { return y.id === id; })[0] : null, br = !x && getBorrador();
+    RG.id = x ? x.id : null;
+    if (x) { RG.d = JSON.parse(JSON.stringify(x.d)); RG.traslado = !!x.traslado; }
+    else if (br && (!traslado || br.traslado)) { RG.d = br.d || {}; RG.traslado = !!br.traslado; }
+    else {
+      RG.traslado = !!traslado;
+      RG.d = traslado ? { fecha: hoyISO(), horatraslado: horaAhora(), llamadanum: "1", desplaz: "Sí" } : { fecha: hoyISO(), llamadanum: "1" };
+    }
+    if (!x) guardarBorrador();
+    var titulo = x ? "Editar llamada" : RG.traslado ? "Traslado en curso" : "Nueva llamada";
+    v.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar sin guardar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Registro de llamadas</div><div class="t" id="viewer-t">' + titulo + "</div></div></div>" +
+      '<div class="vb rg">' + (!x ? '<p class="rg-aviso">' + (br ? "Recuperado el borrador sin guardar. " : "") + "Los datos se guardan solos mientras escribes; pulsa <b>Guardar</b> al terminar.</p>" : "") + REG.GRUPOS.map(function (g) {
+        var cs = REG.COLUMNAS.filter(function (c) { return c.grupo === g.id; });
+        return '<section class="rg-g"><h2>' + esc(g.t) + "</h2>" + (g.ayuda ? '<p class="rg-gh">' + esc(g.ayuda) + "</p>" : "") +
+          '<div class="rg-grid">' + cs.map(function (c) { return campoHTML(c, RG.d[c.k]); }).join("") + "</div>" +
+          (g.id === "id" ? '<p class="rg-calc" data-rg-calc>' + esc(calcHTML()) + "</p>" : "") + "</section>";
+      }).join("") +
+      '<div class="rg-pie"><button type="button" class="reg-btn prim" data-rg-guardar>Guardar</button>' +
+      '<button type="button" class="reg-btn peligro" data-rg-borrar>' + SVG_TRASH + (x ? "Eliminar" : "Descartar") + "</button></div></div>";
+    v.hidden = false; void v.offsetWidth; v.classList.add("on");
+    capaAbierta("esquema", cerrarEsquema);
+    drivingSugerida();
+  }
+  // La driving pressure aparece calculada (plateau − PEEP) mientras no se escriba a mano
+  function drivingSugerida() {
+    var i = document.getElementById("rg-driving"), c = REG.calculados(RG.d);
+    if (i) i.placeholder = !RG.d.driving && c.driving !== "" ? "Calculada: " + String(c.driving).replace(".", ",") : "";
+  }
+  function guardarLlamada() {
+    var l = getLlamadas(), ahora = Date.now(), d = {};
+    Object.keys(RG.d).forEach(function (k) { var val = RG.d[k]; if (val != null && String(val).trim() !== "") d[k] = String(val).trim(); });
+    if (RG.id) l.forEach(function (x) { if (x.id === RG.id) { x.d = d; x.mod = ahora; } });
+    else l.push({ id: "L" + ahora.toString(36), creado: ahora, mod: ahora, exportado: null, d: d, traslado: RG.traslado || undefined });
+    setLlamadas(l);
+    if (!RG.id) borrarBorrador();
+    regMsg("Llamada guardada en este dispositivo.", "ok");
+    cerrarEsquema();
+    renderRegistro();
+  }
+  function exportarLlamadas() {
+    if (!REG || !window.ECMO_XLSX) return;
+    var todas = document.getElementById("reg-todas"), l = getLlamadas();
+    var sel = l.filter(function (x) { return (todas && todas.checked) || pendiente(x); });
+    if (!sel.length) { regMsg(l.length ? "No hay llamadas pendientes. Marca «Incluir también las ya exportadas» para exportarlas de nuevo." : "Aún no hay llamadas que exportar.", "warn"); return; }
+    sel.sort(function (a, b) { return (a.d.fecha || "").localeCompare(b.d.fecha || "") || a.creado - b.creado; });
+    var bytes = window.ECMO_XLSX.libro("Registro", [REG.cabecera()].concat(sel.map(function (x) { return REG.fila(x.d); })), { tabla: "Llamadas" });
+    var nombre = "Llamadas_ECMO_" + hoyISO() + ".xlsx", tipo = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    var ids = sel.map(function (x) { return x.id; });
+    function marcar() {
+      var ahora = Date.now(), lista = getLlamadas();
+      lista.forEach(function (x) { if (ids.indexOf(x.id) > -1) { x.exportado = ahora; if (x.mod > ahora) x.mod = ahora; } });
+      setLlamadas(lista);
+      regMsg(sel.length + (sel.length === 1 ? " llamada exportada" : " llamadas exportadas") + " a " + nombre + ".", "ok");
+      renderRegistro();
+    }
+    var archivo = null;
+    try { archivo = new File([bytes], nombre, { type: tipo }); } catch (e) { archivo = null; }
+    // En tablet o móvil se comparte directamente (OneDrive, Teams, correo…); en el ordenador se descarga.
+    if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+      navigator.share({ files: [archivo], title: nombre }).then(marcar).catch(function (e) {
+        if (e && e.name === "AbortError") regMsg("Exportación cancelada: las llamadas siguen pendientes.", "warn");
+        else descargar();
+      });
+    } else descargar();
+    function descargar() {
+      var url = URL.createObjectURL(new Blob([bytes], { type: tipo })), a = document.createElement("a");
+      a.href = url; a.download = nombre; document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+      marcar();
+    }
+  }
+  var regHost = document.getElementById("screen-registro");
+  if (regHost) regHost.addEventListener("click", function (e) {
+    if (e.target.closest("[data-reg-nueva]")) { regMsg(""); abrirLlamada(null); return; }
+    if (e.target.closest("[data-reg-export]")) { exportarLlamadas(); return; }
+    var c = e.target.closest("[data-reg-id]");
+    if (c) { regMsg(""); abrirLlamada(c.dataset.regId); }
+  });
+  var rgV = document.getElementById("viewer");
+  if (rgV) {
+    rgV.addEventListener("input", function (e) {
+      var k = e.target.dataset && e.target.dataset.k;
+      if (!k || !rgV.querySelector(".rg")) return;
+      RG.d[k] = e.target.value;
+      if (k === "fecha" || k === "edad") { var p = rgV.querySelector("[data-rg-calc]"); if (p) p.textContent = calcHTML(); }
+      if (k === "plateau" || k === "peep" || k === "driving") drivingSugerida();
+      guardarBorrador();
+    });
+    rgV.addEventListener("change", function (e) {
+      var k = e.target.dataset && e.target.dataset.k;
+      if (k && rgV.querySelector(".rg")) { RG.d[k] = e.target.value; guardarBorrador(); }
+    });
+    rgV.addEventListener("click", function (e) {
+      if (!rgV.querySelector(".rg")) return;
+      var b = e.target.closest("[data-sino]");
+      if (b) {
+        // Tocar de nuevo la opción marcada la deja en blanco
+        var k = b.dataset.sino, on = b.getAttribute("aria-pressed") !== "true";
+        $$('[data-sino="' + k + '"]', rgV).forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", String(on));
+        RG.d[k] = on ? b.dataset.v : "";
+        guardarBorrador();
+        return;
+      }
+      if (e.target.closest("[data-rg-guardar]")) { guardarLlamada(); return; }
+      var del = e.target.closest("[data-rg-borrar]");
+      if (del) {
+        // Confirmación en el propio botón: el segundo toque elimina
+        if (del.dataset.ok !== "1") { del.dataset.ok = "1"; del.lastChild.textContent = RG.id ? "Toca otra vez para eliminar" : "Toca otra vez para descartar"; return; }
+        if (RG.id) { setLlamadas(getLlamadas().filter(function (x) { return x.id !== RG.id; })); regMsg("Llamada eliminada.", ""); }
+        else { borrarBorrador(); regMsg("Borrador descartado.", ""); }
+        cerrarEsquema();
+        renderRegistro();
+      }
+    });
+  }
+  var btnTras = document.querySelector("[data-traslado]");
+  if (btnTras) {
+    btnTras.querySelector(".ico").innerHTML = SVG_AMBU;
+    btnTras.addEventListener("click", function () { go("registro"); regMsg(""); abrirLlamada(null, true); });
+  }
+  pintarBotonTraslado();
+  renderRegistro();
 
   // ---------- Supervivencia ELSO / scores ----------
   var ELSO = [
@@ -1870,7 +2066,7 @@
 
   // ---- buscador ----
   var SCREEN_T = { vv: "ECMO VV", va: "ECMO VA", anticoag: "Anticoagulación", complicaciones: "Complicaciones", escalas: "Escalas",
-    checklists: "Checklists", perlas: "Perlas", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria" };
+    checklists: "Checklists", perlas: "Perlas", datos: "Supervivencia", fuentes: "Fuentes", calc: "Calculadoras", ronda: "Ronda diaria", registro: "Registro de llamadas" };
   var SCREEN_IC = { vv: ".tile.vv", va: ".tile.va", anticoag: ".tile.neutral", complicaciones: ".tile.warn", escalas: '.tile[data-go="escalas"]',
     checklists: '.tile[data-go="checklists"]', perlas: '.tile[data-go="perlas"]', calc: '.tile[data-go="calc"]', ronda: ".hero" };
   var SCREEN_CLS = { vv: "vv", va: "va", complicaciones: "comp" };
