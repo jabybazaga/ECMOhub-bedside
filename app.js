@@ -850,6 +850,7 @@
   // Cada llamada se guarda en este dispositivo con las columnas del Excel de la unidad
   // (registro.js) y se exporta a .xlsx (xlsx.js) sin conexión.
   var REG_KEY = "ecmo_llamadas";
+  var SVG_AMBU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 17V7a1 1 0 0 1 1-1h11v11"/><path d="M14 10h4l3.5 3.5V17h-2"/><path d="M5 17h1M11 17h3"/><circle cx="8.5" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/><path d="M8 8.5v4M6 10.5h4"/></svg>';
   var REG = window.ECMO_REGISTRO;
   function getLlamadas() { try { return JSON.parse(ls(REG_KEY) || "[]"); } catch (e) { return []; } }
   function setLlamadas(l) { ls(REG_KEY, JSON.stringify(l)); }
@@ -871,13 +872,27 @@
         : x.mod > x.exportado ? '<span class="badge warn">Modificada tras exportar</span>'
         : '<span class="badge ok">Exportada ' + new Date(x.exportado).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit" }) + "</span>";
       var linea = [d.codpac, d.tipo, d.desenlace].filter(Boolean).map(esc).join(" · ") || "Sin datos clave";
-      return '<button type="button" class="reg-card" data-reg-id="' + x.id + '"><span class="rc-top"><b>' + (d.nllamada ? "Nº " + esc(d.nllamada) : "Sin nº") + '</b><span>' + regFecha(d.fecha) + "</span>" + est + "</span>" +
+      return '<button type="button" class="reg-card" data-reg-id="' + x.id + '"><span class="rc-top">' + (x.traslado ? '<i class="rc-amb" aria-label="Traslado">' + SVG_AMBU + "</i>" : "") + "<b>" + (d.nllamada ? "Nº " + esc(d.nllamada) : "Sin nº") + '</b><span>' + regFecha(d.fecha) + (d.horatraslado ? " · " + esc(d.horatraslado) : "") + "</span>" + est + "</span>" +
         '<span class="rc-l">' + linea + "</span>" + (d.hospital ? '<span class="rc-s">' + esc(d.hospital) + (d.categoria ? " · " + esc(d.categoria) : "") + "</span>" : "") + "</button>";
     }).join("");
   }
 
   // Formulario en la capa a pantalla completa (la misma de las perlas): «Atrás» lo cierra.
-  var RG = { id: null, d: {} };
+  var RG = { id: null, d: {}, traslado: false };
+  // Borrador de la llamada nueva: se guarda a cada cambio para no perder nada si se cierra o se apaga la tablet.
+  var BORR_KEY = "ecmo_llamada_borrador";
+  function getBorrador() { try { return JSON.parse(ls(BORR_KEY) || "null"); } catch (e) { return null; } }
+  function guardarBorrador() { if (!RG.id) ls(BORR_KEY, JSON.stringify({ d: RG.d, traslado: RG.traslado })); pintarBotonTraslado(); }
+  function borrarBorrador() { try { localStorage.removeItem(BORR_KEY); } catch (e) { /* sin almacenamiento */ } pintarBotonTraslado(); }
+  function horaAhora() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function pintarBotonTraslado() {
+    var b = document.querySelector("[data-traslado]"), br = getBorrador();
+    if (!b) return;
+    var sigue = br && br.traslado;
+    b.classList.toggle("sigue", !!sigue);
+    b.querySelector("b").textContent = sigue ? "Continuar traslado" : "Iniciar traslado";
+    b.querySelector("small").textContent = sigue ? "Iniciado a las " + (br.d.horatraslado || "—") + " · sin guardar todavía" : "Registra la llamada y los datos del paciente, también sin conexión";
+  }
   function campoHTML(c, v) {
     var id = "rg-" + c.k, val = v == null ? "" : v;
     var lab = '<label for="' + id + '">' + esc(c.t) + "</label>";
@@ -890,7 +905,7 @@
         REG.SI_NO.map(function (o) { return '<button type="button" data-sino="' + c.k + '" data-v="' + o + '" aria-pressed="' + (o === val) + '">' + o + "</button>"; }).join("") + "</div></div>";
     }
     if (c.largo) return '<div class="rg-f rg-w">' + lab + '<textarea id="' + id + '" data-k="' + c.k + '" rows="3">' + esc(val) + "</textarea></div>";
-    var tipo = c.tipo === "num" ? 'type="text" inputmode="decimal"' : c.tipo === "fecha" ? 'type="date"' : 'type="text"';
+    var tipo = c.tipo === "num" ? 'type="text" inputmode="decimal"' : c.tipo === "fecha" ? 'type="date"' : c.tipo === "hora" ? 'type="time"' : 'type="text"';
     return '<div class="rg-f' + (c.tipo === "txt" ? " rg-w" : "") + '">' + lab + "<input " + tipo + ' id="' + id + '" data-k="' + c.k + '" value="' + esc(val) + '"' +
       (c.ph ? ' placeholder="' + esc(c.ph) + '"' : "") + ' autocomplete="off">' + (c.ayuda ? '<span class="rg-h">' + esc(c.ayuda) + "</span>" : "") + "</div>";
   }
@@ -899,30 +914,44 @@
     var t = [c.anio, c.semestre, c.grupoedad].filter(function (x) { return x !== ""; }).join(" · ");
     return t ? "Se calculan solos: " + t : "Año, semestre y grupo de edad se calculan con la fecha y la edad.";
   }
-  function abrirLlamada(id) {
+  function abrirLlamada(id, traslado) {
     var v = document.getElementById("viewer");
     if (!v || !REG) return;
-    var x = id ? getLlamadas().filter(function (y) { return y.id === id; })[0] : null;
+    var x = id ? getLlamadas().filter(function (y) { return y.id === id; })[0] : null, br = !x && getBorrador();
     RG.id = x ? x.id : null;
-    RG.d = x ? JSON.parse(JSON.stringify(x.d)) : { fecha: hoyISO(), llamadanum: "1" };
-    v.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar sin guardar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Registro de llamadas</div><div class="t" id="viewer-t">' + (x ? "Editar llamada" : "Nueva llamada") + "</div></div></div>" +
-      '<div class="vb rg">' + REG.GRUPOS.map(function (g) {
+    if (x) { RG.d = JSON.parse(JSON.stringify(x.d)); RG.traslado = !!x.traslado; }
+    else if (br && (!traslado || br.traslado)) { RG.d = br.d || {}; RG.traslado = !!br.traslado; }
+    else {
+      RG.traslado = !!traslado;
+      RG.d = traslado ? { fecha: hoyISO(), horatraslado: horaAhora(), llamadanum: "1", desplaz: "Sí" } : { fecha: hoyISO(), llamadanum: "1" };
+    }
+    if (!x) guardarBorrador();
+    var titulo = x ? "Editar llamada" : RG.traslado ? "Traslado en curso" : "Nueva llamada";
+    v.innerHTML = '<div class="vh"><button type="button" class="back" data-vclose aria-label="Cerrar sin guardar">' + SVG_CHEV_L + '</button><div style="flex:1 1 auto;min-width:0"><div class="k">Registro de llamadas</div><div class="t" id="viewer-t">' + titulo + "</div></div></div>" +
+      '<div class="vb rg">' + (!x ? '<p class="rg-aviso">' + (br ? "Recuperado el borrador sin guardar. " : "") + "Los datos se guardan solos mientras escribes; pulsa <b>Guardar</b> al terminar.</p>" : "") + REG.GRUPOS.map(function (g) {
         var cs = REG.COLUMNAS.filter(function (c) { return c.grupo === g.id; });
         return '<section class="rg-g"><h2>' + esc(g.t) + "</h2>" + (g.ayuda ? '<p class="rg-gh">' + esc(g.ayuda) + "</p>" : "") +
           '<div class="rg-grid">' + cs.map(function (c) { return campoHTML(c, RG.d[c.k]); }).join("") + "</div>" +
           (g.id === "id" ? '<p class="rg-calc" data-rg-calc>' + esc(calcHTML()) + "</p>" : "") + "</section>";
       }).join("") +
       '<div class="rg-pie"><button type="button" class="reg-btn prim" data-rg-guardar>Guardar</button>' +
-      (x ? '<button type="button" class="reg-btn peligro" data-rg-borrar>' + SVG_TRASH + "Eliminar</button>" : "") + "</div></div>";
+      '<button type="button" class="reg-btn peligro" data-rg-borrar>' + SVG_TRASH + (x ? "Eliminar" : "Descartar") + "</button></div></div>";
     v.hidden = false; void v.offsetWidth; v.classList.add("on");
     capaAbierta("esquema", cerrarEsquema);
+    drivingSugerida();
+  }
+  // La driving pressure aparece calculada (plateau − PEEP) mientras no se escriba a mano
+  function drivingSugerida() {
+    var i = document.getElementById("rg-driving"), c = REG.calculados(RG.d);
+    if (i) i.placeholder = !RG.d.driving && c.driving !== "" ? "Calculada: " + String(c.driving).replace(".", ",") : "";
   }
   function guardarLlamada() {
     var l = getLlamadas(), ahora = Date.now(), d = {};
     Object.keys(RG.d).forEach(function (k) { var val = RG.d[k]; if (val != null && String(val).trim() !== "") d[k] = String(val).trim(); });
     if (RG.id) l.forEach(function (x) { if (x.id === RG.id) { x.d = d; x.mod = ahora; } });
-    else l.push({ id: "L" + ahora.toString(36), creado: ahora, mod: ahora, exportado: null, d: d });
+    else l.push({ id: "L" + ahora.toString(36), creado: ahora, mod: ahora, exportado: null, d: d, traslado: RG.traslado || undefined });
     setLlamadas(l);
+    if (!RG.id) borrarBorrador();
     regMsg("Llamada guardada en este dispositivo.", "ok");
     cerrarEsquema();
     renderRegistro();
@@ -933,7 +962,7 @@
     var sel = l.filter(function (x) { return (todas && todas.checked) || pendiente(x); });
     if (!sel.length) { regMsg(l.length ? "No hay llamadas pendientes. Marca «Incluir también las ya exportadas» para exportarlas de nuevo." : "Aún no hay llamadas que exportar.", "warn"); return; }
     sel.sort(function (a, b) { return (a.d.fecha || "").localeCompare(b.d.fecha || "") || a.creado - b.creado; });
-    var bytes = window.ECMO_XLSX.libro("Registro", [REG.cabecera()].concat(sel.map(function (x) { return REG.fila(x.d); })));
+    var bytes = window.ECMO_XLSX.libro("Registro", [REG.cabecera()].concat(sel.map(function (x) { return REG.fila(x.d); })), { tabla: "Llamadas" });
     var nombre = "Llamadas_ECMO_" + hoyISO() + ".xlsx", tipo = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     var ids = sel.map(function (x) { return x.id; });
     function marcar() {
@@ -973,10 +1002,12 @@
       if (!k || !rgV.querySelector(".rg")) return;
       RG.d[k] = e.target.value;
       if (k === "fecha" || k === "edad") { var p = rgV.querySelector("[data-rg-calc]"); if (p) p.textContent = calcHTML(); }
+      if (k === "plateau" || k === "peep" || k === "driving") drivingSugerida();
+      guardarBorrador();
     });
     rgV.addEventListener("change", function (e) {
       var k = e.target.dataset && e.target.dataset.k;
-      if (k && rgV.querySelector(".rg")) RG.d[k] = e.target.value;
+      if (k && rgV.querySelector(".rg")) { RG.d[k] = e.target.value; guardarBorrador(); }
     });
     rgV.addEventListener("click", function (e) {
       if (!rgV.querySelector(".rg")) return;
@@ -987,20 +1018,27 @@
         $$('[data-sino="' + k + '"]', rgV).forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
         b.setAttribute("aria-pressed", String(on));
         RG.d[k] = on ? b.dataset.v : "";
+        guardarBorrador();
         return;
       }
       if (e.target.closest("[data-rg-guardar]")) { guardarLlamada(); return; }
       var del = e.target.closest("[data-rg-borrar]");
       if (del) {
         // Confirmación en el propio botón: el segundo toque elimina
-        if (del.dataset.ok !== "1") { del.dataset.ok = "1"; del.lastChild.textContent = "Toca otra vez para eliminar"; return; }
-        setLlamadas(getLlamadas().filter(function (x) { return x.id !== RG.id; }));
-        regMsg("Llamada eliminada.", "");
+        if (del.dataset.ok !== "1") { del.dataset.ok = "1"; del.lastChild.textContent = RG.id ? "Toca otra vez para eliminar" : "Toca otra vez para descartar"; return; }
+        if (RG.id) { setLlamadas(getLlamadas().filter(function (x) { return x.id !== RG.id; })); regMsg("Llamada eliminada.", ""); }
+        else { borrarBorrador(); regMsg("Borrador descartado.", ""); }
         cerrarEsquema();
         renderRegistro();
       }
     });
   }
+  var btnTras = document.querySelector("[data-traslado]");
+  if (btnTras) {
+    btnTras.querySelector(".ico").innerHTML = SVG_AMBU;
+    btnTras.addEventListener("click", function () { go("registro"); regMsg(""); abrirLlamada(null, true); });
+  }
+  pintarBotonTraslado();
   renderRegistro();
 
   // ---------- Supervivencia ELSO / scores ----------

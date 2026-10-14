@@ -2,7 +2,7 @@
    Generador mínimo de .xlsx (Office Open XML) sin dependencias.
    Una hoja, texto en línea, números y fechas con formato dd/mm/aaaa.
    Funciona sin conexión: el archivo se arma en el propio dispositivo.
-   Uso: ECMO_XLSX.libro("Registro", filas) → Uint8Array
+   Uso: ECMO_XLSX.libro("Registro", filas, { tabla: "Llamadas" }) → Uint8Array
         filas = [[celda, …], …]; celda = texto | número | Date | null
    La primera fila se escribe en negrita (cabecera).
    ===================================================================== */
@@ -66,7 +66,7 @@
     return (Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(1899, 11, 30)) / 86400000;
   }
 
-  function hoja(filas) {
+  function hoja(filas, conTabla) {
     var ancho = filas.reduce(function (m, f) { return Math.max(m, f.length); }, 0);
     var cols = "";
     for (var c = 0; c < ancho; c++) {
@@ -84,21 +84,44 @@
       return '<row r="' + (r + 1) + '">' + celdas + "</row>";
     }).join("");
     return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+      '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">' +
       '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>' +
-      (cols ? "<cols>" + cols + "</cols>" : "") + "<sheetData>" + cuerpo + "</sheetData></worksheet>";
+      (cols ? "<cols>" + cols + "</cols>" : "") + "<sheetData>" + cuerpo + "</sheetData>" +
+      (conTabla ? '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>' : "") + "</worksheet>";
+  }
+  // Tabla de Excel sobre todo el rango: es lo que Power Automate y Office Scripts saben leer fila a fila.
+  function tabla(nombre, filas) {
+    var ancho = filas[0].length, ref = "A1:" + columna(ancho - 1) + Math.max(2, filas.length), vistos = {};
+    var cols = filas[0].map(function (h, i) {
+      var n = String(h == null || h === "" ? "Columna" + (i + 1) : h), base = n, k = 2;
+      while (vistos[n.toLowerCase()]) n = base + " " + k++;
+      vistos[n.toLowerCase()] = 1;
+      return '<tableColumn id="' + (i + 1) + '" name="' + xml(n) + '"/>';
+    }).join("");
+    return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+      '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="' + nombre + '" displayName="' + nombre + '" ref="' + ref + '" totalsRowShown="0">' +
+      '<autoFilter ref="' + ref + '"/><tableColumns count="' + ancho + '">' + cols + "</tableColumns>" +
+      '<tableStyleInfo name="TableStyleMedium2" showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/></table>';
   }
 
-  function libro(nombreHoja, filas) {
+  // opciones.tabla: nombre de una tabla de Excel que cubra todas las filas (letras, números y _)
+  function libro(nombreHoja, filas, opciones) {
     var nom = xml(String(nombreHoja || "Hoja1").replace(/[\\\/?*\[\]:]/g, " ").slice(0, 31));
-    return zip([
+    var tab = opciones && opciones.tabla && filas.length ? String(opciones.tabla).replace(/[^A-Za-z0-9_]/g, "_") : "";
+    var partes = [
       { nombre: "[Content_Types].xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
       { nombre: "_rels/.rels", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
       { nombre: "xl/workbook.xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + nom + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
       { nombre: "xl/_rels/workbook.xml.rels", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>' },
       { nombre: "xl/styles.xml", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>' },
-      { nombre: "xl/worksheets/sheet1.xml", texto: hoja(filas) }
-    ]);
+      { nombre: "xl/worksheets/sheet1.xml", texto: hoja(filas, !!tab) }
+    ];
+    if (tab) {
+      partes[0].texto = partes[0].texto.replace("</Types>", '<Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/></Types>');
+      partes.push({ nombre: "xl/worksheets/_rels/sheet1.xml.rels", texto: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/></Relationships>' });
+      partes.push({ nombre: "xl/tables/table1.xml", texto: tabla(tab, filas) });
+    }
+    return zip(partes);
   }
 
   var api = { libro: libro, crc32: crc32, serie: serie, columna: columna };

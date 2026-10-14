@@ -7,7 +7,7 @@
 <title>ECMO a pie de cama</title>
 <meta name="description" content="Consulta rápida a pie de cama del protocolo de ECMO del CHUB: ronda diaria, calculadoras y referencia VV/VA.">
 
-<link rel="manifest" href="manifest.json?v=44">
+<link rel="manifest" href="manifest.json?v=45">
 <link rel="apple-touch-icon" href="ecmo-chub-180.png">
 <link rel="icon" type="image/png" sizes="32x32" href="ecmo-chub-32.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -54,6 +54,7 @@
     <div class="content">
       <div class="grp" id="fav-grp" hidden>Favoritos</div>
       <div class="row" id="fav-host" hidden></div>
+      <button type="button" class="btn-traslado" data-traslado><span class="ico" aria-hidden="true"></span><span class="tx"><b>Iniciar traslado</b><small>Registra la llamada y los datos del paciente, también sin conexión</small></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
       <div class="grp">A diario</div>
       <button class="hero" data-go="ronda">
         <div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></div>
@@ -817,7 +818,7 @@
       <label class="chk reg-todas"><input type="checkbox" id="reg-todas"><span>Incluir también las ya exportadas</span></label>
       <p class="reg-msg" id="reg-msg" aria-live="polite"></p>
       <div id="reg-lista"></div>
-      <div class="note reg-ayuda"><b>Para pasarlas al registro:</b> abre el Excel exportado, copia las filas sin la cabecera y pégalas en la primera fila libre de la hoja «Registro» con <i>Pegado especial → Valores</i>. Las columnas van en el mismo orden; «Paciente» va vacía y Año, Semestre y Grupo de edad ya vienen calculados.</div>
+      <div class="note reg-ayuda"><b>Volcado automático:</b> al exportar, guarda el archivo en la carpeta <b>REGISTRO › Entradas app</b> del SharePoint de la UCI (desde la tablet, con la app de OneDrive o Teams; sin conexión, se sube sola al recuperarla). Un flujo de Power Automate añade las filas al registro.<br><b>Sin el flujo:</b> abre el Excel exportado, copia las filas sin la cabecera y pégalas en la hoja «Registro» con <i>Pegado especial → Valores</i>. Las 31 primeras columnas van en el mismo orden que el registro; «Paciente» va vacía.</div>
     </div>
     <nav class="tabbar"><button class="tab" data-go="inicio"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i><span>Inicio</span></button><button class="tab" data-go="ronda"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1Z"/><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 12h6M9 16h4"/></svg></i><span>Ronda</span></button><button class="tab" data-go="calc"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M12.5 11h2M8 15h2M12.5 15h2"/></svg></i><span>Calculadoras</span></button><button class="tab tab-em" data-go="complicaciones"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></i><span>Emergencias</span></button></nav>
   </section>
@@ -898,7 +899,7 @@
         <label class="srow"><span class="sd">Firma</span><input type="text" class="sinput" data-set="firma" placeholder="Tu nombre" maxlength="40"></label>
         <label class="srow"><span class="sd">Boxes de la unidad</span><input type="number" class="sinput num" data-set="boxes" min="1" max="40" inputmode="numeric"></label>
       </div>
-      <p class="about">ECMO a pie de cama · versión 44 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
+      <p class="about">ECMO a pie de cama · versión 45 · protocolo CHUB aprobado el 02/05/2024 · funciona sin conexión.</p>
     </div>
   </section>
 

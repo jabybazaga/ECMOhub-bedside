@@ -3,6 +3,8 @@
    «Registro» del Excel de la unidad (Registro_llamadas_ECMO_ordenado.xlsx),
    en el mismo orden, para que las filas exportadas se peguen tal cual.
    Año, Semestre y Grupo de edad se calculan igual que las fórmulas del Excel.
+   Detrás de las 31 columnas del registro van las del traslado (hora de inicio,
+   gasometría, soporte y ventilación mecánica).
    La app NO recoge el nombre: la columna «Paciente» se exporta vacía.
    ===================================================================== */
 (function (raiz) {
@@ -19,7 +21,7 @@
     motivo: ["Mejoría / respuesta a otro tratamiento", "No indicación", "Futilidad", "Comorbilidad / situación basal", "Edad", "Contraindicación para anticoagulación", "DAC sin receptor", "Canulación por equipo externo", "Otros"]
   };
 
-  // Columnas A–AE del Excel. tipo: num | txt | fecha | lista | sino | calc | nombre
+  // Columnas A–AE del Excel y, desde AF, las nuevas. tipo: num | txt | fecha | hora | lista | sino | calc | nombre
   var COLUMNAS = [
     { k: "nllamada", t: "Nº llamada", tipo: "num", grupo: "id", ayuda: "El siguiente correlativo del registro" },
     { k: "codpac", t: "Cód. paciente", tipo: "txt", grupo: "id", ph: "P-000" },
@@ -51,11 +53,32 @@
     { k: "nrecambios", t: "Nº recambios membrana", tipo: "num", grupo: "evolucion" },
     { k: "recambiocan", t: "Recambio de cánulas", tipo: "sino", grupo: "evolucion" },
     { k: "traqueo", t: "Traqueostomía", tipo: "sino", grupo: "evolucion" },
-    { k: "obs", t: "Observaciones", tipo: "txt", grupo: "obs", largo: true }
+    { k: "obs", t: "Observaciones", tipo: "txt", grupo: "obs", largo: true },
+    // Columnas nuevas, a continuación de las 31 del registro (AF en adelante)
+    { k: "horatraslado", t: "Hora inicio traslado", tipo: "hora", grupo: "id", ayuda: "Se rellena al pulsar «Iniciar traslado»" },
+    { k: "ph", t: "pH", tipo: "num", grupo: "gaso" },
+    { k: "pco2", t: "pCO2 (mmHg)", tipo: "num", grupo: "gaso" },
+    { k: "po2", t: "pO2 (mmHg)", tipo: "num", grupo: "gaso" },
+    { k: "hco3", t: "HCO3 (mmol/L)", tipo: "num", grupo: "gaso" },
+    { k: "lactico", t: "Láctico (mmol/L)", tipo: "num", grupo: "gaso" },
+    { k: "spo2", t: "SpO2 (%)", tipo: "num", grupo: "gaso" },
+    { k: "prono", t: "Prono", tipo: "sino", grupo: "soporte" },
+    { k: "bnm", t: "Bloqueo neuromuscular", tipo: "sino", grupo: "soporte" },
+    { k: "nora", t: "Noradrenalina (mcg/kg/min)", tipo: "num", grupo: "soporte" },
+    { k: "dobu", t: "Dobutamina (mcg/kg/min)", tipo: "num", grupo: "soporte" },
+    { k: "fio2", t: "FiO2 (%)", tipo: "num", grupo: "vm" },
+    { k: "peep", t: "PEEP (cmH2O)", tipo: "num", grupo: "vm" },
+    { k: "vt", t: "Volumen tidal (mL)", tipo: "num", grupo: "vm" },
+    { k: "fr", t: "FR (rpm)", tipo: "num", grupo: "vm" },
+    { k: "plateau", t: "Presión plateau (cmH2O)", tipo: "num", grupo: "vm" },
+    { k: "driving", t: "Driving pressure (cmH2O)", tipo: "num", grupo: "vm", ayuda: "Plateau − PEEP: se calcula sola si la dejas vacía" }
   ];
   var GRUPOS = [
     { id: "id", t: "Identificación" },
     { id: "llamada", t: "La llamada" },
+    { id: "gaso", t: "Gasometría" },
+    { id: "soporte", t: "Prono, relajación y fármacos" },
+    { id: "vm", t: "Ventilación mecánica" },
     { id: "desenlace", t: "Desenlace" },
     { id: "evolucion", t: "Evolución", ayuda: "Se puede completar más adelante." },
     { id: "obs", t: "Observaciones" }
@@ -66,13 +89,21 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
     return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
   }
+  function num(v) { if (v == null || v === "") return null; var n = Number(String(v).replace(",", ".")); return isFinite(n) ? n : null; }
+  // Driving pressure = plateau − PEEP, salvo que se haya escrito a mano
+  function drivingDe(r) {
+    if (num(r.driving) != null) return num(r.driving);
+    var p = num(r.plateau), e = num(r.peep);
+    return p != null && e != null ? Math.round((p - e) * 10) / 10 : "";
+  }
   // Mismas fórmulas que las columnas grises del Excel (G, H, J)
   function calculados(r) {
     var f = fechaDe(r.fecha), e = r.edad === "" || r.edad == null ? null : +r.edad;
     return {
       anio: f ? f.getFullYear() : "",
       semestre: f ? (f.getMonth() + 1 <= 6 ? "1er semestre" : "2º semestre") : "",
-      grupoedad: e == null || isNaN(e) ? "" : e < 18 ? "Pediátrico (<18)" : "Adulto"
+      grupoedad: e == null || isNaN(e) ? "" : e < 18 ? "Pediátrico (<18)" : "Adulto",
+      driving: drivingDe(r)
     };
   }
   // Una fila del Excel, en el orden de las columnas
@@ -81,10 +112,11 @@
     return COLUMNAS.map(function (col) {
       if (col.tipo === "nombre") return "";
       if (col.tipo === "calc") return c[col.k];
+      if (col.k === "driving") return c.driving;
       var v = r[col.k];
       if (v == null || v === "") return "";
       if (col.tipo === "fecha") return fechaDe(v) || "";
-      if (col.tipo === "num") { var n = Number(String(v).replace(",", ".")); return isFinite(n) ? n : ""; }
+      if (col.tipo === "num") { var n = num(v); return n == null ? "" : n; }
       return String(v);
     });
   }
